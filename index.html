@@ -2157,9 +2157,9 @@ void main(){
   function countInstall() {
     if (!ownSite || DEMO || !standalone) return;
     try { if (localStorage.getItem(COUNTED)) return; } catch (e) { return; }
-    const img = new Image();
-    img.onload = () => { try { localStorage.setItem(COUNTED, '1'); } catch (e) {} };
-    img.src = 'https://meryvillena.goatcounter.com/count?p=' + encodeURIComponent('/instalacion') + '&t=' + encodeURIComponent('Instalación') + '&e=true&rnd=' + Math.random().toString(36).slice(2);
+    const url = 'https://meryvillena.goatcounter.com/count?p=' + encodeURIComponent('/instalacion') + '&t=' + encodeURIComponent('Instalación') + '&e=true&rnd=' + Math.random().toString(36).slice(2);
+    // Se marca como contada en cuanto el aviso llega (sea cual sea la respuesta); si no hay conexión, se reintenta al volver
+    fetch(url, { mode: 'no-cors', keepalive: true, credentials: 'omit' }).then(() => { try { localStorage.setItem(COUNTED, '1'); } catch (e) {} }).catch(() => {});
   }
   countInstall();
   window.addEventListener('online', countInstall);
