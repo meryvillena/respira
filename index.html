@@ -838,8 +838,8 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     <section class="screen" id="s-check">
       <div class="bar"><button class="back" data-go="home" aria-label="Volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>¿Qué te pide el cuerpo?</h2></div>
       <div class="ckhead">
-        <p class="q" id="ck-q">¿Cómo te sientes ahora mismo?</p>
-        <p class="qhint">Toca lo que más se parezca</p>
+        <p class="q" id="ck-q">¿Qué necesitas ahora?</p>
+        <p class="qhint">Toca lo que más se acerque.</p>
       </div>
       <div class="cwords" id="feelings"></div>
       <div class="cwords" id="times"></div>
@@ -1962,12 +1962,12 @@ void main(){
   }
 
   const FEELINGS = [
-    { id: 'nervios', tech: 'sigh', label: 'Con nervios', why: 'El Suspiro alarga la exhalación, que es lo que antes calma el cuerpo. En un estudio de Stanford fue la técnica que más mejoró el ánimo.' },
-    { id: 'sueno', tech: 'sleep', label: 'Con sueño o sin poder dormir', why: 'La exhalación larga del 4-7-8 le dice al cuerpo que puede frenar. Mejor hazla ya en la cama.' },
-    { id: 'dispersa', tech: 'box', label: 'Con la mente dispersa', why: 'Un ritmo cuadrado y predecible ordena la atención y le da a la mente algo que contar.' },
-    { id: 'animo', tech: 'res', label: 'Con el ánimo bajo', why: 'A seis respiraciones por minuto, corazón y respiración se acompasan. Si te apetece, pon una mano en el pecho.' },
-    { id: 'energia', tech: 'wake', label: 'Sin energía', why: 'Un ritmo más vivo para despejarte. Es corta a propósito: más tiempo no activa más, marea.' },
-    { id: 'ruido', tech: 'bee', label: 'Con mucho ruido en la cabeza', why: 'El zumbido de la abeja ocupa la atención y apaga el ruido de la cabeza casi de golpe.' }
+    { id: 'nervios', tech: 'sigh', label: 'Relajar la ansiedad', why: 'La exhalación larga ayuda al cuerpo a bajar el ritmo. En un estudio de Stanford, fue la técnica que más mejoró el ánimo.' },
+    { id: 'sueno', tech: 'sleep', label: 'Dormir', why: 'La exhalación larga le dice al cuerpo que puede frenar. Mejor hazla ya en la cama.' },
+    { id: 'dispersa', tech: 'box', label: 'Centrarte', why: 'Un ritmo cuadrado y predecible le da a tu atención algo concreto que seguir.' },
+    { id: 'animo', tech: 'res', label: 'Ir un poco más despacio', why: 'A seis respiraciones por minuto, corazón y respiración se acompasan. Si te apetece, pon una mano en el pecho.' },
+    { id: 'energia', tech: 'wake', label: 'Activarte', why: 'Un ritmo más vivo para despejarte. Es corta a propósito: alargarla puede marearte.' },
+    { id: 'ruido', tech: 'bee', label: 'Apagar el ruido', why: 'El zumbido ocupa la atención y deja menos sitio para seguir pensando.' }
   ];
   const TIMES = [{ m: 1, label: 'Un minuto' }, { m: 3, label: 'Tres minutos' }, { m: 5, label: 'Cinco minutos' }, { m: 10, label: 'Diez o más' }];
   function durFor(id, m) {
@@ -1985,7 +1985,7 @@ void main(){
     const stars = pts.map((p, i) => `<circle style="--i:${i}" data-i="${i}" cx="${p[0]}" cy="${p[1]}" r="${STAR_R[i % 6]}"/>`).join('');
     return `<div class="clist"><svg class="cline" aria-hidden="true">${lines}${stars}</svg>${items.map((it, i) => it.replace('<button ', `<button data-i="${i}" `)).join('')}</div>`;
   }
-  $('feelings').innerHTML = cList(['nervios', 'ruido', 'dispersa', 'sueno', 'energia', 'animo'].map(id => { const f = FEELINGS.find(x => x.id === id); return `<button class="cword" data-feel="${f.id}" aria-pressed="false">${low(f.label)}</button>`; }));
+  $('feelings').innerHTML = cList(['nervios', 'sueno', 'dispersa', 'animo', 'energia', 'ruido'].map(id => { const f = FEELINGS.find(x => x.id === id); return `<button class="cword" data-feel="${f.id}" aria-pressed="false">${low(f.label)}</button>`; }));
   $('times').innerHTML = cList(TIMES.map(t => `<button class="cword" data-time="${t.m}" aria-pressed="false">${low(t.label)}</button>`));
   // Vuelve a dibujar la constelación (al entrar en la pantalla o al cambiar de pregunta)
   const drawIn = (el) => { el.classList.remove('draw'); void el.offsetWidth; el.classList.add('draw'); };
@@ -1998,7 +1998,7 @@ void main(){
     $('feelings').className = 'cwords'; $('times').className = 'cwords off';
     document.querySelectorAll('#s-check .cline circle').forEach(c => c.classList.remove('on'));
     drawIn($('feelings'));
-    $('ck-q').textContent = '¿Cómo te sientes ahora mismo?'; $('ck-q').parentNode.classList.remove('swap');
+    $('ck-q').textContent = '¿Qué necesitas ahora?'; $('ck-q').parentNode.classList.remove('swap');
   }
   // Al elegir cómo te sientes, esas frases se apagan y en su lugar aparecen las del tiempo
   $('feelings').addEventListener('click', (e) => {
@@ -2021,7 +2021,6 @@ void main(){
     const f = FEELINGS.find(x => x.id === ck.feel), d = durFor(f.tech, ck.time);
     prefs.dur[f.tech] = d; save();
     let why = f.why;
-    if (f.tech === 'wake' && ck.time > d) why += ' Es corta a propósito.';
     holding = true;
     setTimeout(() => { holding = false; openTech(f.tech, 'check', why); }, 1100);
   }
