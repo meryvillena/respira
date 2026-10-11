@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0E0C1C">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Respira</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Respira">
+<meta property="og:url" content="https://respira.mvmmaison.com/">
+<meta property="og:image" content="https://respira.mvmmaison.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="canonical" href="https://respira.mvmmaison.com/">
+<meta name="description" content="Diez técnicas de respiración guiadas, sin cuenta ni anuncios. Tu cielo convierte cada sesión en una estrella.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Respira">
+<meta property="og:title" content="Cinco minutos para ti">
+<meta property="og:description" content="Diez técnicas de respiración guiadas, sin cuenta ni anuncios. Tu cielo convierte cada sesión en una estrella.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+@property --c0 { syntax: '<color>'; inherits: true; initial-value: #7E6FD8; }
+@property --c1 { syntax: '<color>'; inherits: true; initial-value: #B9A7F2; }
+@property --c2 { syntax: '<color>'; inherits: true; initial-value: #8FB4F0; }
+@property --c3 { syntax: '<color>'; inherits: true; initial-value: #E7C6F2; }
+@property --c4 { syntax: '<color>'; inherits: true; initial-value: #F6F1FF; }
+@property --glow { syntax: '<color>'; inherits: true; initial-value: #A99BF0; }
+
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  --ink: #2A2640;
+  --ink-soft: #57517A;
+  --ink-night: #D9D3F0;
+  --day-a: #E8ECF8;
+  --day-b: #F2E7F1;
+  --day-c: #FBEEE6;
+  --night-a: #07061A;
+  --night-b: #141029;
+  --panel: rgba(255,255,255,.52);
+  --panel-strong: rgba(255,255,255,.78);
+  --line: rgba(70,55,120,.14);
+  --chip: rgba(255,255,255,.5);
+  --on: #2A2640;
+  --on-ink: #F7F4FF;
+  --serif: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
+  --sans: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  transition: --c0 1.4s ease, --c1 1.4s ease, --c2 1.4s ease, --c3 1.4s ease, --c4 1.4s ease, --glow 1.4s ease;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #ECE8F8; --ink-soft: #A7A0C3;
+    --day-a: #1A1833; --day-b: #282042; --day-c: #372944;
+    --panel: rgba(255,255,255,.06); --panel-strong: rgba(255,255,255,.1); --line: rgba(255,255,255,.13);
+    --chip: rgba(255,255,255,.06); --on: #ECE8F8; --on-ink: #1A1833;
+  }
+}
+:root[data-theme="dark"] {
+  --ink: #ECE8F8; --ink-soft: #A7A0C3;
+  --day-a: #1A1833; --day-b: #282042; --day-c: #372944;
+  --panel: rgba(255,255,255,.06); --panel-strong: rgba(255,255,255,.1); --line: rgba(255,255,255,.13);
+  --chip: rgba(255,255,255,.06); --on: #ECE8F8; --on-ink: #1A1833;
+}
+
+*, *::before, *::after { box-sizing: inherit; }
+[hidden] { display: none !important; }
+html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; min-height: 100%;
+  font-family: var(--sans); color: var(--ink); background: var(--day-a);
+  transition: color 3s ease;
+  -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+}
+body[data-state="focus"] { color: var(--ink-night); overflow: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* Cielo */
+.sky { position: fixed; inset: 0; pointer-events: none; }
+.sky.day { background: linear-gradient(170deg, var(--day-a) 0%, var(--day-b) 55%, var(--day-c) 100%); }
+.sky.sun {
+  background:
+    radial-gradient(ellipse 70% 38% at 50% 104%, rgba(255,214,160,.95), rgba(255,170,130,.6) 45%, transparent 75%),
+    radial-gradient(ellipse 140% 75% at 50% 110%, rgba(255,150,160,.65), rgba(214,150,220,.35) 45%, transparent 78%);
+  opacity: 0; transform: translateY(35%); transition: opacity 3s ease, transform 3s ease;
+}
+.sky.night { background: radial-gradient(ellipse at 50% 45%, var(--night-b), var(--night-a) 75%); opacity: 0; transition: opacity 3.5s ease; }
+body[data-state="focus"] .sky.night { opacity: 1; }
+body[data-state="dawn"] .sky.night { opacity: 0; transition-duration: var(--dawn, 16s); transition-timing-function: cubic-bezier(.45,0,.35,1); }
+body[data-state="dawn"] .sky.sun { opacity: 1; transform: translateY(0); transition: opacity 5s ease, transform 14s cubic-bezier(.2,.6,.3,1); }
+body[data-state="dawn"].settled .sky.sun { opacity: .4; transition: opacity 10s ease, transform 14s ease; }
+body[data-state="dawn"] { color: var(--ink); transition: color 2.4s ease 5.8s; }
+body[data-state="dawn"] .dial { opacity: 0; }
+
+main {
+  position: relative; min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 20px 48px;
+}
+
+/* Escenario y luna */
+.stage {
+  position: relative; width: 100%;
+  height: clamp(240px, 36vh, 340px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: height 1.6s cubic-bezier(.45,0,.25,1);
+}
+body:not([data-screen="home"]) .stage { height: clamp(150px, 22vh, 210px); }
+body.full .stage { height: 100vh; height: 100dvh; transition-duration: 2.4s; }
+.orb {
+  --size: min(50vw, 27vh, 240px);
+  position: relative; width: var(--size); height: var(--size);
+  transition: width 1.6s cubic-bezier(.45,0,.25,1), height 1.6s cubic-bezier(.45,0,.25,1);
+}
+body:not([data-screen="home"]) .orb { --size: min(34vw, 17vh, 150px); }
+body.full .orb { --size: min(74vw, 56vh, 470px); transition-duration: 2.4s; }
+.halo {
+  position: absolute; inset: -38%; border-radius: 50%;
+  background: radial-gradient(circle, var(--glow) 0%, color-mix(in srgb, var(--glow) 35%, transparent) 38%, transparent 68%);
+  filter: blur(26px); opacity: .5; will-change: opacity, transform;
+}
+.scaler { position: absolute; inset: 0; will-change: transform; transform: scale(.66); }
+.core {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, var(--c4) 0%, var(--c3) 30%, var(--c1) 62%, var(--c2) 100%);
+  -webkit-mask-image: radial-gradient(circle, #000 52%, rgba(0,0,0,.75) 62%, transparent 71%);
+          mask-image: radial-gradient(circle, #000 52%, rgba(0,0,0,.75) 62%, transparent 71%);
+}
+.gl { position: absolute; left: -25%; top: -25%; width: 150%; height: 150%; display: none; }
+body.gl-on .gl { display: block; }
+body.gl-on .core { display: none; }
+body.gl-on .halo { filter: blur(44px); }
+
+.cue { position: absolute; left: 0; right: 0; bottom: max(7vh, 52px); padding: 0 24px; text-align: center; pointer-events: none; }
+.phase {
+  margin: 0 auto;
+  font-family: var(--serif); font-style: italic; font-weight: 300;
+  font-size: clamp(1.4rem, 3.6vw, 2rem);
+  opacity: 0; transition: opacity .45s ease;
+}
+.phase.on { opacity: .88; }
+.sub { margin: 10px auto 0; max-width: 32ch; min-height: 2.9em; font-size: .92rem; line-height: 1.45; opacity: 0; transition: opacity .6s ease; }
+.sub.on { opacity: .7; }
+
+/* Pantallas */
+.screens { width: 100%; max-width: 540px; transition: opacity 1s ease, transform 1.2s ease; }
+body[data-state="focus"] .screens, body[data-state="dawn"] .screens { opacity: 0; transform: translateY(16px); pointer-events: none; }
+body.full .screens { display: none; }
+.screen { display: none; animation: enter .6s ease both; }
+body[data-screen="home"] #s-home,
+body[data-screen="techs"] #s-techs,
+body[data-screen="tech"] #s-tech,
+body[data-screen="settings"] #s-settings,
+body[data-screen="trips"] #s-trips,
+body[data-screen="trip"] #s-trip,
+body[data-screen="check"] #s-check,
+body[data-screen="sky"] #s-sky { display: block; }
+@keyframes enter { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { .screen { animation: none; } }
+
+h1 { margin: 0 0 8px; text-align: center; font-family: var(--serif); font-weight: 300; font-size: clamp(2.8rem, 9vw, 3.8rem); line-height: 1; }
+h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 2rem; line-height: 1.1; }
+.lede { margin: 0 auto 28px; max-width: 34ch; text-align: center; color: var(--ink-soft); line-height: 1.6; }
+
+.bar { display: flex; align-items: center; gap: 14px; margin: 0 0 22px; }
+.back {
+  flex: none; width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--chip); border: 1px solid var(--line);
+}
+.back svg { width: 18px; height: 18px; }
+
+/* Tarjetas */
+.card {
+  display: block; width: 100%; text-align: left;
+  padding: 20px 22px; border-radius: 24px;
+  background: var(--panel); border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  transition: transform .2s ease, background .3s ease;
+}
+.card:active { transform: scale(.985); }
+.card-title { display: block; font-family: var(--serif); font-size: 1.6rem; font-weight: 400; line-height: 1.15; }
+.card-text { display: block; margin-top: 4px; font-size: .88rem; color: var(--ink-soft); line-height: 1.45; }
+.card.hero {
+  margin-bottom: 12px; padding: 24px 22px;
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--c1) 38%, transparent), transparent 60%),
+    radial-gradient(120% 140% at 100% 100%, color-mix(in srgb, var(--c3) 40%, transparent), transparent 60%),
+    var(--panel);
+}
+.card.hero .card-title { font-size: 1.9rem; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.quiet { display: flex; justify-content: center; gap: 8px; margin-top: 26px; }
+.textbtn { background: none; border: 0; padding: 12px 14px; font-size: .9rem; color: var(--ink-soft); border-radius: 999px; }
+.textbtn:hover { color: var(--ink); }
+.credit { margin: 22px 0 0; text-align: center; font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--ink-soft); }
+.credit a { color: inherit; text-underline-offset: 3px; }
+
+/* Opciones seleccionables */
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.list { display: grid; gap: 10px; }
+.opt {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px; border-radius: 20px; cursor: pointer;
+  background: var(--panel); border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  transition: border-color .25s, background .25s;
+}
+.opt .dot { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; transition: border-color .25s; }
+.opt .dot::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--on); transform: scale(0); transition: transform .25s ease; }
+.opt-body { flex: 1; min-width: 0; }
+.opt-title { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-weight: 600; font-size: .98rem; }
+.opt-title small { font-weight: 500; font-size: .78rem; color: var(--ink-soft); white-space: nowrap; }
+.opt-text { display: block; margin-top: 3px; font-size: .84rem; line-height: 1.45; color: var(--ink-soft); }
+input:checked + .opt { background: var(--panel-strong); border-color: color-mix(in srgb, var(--ink) 45%, transparent); }
+input:checked + .opt .dot { border-color: var(--on); }
+input:checked + .opt .dot::after { transform: scale(1); }
+input:focus-visible + .opt, input:focus-visible + .chip, input:focus-visible + .sw { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.label { margin: 26px 0 10px; font-family: var(--serif); font-size: 1.3rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; min-width: 58px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  background: var(--chip); border: 1px solid var(--line); font-size: .9rem; font-weight: 500;
+  transition: background .25s, color .25s, border-color .25s;
+}
+input:checked + .chip { background: var(--on); color: var(--on-ink); border-color: var(--on); }
+
+.primary {
+  display: block; width: 100%; margin-top: 26px; min-height: 56px;
+  border: 0; border-radius: 999px; background: var(--on); color: var(--on-ink);
+  font-size: 1rem; font-weight: 600; letter-spacing: .01em;
+  box-shadow: 0 14px 40px -14px var(--glow);
+  transition: transform .2s ease;
+}
+.primary:active { transform: scale(.985); }
+.primary:focus-visible { outline-offset: 4px; }
+
+/* Test */
+.q { margin: 0 0 14px; font-family: var(--serif); font-size: 1.5rem; line-height: 1.25; }
+.feel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.feel {
+  min-height: 64px; padding: 14px 16px; border-radius: 20px; text-align: left;
+  background: var(--panel); border: 1px solid var(--line); font-size: .95rem; font-weight: 500; line-height: 1.3;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  transition: background .25s, transform .2s;
+}
+.feel:active { transform: scale(.98); }
+.feel[aria-pressed="true"] { background: var(--on); color: var(--on-ink); border-color: var(--on); }
+.step + .step { margin-top: 28px; }
+.result { margin-top: 28px; padding: 24px 22px; border-radius: 24px; background: var(--panel-strong); border: 1px solid var(--line); }
+.result .pre { margin: 0 0 4px; font-size: .88rem; color: var(--ink-soft); }
+.result .meta { margin: 6px 0 12px; font-size: .9rem; color: var(--ink-soft); }
+.result .why { margin: 0; line-height: 1.55; }
+
+.intro { margin: 0 0 20px; padding: 18px 20px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); font-family: var(--serif); font-size: 1.2rem; line-height: 1.45; font-style: italic; }
+
+/* Interruptores */
+.switch { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; cursor: pointer; border-bottom: 1px solid var(--line); }
+.switch:last-of-type { border-bottom: 0; }
+.switch-text { font-size: .95rem; line-height: 1.4; }
+.switch-text small { display: block; color: var(--ink-soft); font-size: .8rem; margin-top: 2px; }
+.track { flex: none; position: relative; width: 50px; height: 30px; border-radius: 999px; background: var(--line); transition: background .25s; }
+.track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.2); transition: transform .25s ease; }
+input:checked + .track { background: var(--on); }
+input:checked + .track::after { transform: translateX(20px); background: var(--on-ink); }
+input:focus-visible + .track { outline: 2px solid var(--ink); outline-offset: 3px; }
+.box { margin-top: 18px; padding: 4px 20px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); }
+
+/* Colores */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 14px 6px; }
+.sw { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; padding: 6px 0; border-radius: 14px; }
+.sw i { display: block; width: 42px; height: 42px; border-radius: 50%; background: radial-gradient(circle at 36% 30%, var(--s4), var(--s3) 30%, var(--s1) 62%, var(--s2)); box-shadow: 0 0 18px -2px var(--s1); transition: transform .3s ease, box-shadow .3s ease; }
+.sw small { font-size: .74rem; color: var(--ink-soft); text-align: center; line-height: 1.2; }
+input:checked + .sw i { transform: scale(1.15); box-shadow: 0 0 0 2px var(--panel-strong), 0 0 0 3.5px var(--ink), 0 0 22px var(--s1); }
+input:checked + .sw small { color: var(--ink); font-weight: 600; }
+.hint { margin: 12px 0 0; font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--ink-soft); }
+.note { margin: 18px 0 0; text-align: center; font-size: .78rem; color: var(--ink-soft); line-height: 1.5; }
+
+/* Durante la sesión */
+.hud {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  padding: 0 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; justify-content: space-between; align-items: center;
+  opacity: 0; pointer-events: none; transition: opacity 2s ease;
+  font-size: .85rem; font-variant-numeric: tabular-nums;
+}
+body[data-state="focus"] .hud { opacity: .38; pointer-events: auto; }
+.hud:hover, .hud:focus-within { opacity: .8 !important; }
+.hud button { background: none; border: 0; padding: 12px 4px; font-size: .85rem; }
+
+.end {
+  position: fixed; left: 0; right: 0; bottom: calc(9vh + env(safe-area-inset-bottom, 0px));
+  text-align: center; opacity: 0; pointer-events: none; transition: opacity 2.5s ease; padding: 0 20px;
+}
+.end.on { opacity: 1; pointer-events: auto; }
+.end p { font-family: var(--serif); font-weight: 300; font-size: clamp(1.5rem, 4vw, 2.1rem); margin: 0 0 18px; }
+.end .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.end .primary { display: inline-block; width: auto; margin: 0; padding: 0 28px; min-height: 50px; }
+.end .ghost { min-height: 50px; padding: 0 24px; border-radius: 999px; background: var(--chip); border: 1px solid var(--line); }
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  padding: 12px 20px; border-radius: 999px; background: var(--on); color: var(--on-ink); font-size: .88rem;
+  transition: opacity .3s, transform .3s;
+}
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 380px) {
+  .grid2, .feel-grid { grid-template-columns: 1fr; }
+}
+
+/* Dos lunas (Anuloma Viloma) */
+.orbs { display: flex; align-items: center; justify-content: center; transition: gap 1.6s ease; gap: 0; }
+.orb2 { display: none; }
+body.twin .orb2 { display: block; }
+body.twin .orbs { gap: clamp(0px, 1vw, 24px); }
+body.twin.full .orb { --size: min(48vw, 44vh, 360px); }
+
+/* Inicio */
+.card.soon { opacity: .55; margin-top: 12px; cursor: default; }
+.card.soon:active { transform: none; }
+
+/* Lista de técnicas */
+.tcard { display: flex; gap: 14px; align-items: flex-start; width: 100%; text-align: left; padding: 18px 20px; border-radius: 22px; background: var(--panel); border: 1px solid var(--line); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); transition: transform .2s ease; }
+.tcard:active { transform: scale(.985); }
+.tcard .tbody { flex: 1; min-width: 0; }
+.tcard .tname { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: 1.45rem; line-height: 1.15; }
+.tcard .tname small { font-family: var(--sans); font-size: .76rem; color: var(--ink-soft); white-space: nowrap; }
+.tcard .tpara { display: block; margin-top: 3px; font-size: .86rem; color: var(--ink-soft); line-height: 1.45; }
+.tcard.locked { background: transparent; border-style: dashed; }
+.tcard.locked .tname { color: var(--ink-soft); }
+.lockico { flex: none; width: 20px; height: 20px; margin-top: 4px; color: var(--ink-soft); }
+.prog { display: block; height: 3px; margin-top: 12px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.prog i { display: block; height: 100%; background: var(--on); border-radius: 3px; }
+
+/* Ficha */
+.para { margin: 0 0 18px; font-family: var(--serif); font-style: italic; font-size: 1.35rem; line-height: 1.35; color: var(--ink-soft); }
+.how { margin: 0; padding: 18px 20px; border-radius: 20px; background: var(--panel-strong); border: 1px solid var(--line); line-height: 1.6; }
+.rhythm { margin: 10px 0 0; font-size: .84rem; color: var(--ink-soft); }
+details.more { margin-top: 12px; border-radius: 20px; background: var(--panel); border: 1px solid var(--line); }
+details.more summary { list-style: none; cursor: pointer; padding: 14px 20px; font-family: var(--serif); font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+details.more summary::-webkit-details-marker { display: none; }
+details.more summary::after { content: '+'; font-family: var(--sans); font-size: 1.2rem; color: var(--ink-soft); transition: transform .3s ease; }
+details.more[open] summary::after { transform: rotate(45deg); }
+details.more p { margin: 0; padding: 0 20px 18px; line-height: 1.6; font-size: .94rem; }
+details.more p + p { padding-top: 0; }
+.warn { margin-top: 12px; padding: 16px 20px; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); background: var(--panel-strong); }
+.warn p { margin: 0 0 8px; font-size: .9rem; line-height: 1.55; }
+.check { display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; cursor: pointer; font-size: .9rem; font-weight: 600; line-height: 1.4; }
+.check input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: var(--on); }
+.lockbox { margin-top: 22px; padding: 18px 20px; border-radius: 20px; border: 1px dashed var(--line); text-align: center; }
+.lockbox p { margin: 0; line-height: 1.5; }
+.lockbox .prog { margin: 14px auto 0; max-width: 240px; }
+.rangebox { display: flex; align-items: center; gap: 16px; }
+.rangebox input { flex: 1; accent-color: var(--on); height: 32px; }
+.rangebox output { flex: none; min-width: 3.4em; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.fixed { margin: 0; color: var(--ink-soft); }
+.primary:disabled { opacity: .4; box-shadow: none; cursor: not-allowed; }
+.end .meta { margin: -6px 0 18px; font-size: .9rem; opacity: .75; }
+.end .news { margin: -8px auto 18px; max-width: 30ch; font-size: .95rem; font-weight: 600; }
+
+/* ===== Versión 1: sin cajas ===== */
+.back { background: none; border: 0; width: 40px; height: 40px; margin-left: -10px; color: var(--ink-soft); }
+.bar h2 { font-weight: 300; font-size: 2.1rem; }
+.list { gap: 0; }
+.tcard { gap: 16px; align-items: center; padding: 11px 0; border-radius: 0; background: none; border: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.tcard .tname { font-weight: 400; font-size: 1.45rem; }
+.tcard.locked { background: none; border: 0; }
+.tcard.soon { cursor: default; opacity: .75; }
+.mo { flex: none; width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 36% 30%, var(--m4, var(--c4)), var(--m3, var(--c3)) 30%, var(--m1, var(--c1)) 62%, var(--m2, var(--c2))); box-shadow: 0 0 14px -2px var(--mg, var(--glow)); animation-timing-function: linear; animation-iteration-count: infinite; transform: scale(.62); }
+@keyframes k-idle { 0%, 100% { transform: scale(.62); animation-timing-function: ease-in-out; } 45% { transform: scale(1); animation-timing-function: ease-in-out; } }
+@media (prefers-reduced-motion: reduce) { .mo { animation: none !important; transform: scale(.85); } }
+.ring { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--c1) var(--p), var(--line) 0); }
+.ring i { width: 29px; height: 29px; border-radius: 50%; background: var(--day-b); }
+.ring.big { width: 52px; height: 52px; margin: 0 auto 14px; }
+.ring.big i { width: 45px; height: 45px; }
+.tbody .prog { display: none; }
+.home-list { max-width: 360px; margin: 0 auto; }
+.label { font-size: 1.15rem; color: var(--ink-soft); margin: 28px 0 8px; }
+#s-techs .label { font-style: italic; margin-top: 24px; }
+
+.para { font-size: 1.3rem; margin: 2px 0 20px; }
+.how { padding: 0; border: 0; border-radius: 0; background: none; font-size: 1rem; line-height: 1.65; }
+.rhythm { font-size: .84rem; }
+details.more { margin-top: 18px; border: 0; border-radius: 0; background: none; }
+details.more summary { display: inline-flex; gap: 10px; padding: 4px 0; font-size: 1.2rem; color: color-mix(in srgb, var(--c0) 55%, var(--ink)); }
+details.more p { padding: 10px 0 0; font-size: .95rem; color: var(--ink); }
+details.more p + p { padding-top: 12px; }
+.warn { margin-top: 22px; padding: 2px 0 2px 18px; border: 0; border-left: 2px solid var(--c1); border-radius: 0; background: none; }
+.warn p { font-size: .9rem; }
+.lockbox { border: 0; padding: 10px 0 0; }
+.lockbox .prog { display: none; }
+
+.chips { gap: 4px; }
+.chip { min-width: 44px; min-height: 44px; padding: 0 10px; border: 0; border-radius: 0; background: none; font-family: var(--serif); font-size: 1.45rem; font-weight: 400; color: var(--ink-soft); position: relative; }
+input:checked + .chip { background: none; color: var(--ink); border: 0; }
+input:checked + .chip::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 6px; height: 1.5px; background: var(--c1); border-radius: 2px; }
+.chips.words .chip { font-size: 1.12rem; }
+.rangebox input { accent-color: var(--c1); }
+
+.primary { background: color-mix(in srgb, var(--c1) 58%, transparent); color: var(--ink); font-weight: 500; box-shadow: 0 12px 34px -16px var(--glow); }
+.end .ghost { background: none; border: 0; color: inherit; }
+.box { padding: 0; border: 0; border-radius: 0; background: none; }
+.switch { border-bottom: 1px solid var(--line); }
+.credit { margin-top: 30px; }
+:root[data-theme="dark"] .primary { background: color-mix(in srgb, var(--c1) 38%, transparent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .primary { background: color-mix(in srgb, var(--c1) 38%, transparent); } }
+
+/* Ajustes finos: tipografía, toggles y color elegido */
+h1 { font-weight: 400; }
+.bar h2 { font-weight: 400; }
+.tcard .tpara { font-size: .9rem; }
+.rhythm, .note { font-size: .88rem; }
+.lede { font-size: 1.02rem; }
+.track { background: var(--line); }
+.track::after { background: #fff; }
+input:checked + .track { background: color-mix(in srgb, var(--c1) 80%, var(--ink) 8%); }
+input:checked + .track::after { background: #fff; }
+input:checked + .sw i { transform: scale(1.18); box-shadow: 0 0 16px 4px var(--s1); }
+.hud { z-index: 5; }
+/* Viajes */
+.phase.med { font-size: clamp(1.3rem, 4.4vw, 1.7rem); line-height: 1.4; max-width: 24ch; transition-duration: .9s; }
+.phase.part { font-size: clamp(2rem, 7vw, 2.6rem); }
+.parts { margin: 4px 0 0; }
+.partrow { display: flex; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.partrow:last-child { border-bottom: 0; }
+.partrow b { flex: none; width: 4.6em; font-family: var(--serif); font-weight: 400; font-size: 1.2rem; }
+.partrow span { font-size: .94rem; line-height: 1.5; color: var(--ink-soft); padding-top: 2px; }
+.helprow .mo { background: none; box-shadow: none; border: 1px solid var(--line); display: grid; place-items: center; font-family: var(--serif); font-size: 1.15rem; color: var(--ink-soft); transform: none; animation: none; }
+.feel-grid { gap: 8px; }
+.feel { background: none; border: 1px solid var(--line); -webkit-backdrop-filter: none; backdrop-filter: none; font-size: .95rem; }
+.feel[aria-pressed="true"] { background: color-mix(in srgb, var(--c1) 40%, transparent); color: var(--ink); border-color: transparent; }
+.q { font-weight: 400; }
+.result { background: none; border: 0; padding: 0; margin-top: 30px; }
+.result .pre { font-family: var(--serif); font-style: italic; font-size: 1.05rem; }
+.result h2 { font-size: 2.2rem; font-weight: 400; }
+body[data-state="sleep"] { color: var(--ink-night); }
+body[data-state="sleep"] .sky.night { opacity: 1; }
+body[data-state="sleep"] .orbs { opacity: 0; transition: opacity 30s ease; }
+body[data-state="sleep"] .screens { opacity: 0; pointer-events: none; }
+body.full .screens { display: none; }
+body[data-state="sleep"] .gear { opacity: 0; pointer-events: none; }
+body[data-state="sleep"] .end.on { opacity: .45; }
+body[data-state="sleep"] .end .primary { display: none; }
+/* La interfaz entera toma el color elegido */
+:root {
+  --day-a: color-mix(in srgb, var(--c2) 16%, #FBFAFF);
+  --day-b: color-mix(in srgb, var(--c1) 18%, #FDFBFF);
+  --day-c: color-mix(in srgb, var(--c3) 26%, #FFFAF6);
+  --ink: color-mix(in srgb, var(--c0) 28%, #1C1928);
+  --ink-soft: color-mix(in srgb, var(--c0) 34%, #4A4560);
+  --line: color-mix(in srgb, var(--c0) 22%, transparent);
+  --night-a: color-mix(in srgb, var(--c0) 10%, #06050F);
+  --night-b: color-mix(in srgb, var(--c0) 22%, #100D20);
+}
+:root[data-theme="dark"] {
+  --day-a: color-mix(in srgb, var(--c0) 20%, #0E0C1C);
+  --day-b: color-mix(in srgb, var(--c2) 18%, #16132A);
+  --day-c: color-mix(in srgb, var(--c3) 16%, #1E1931);
+  --ink: color-mix(in srgb, var(--c4) 45%, #F4F2FA);
+  --ink-soft: color-mix(in srgb, var(--c1) 38%, #B2ACC6);
+  --line: color-mix(in srgb, var(--c1) 22%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --day-a: color-mix(in srgb, var(--c0) 20%, #0E0C1C);
+    --day-b: color-mix(in srgb, var(--c2) 18%, #16132A);
+    --day-c: color-mix(in srgb, var(--c3) 16%, #1E1931);
+    --ink: color-mix(in srgb, var(--c4) 45%, #F4F2FA);
+    --ink-soft: color-mix(in srgb, var(--c1) 38%, #B2ACC6);
+    --line: color-mix(in srgb, var(--c1) 22%, transparent);
+  }
+}
+.swatches.small { grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px 2px; }
+.swatches.small .sw { padding: 4px 0; }
+.swatches.small .sw i { width: 28px; height: 28px; }
+.swatches.small .sw small { display: none; }
+.sw.aur i { background: conic-gradient(#B9A7F2,#F2A9C8,#F4CF86,#A8D5A9,#7FD6CF,#7C86E6,#B9A7F2); }
+.ring i { display: grid; place-items: center; color: var(--ink-soft); }
+.ring i svg { width: 15px; height: 15px; }
+.ring.big i svg { width: 22px; height: 22px; }
+.tcard.locked { opacity: .82; }
+.tcard.locked .tpara strong { font-weight: 600; color: var(--ink); }
+.lockline { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 16px; padding: 7px 14px 7px 11px; border-radius: 999px; background: color-mix(in srgb, var(--c1) 22%, transparent); font-size: .86rem; font-weight: 600; }
+.lockline svg { flex: none; width: 16px; height: 16px; }
+.gear { position: fixed; z-index: 4; top: calc(env(safe-area-inset-top, 0px) + 12px); right: max(12px, calc((100vw - 580px) / 2)); width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 0; border-radius: 50%; color: var(--ink-soft); transition: opacity .6s ease; }
+.gear svg { width: 22px; height: 22px; }
+.gear:hover { color: var(--ink); }
+body[data-state="focus"] .gear, body[data-state="dawn"] .gear, body[data-screen="settings"] .gear { opacity: 0; pointer-events: none; }
+.alt { margin: -14px 0 14px 34px; font-size: .86rem; color: var(--ink-soft); }
+.hud .right { display: flex; gap: 18px; }
+.phase.count { font-size: clamp(2.6rem, 9vw, 3.4rem); font-style: normal; }
+html, body { overflow-x: hidden; }
+main { overflow-x: clip; }
+.end { z-index: 6; }
+
+/* Anillo de duración alrededor de la luna: se elige aquí y en la sesión cuenta el tiempo que queda */
+.orbwrap { position: relative; display: grid; place-items: center; }
+.dial {
+  position: absolute; left: 50%; top: 50%; width: calc(var(--o, 200px) * 1.3); height: calc(var(--o, 200px) * 1.3);
+  transform: translate(-50%, -50%); overflow: visible; pointer-events: none; opacity: 0;
+  transition: opacity 1s ease, width 1.6s cubic-bezier(.45,0,.25,1), height 1.6s cubic-bezier(.45,0,.25,1);
+}
+.dial path, .dial circle { fill: none; }
+.dial-track { stroke: var(--line); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.dial-fill { stroke: var(--c1); stroke-width: 1.6px; vector-effect: non-scaling-stroke; stroke-linecap: round; filter: drop-shadow(0 0 1.5px var(--glow)); }
+.dial-hit { stroke: transparent; stroke-width: 16; stroke-linecap: round; pointer-events: stroke; cursor: pointer; touch-action: none; }
+#dialDots circle { fill: var(--ink-soft); opacity: .45; }
+.dial-knob { fill: var(--c4) !important; stroke: var(--c1); stroke-width: .7; filter: drop-shadow(0 0 2.5px var(--glow)); transition: opacity .4s ease; }
+.dial-label {
+  position: absolute; left: 50%; top: calc(50% + var(--o, 200px) * .65 + 10px); transform: translateX(-50%);
+  display: grid; justify-items: center; gap: 2px; white-space: nowrap; text-align: center; pointer-events: none;
+  opacity: 0; transition: opacity .8s ease;
+}
+#dialValue { font-family: var(--serif); font-size: 1.55rem; line-height: 1.2; }
+#dialHint { font-family: var(--serif); font-style: italic; font-size: 1.02rem; color: var(--ink-soft); }
+body[data-screen="tech"] { --o: min(60vw, 32vh, 260px); }
+body[data-screen="tech"]:not(.full) .orb { --size: var(--o); }
+body[data-screen="tech"]:not(.full) .stage { height: calc(var(--o) * 1.3 + 130px); padding-bottom: 70px; }
+body[data-screen="tech"][data-state="setup"] .dial, body[data-screen="tech"][data-state="setup"] .dial-label { opacity: 1; }
+body.full { --o: min(74vw, 56vh, 470px); }
+body.full .dial { opacity: .4; }
+body.full .dial-knob, body.full #dialDots { opacity: 0; }
+body.twin .dial, .stage.nodial .dial, .stage.nodial .dial-label { opacity: 0 !important; }
+.dial.fixed .dial-knob, .dial.fixed #dialDots { display: none; }
+
+/* Segundos: menos y más, sin barra */
+.stepper { display: flex; align-items: center; gap: 20px; }
+.step-btn { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: none; font-size: 1.35rem; line-height: 1; color: var(--ink-soft); display: grid; place-items: center; transition: opacity .3s ease, background .3s ease; }
+.step-btn:active { background: color-mix(in srgb, var(--c1) 25%, transparent); }
+.step-btn:disabled { opacity: .25; cursor: default; }
+#f-adj-out { min-width: 3.4em; text-align: center; font-family: var(--serif); font-size: 2rem; font-variant-numeric: lining-nums; }
+.whyline { margin: 0 0 18px; padding-left: 16px; border-left: 2px solid var(--c1); font-size: .95rem; line-height: 1.6; }
+.whyline b { display: block; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.1rem; color: var(--ink-soft); }
+.orbs { touch-action: none; -webkit-user-select: none; user-select: none; cursor: grab; will-change: transform; }
+body[data-state="focus"] .orbs { cursor: pointer; }
+
+/* Créditos */
+.credits { margin: 30px auto 0; max-width: 34ch; text-align: center; }
+.credits summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 8px 4px; font-family: var(--serif); font-style: italic; font-size: 1.05rem; color: var(--ink-soft); }
+.credits summary::-webkit-details-marker { display: none; }
+.credits .chev { font-style: normal; font-family: var(--sans); font-size: .85rem; transition: transform .3s ease; }
+.credits[open] .chev { transform: rotate(180deg); }
+.credits-body { padding: 10px 4px 0; animation: enter .5s ease both; }
+.credits-body p { margin: 0 0 12px; font-size: .93rem; line-height: 1.6; color: var(--ink); }
+.talk { display: inline-block; margin-top: 4px; padding: 8px 4px; font-family: var(--serif); font-size: 1.2rem; color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--c1); }
+
+/* Tu cielo: una estrella por respiración terminada, de fondo en todas las pantallas */
+.stars { width: 100%; height: 100%; --star: color-mix(in srgb, var(--c0) 55%, #2A2440); opacity: 1; transition: opacity 2s ease; }
+.stars line { stroke: var(--star); stroke-width: 1px; }
+.stars .cur line { opacity: .32; }
+.stars .old line { opacity: .1; }
+.stars .old .st { opacity: .4; }
+.stars .st circle { fill: var(--star); }
+.stars .st .glow { fill: url(#sglow); opacity: .75; }
+.stars stop { stop-color: var(--star); }
+.stars .st { animation: tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes tw { 0%, 100% { opacity: var(--o1, 1); } 50% { opacity: calc(var(--o1, 1) * .55); } }
+.stars .old .st { --o1: .4; }
+.stars .born { animation: born 2.8s cubic-bezier(.2,.7,.3,1) both, tw var(--tw, 7s) ease-in-out 2.8s infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes born { 0% { opacity: 0; transform: scale(.2); } 35% { opacity: 1; transform: scale(2.2); } 100% { opacity: 1; transform: scale(1); } }
+.stars .born .glow { animation: bornglow 2.8s ease-out both; }
+@keyframes bornglow { 0% { opacity: 0; } 35% { opacity: 1; } 100% { opacity: .75; } }
+body[data-state="focus"] .stars { opacity: 0; }
+:root[data-theme="dark"] .stars, body[data-screen="sky"] .stars { --star: #F4F1FF; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stars { --star: #F4F1FF; } }
+@media (prefers-reduced-motion: reduce) { .stars .st, .stars .born { animation: none; } }
+/* Profundidad: tres planos (polvo lejano, semanas pasadas, esta semana) que flotan a distinto ritmo
+   y se desplazan distinto al mover el dedo, arrastrar la luna o inclinar el móvil */
+.stars .L { transform: translate(calc(var(--px, 0) * var(--k) * -1px), calc(var(--py, 0) * var(--k) * -1px)); }
+.stars .drift { animation: drift var(--dd) ease-in-out infinite alternate; }
+@keyframes drift { to { transform: translate(var(--dx), var(--dy)); } }
+.stars .dust circle { fill: var(--star); }
+.stars .dust .tw2 { animation: tw 9s ease-in-out infinite; }
+.stars .Lfar circle:not(.glow) { filter: blur(.35px); }
+@media (prefers-reduced-motion: reduce) { .stars .drift, .stars .dust .tw2 { animation: none; } }
+
+/* Pantalla Tu cielo: de noche, como el boceto */
+body[data-screen="sky"] .sky.night { opacity: 1; }
+body[data-screen="sky"] { color: var(--ink-night); }
+body[data-screen="sky"] .back, body[data-screen="sky"] .gear { color: rgba(240,236,255,.7); }
+#s-sky .skyline { margin: -8px 0 4px; font-size: 1rem; opacity: .8; }
+#s-sky .skytotal { margin: 0 0 22px; font-size: .9rem; opacity: .6; }
+#s-sky .skynote { max-width: 34ch; font-family: var(--serif); font-style: italic; font-size: 1.15rem; line-height: 1.5; opacity: .75; }
+#s-sky .textbtn { color: rgba(240,236,255,.7); border: 1px solid rgba(240,236,255,.25); margin-top: 18px; }
+.skyico { flex: none; width: 34px; height: 34px; color: var(--ink-soft); }
+
+/* Inicio y test: la luna manda, el resto acompaña */
+.stage { height: clamp(300px, 50vh, 470px); }
+.orb { --size: min(80vw, 40vh, 380px); }
+body[data-screen="check"] .stage { height: clamp(230px, 36vh, 330px); }
+body[data-screen="check"] { --o: min(60vw, 30vh, 270px); }
+body[data-screen="check"] .orb { --size: var(--o); }
+body[data-screen="sky"] .stage { height: clamp(300px, 50vh, 470px); }
+body[data-screen="sky"] .orb { --size: min(80vw, 40vh, 380px); }
+#s-home h1 { font-size: 2.2rem; margin-bottom: 4px; }
+#s-home .lede { font-size: .9rem; margin-bottom: 14px; }
+#s-home .tcard { padding: 6px 0; gap: 14px; }
+#s-home .tcard .tname { font-size: 1.2rem; }
+#s-home .tcard .tpara { font-size: .8rem; margin-top: 1px; }
+#s-home .mo, #s-home .skyico { width: 26px; height: 26px; }
+#s-home .quiet { margin-top: 14px; }
+#s-home .credits { margin-top: 14px; }
+#s-check .q { font-size: 1.25rem; margin: 0; }
+/* Recomendador: la luna arriba y las frases en columna. A su izquierda, las estrellas, cada una algo desplazada,
+   se encienden una a una y el hilo las va uniendo: la constelación se forma al entrar */
+body[data-screen="check"] { --o: min(46vw, 26vh, 230px); --cktop: max(118px, calc((100vh - var(--o) - 286px) / 2)); }
+body[data-screen="check"] .orb { --size: var(--o); }
+body[data-screen="check"] .stage { height: 100vh; height: 100dvh; justify-content: flex-start; padding-top: var(--cktop); }
+body[data-screen="check"] .screens { position: absolute; top: 0; left: 0; right: 0; height: 100vh; height: 100dvh; max-width: none; pointer-events: none; }
+body[data-screen="check"] main { height: 100vh; height: 100dvh; overflow: hidden; padding-bottom: 0; }
+body[data-screen="check"] .gear { opacity: 0; pointer-events: none; }
+#s-check { position: relative; height: 100%; max-width: 540px; margin: 0 auto; padding: 0 20px; }
+#s-check .bar { padding-top: 14px; margin-bottom: 8px; pointer-events: auto; }
+#s-check .bar h2 { font-size: 1.6rem; }
+#s-check .q { font-size: 1.25rem; margin: 0; }
+.ckhead { text-align: center; transition: opacity .5s ease; }
+.ckhead.swap { opacity: 0; }
+.qhint { margin: 2px 0 0; font-size: .82rem; opacity: .55; }
+.cwords { position: absolute; inset: 0; pointer-events: none; transition: opacity .6s ease; }
+.cwords.off { opacity: 0; }
+.clist { position: absolute; left: 50%; top: calc(var(--cktop) + var(--o) + 10px); width: 300px; max-width: calc(100% - 16px); transform: translateX(-50%); padding-left: 58px; }
+.cline { position: absolute; left: 0; top: 0; width: 58px; height: 100%; overflow: visible; }
+.cline line { stroke: color-mix(in srgb, var(--ink) 30%, transparent); stroke-width: 1px; stroke-dasharray: var(--len); stroke-dashoffset: var(--len); }
+.cline circle { fill: #F4F1FF; filter: drop-shadow(0 0 3px rgba(244,241,255,.75)); opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.3); transition: transform .45s cubic-bezier(.3,.7,.3,1), filter .4s ease; }
+.cwords.draw .cline circle { animation: starin .6s cubic-bezier(.3,.7,.3,1) forwards; animation-delay: calc(var(--i) * .28s + .2s); }
+.cwords.draw .cline line { animation: linein .45s ease forwards; animation-delay: calc(var(--i) * .28s + .38s); }
+@keyframes starin { to { opacity: 1; transform: scale(1); } }
+@keyframes linein { to { stroke-dashoffset: 0; } }
+.cline circle.on { transform: scale(1.8); filter: drop-shadow(0 0 7px var(--c3)); }
+.cword {
+  display: block; width: 100%; height: 46px; line-height: 46px; padding: 0 4px; background: none; border: 0; white-space: nowrap; text-align: left;
+  font-family: var(--serif); font-style: italic; font-size: 1.22rem; color: var(--ink); opacity: .78; pointer-events: auto;
+  transition: opacity .45s ease, text-shadow .45s ease;
+}
+.cwords.off .cword { pointer-events: none; }
+.cword:hover, .cword:focus-visible, .cword[aria-pressed="true"] { opacity: 1; text-shadow: 0 0 14px var(--glow), 0 0 4px var(--c3); }
+.cwords.picked .cword:not([aria-pressed="true"]) { opacity: .18; }
+@media (prefers-reduced-motion: reduce) { .cwords.draw .cline circle, .cwords.draw .cline line { animation-duration: .01s; animation-delay: 0s; } }
+
+/* Panel de pruebas (solo con el modo prueba) */
+.testpanel { margin-top: 8px; padding-bottom: 30px; }
+.tp-note { margin: -4px 0 8px; font-size: .84rem; color: var(--ink-soft); }
+.tp-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.tp-row > span { font-size: .95rem; line-height: 1.35; }
+.tp-row small { display: block; font-size: .78rem; color: var(--ink-soft); }
+.tp-row .stepper { gap: 10px; }
+.tp-val { min-width: 4.6em; text-align: center; font-family: var(--serif); font-size: 1.35rem; }
+.tp-presets { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 6px; }
+.tp-chip { padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line); background: none; font-size: .85rem; color: var(--ink); }
+.tp-chip:active { background: color-mix(in srgb, var(--c1) 25%, transparent); }
+.tp-teach { margin-top: 10px; padding-left: 0; }
+/* Pista para quien no lee: una etiqueta sobre la luna y ondas que salen de ella */
+.ripple { position: absolute; left: 50%; top: 50%; width: calc(var(--o, 200px) * .7); height: calc(var(--o, 200px) * .7); margin: calc(var(--o, 200px) * -.35) 0 0 calc(var(--o, 200px) * -.35); border-radius: 50%; border: 1.5px solid var(--c3); opacity: 0; pointer-events: none; }
+body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
+@keyframes ripple { 0% { transform: scale(.95); opacity: .7; } 100% { transform: scale(1.75); opacity: 0; } }
+.nudge {
+  position: fixed; z-index: 7; left: 50%; top: var(--ny, 40px); transform: translate(-50%, 6px);
+  padding: 10px 18px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3) 45%, transparent);
+  background: color-mix(in srgb, var(--c1) 26%, rgba(18,14,36,.78)); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  color: var(--ink); font-size: .9rem; white-space: nowrap; box-shadow: 0 0 26px -6px var(--glow);
+  opacity: 0; pointer-events: none; transition: opacity .6s ease, transform .6s ease;
+}
+.nudge::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 10px; height: 10px; margin-left: -5px; transform: rotate(45deg);
+  background: inherit; border-right: inherit; border-bottom: inherit; }
+.nudge.low::after { bottom: auto; top: -6px; border: 0; border-left: 1px solid color-mix(in srgb, var(--c3) 45%, transparent); border-top: 1px solid color-mix(in srgb, var(--c3) 45%, transparent); }
+body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
+:root { color-scheme: dark; }
+/* Instalar en iPhone: dos pasos en un panel inferior */
+.sheet { position: fixed; inset: 0; z-index: 9; display: flex; align-items: flex-end; justify-content: center; background: rgba(6,5,15,.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.sheet-card { width: 100%; max-width: 480px; margin: 0 10px calc(10px + env(safe-area-inset-bottom, 0px)); padding: 24px 24px 18px; border-radius: 26px; background: color-mix(in srgb, var(--c0) 14%, #15122a); border: 1px solid var(--line); animation: enter .4s ease both; }
+.sheet-card h2 { font-size: 1.6rem; margin: 0 0 12px; }
+.sheet-card ol { margin: 0; padding-left: 1.2em; line-height: 1.9; }
+.ios-share { width: 20px; height: 20px; vertical-align: -4px; color: var(--c1); }
+.sheet-note { margin: 12px 0 0; font-size: .86rem; color: var(--ink-soft); }
+.sheet-card .primary { margin-top: 18px; min-height: 50px; }
+.trail { position: absolute; left: 50%; top: 50%; width: 0; height: 0; pointer-events: none; }
+.trail i { position: absolute; left: 0; top: 0; width: min(24vw, 18vh, 150px); height: min(24vw, 18vh, 150px); border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle, var(--c4) 0%, color-mix(in srgb, var(--c3) 70%, transparent) 28%, color-mix(in srgb, var(--glow) 30%, transparent) 52%, transparent 70%);
+  filter: blur(6px); mix-blend-mode: screen; will-change: transform, opacity; }
+/* Anuloma con una luna: más pequeña para que pueda viajar de lado a lado sin salirse */
+body.full.travel .orb { --size: min(52vw, 40vh, 340px); }
+body.travel .dial { opacity: 0 !important; }
+
+/* Pausa: la luna sube y se hace pequeña, y debajo se puede releer la técnica */
+.orbwrap { transition: transform 1.2s cubic-bezier(.45,0,.25,1); }
+body.full.paused { --o: min(46vw, 24vh, 220px); }
+body.full.paused .orb { --size: var(--o); transition-duration: 1.2s; }
+body.full.paused .orbwrap { transform: translateY(-24vh); }
+body.full.paused .cue { opacity: 0; }
+.cue { transition: opacity .6s ease; }
+.pausecard {
+  position: fixed; z-index: 5; left: 0; right: 0; top: 44vh; margin: 0 auto; max-width: 440px; padding: 0 28px;
+  text-align: center; pointer-events: none; opacity: 0; transform: translateY(12px);
+  transition: opacity .7s ease, transform .9s ease;
+}
+body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s; }
+.pausecard h2 { margin: 0 0 14px; font-weight: 400; font-size: 2rem; }
+.pc-how { margin: 0 0 10px; font-size: .98rem; line-height: 1.6; opacity: .9; }
+.pc-rhythm { margin: 0; font-size: .86rem; opacity: .6; }
+.pc-warn { margin: 14px 0 0; font-size: .86rem; opacity: .75; }
+.pc-hint { margin: 26px 0 0; font-family: var(--serif); font-style: italic; font-size: 1.15rem; opacity: .7; }
+</style></head>
+<body data-state="setup" data-screen="home">
+<div class="sky day"></div>
+<div class="sky night"></div>
+<div class="sky sun"></div>
+<svg class="sky stars" id="stars" aria-hidden="true"></svg>
+
+<main>
+  <section class="stage" id="stage" aria-label="Luna que respira">
+    <div class="orbwrap">
+    <div class="trail" id="trail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="orbs">
+      <div class="orb" id="orbA">
+        <div class="halo" id="halo"></div>
+        <div class="scaler" id="scaler">
+          <div class="core"></div>
+          <canvas class="gl" id="gl" aria-hidden="true"></canvas>
+        </div>
+      </div>
+      <div class="orb orb2" id="orbB" aria-hidden="true">
+        <div class="halo" id="halo2"></div>
+        <div class="scaler" id="scaler2">
+          <div class="core"></div>
+          <canvas class="gl" id="gl2"></canvas>
+        </div>
+      </div>
+    </div>
+    <svg class="dial" id="dial" viewBox="0 0 100 100" aria-hidden="true">
+      <path class="dial-track" id="dialTrack"/>
+      <path class="dial-fill" id="dialFill"/>
+      <g id="dialDots"></g>
+      <circle class="dial-knob" id="dialKnob" r="2.6"/>
+      <path class="dial-hit" id="dialHit"/>
+    </svg>
+    <div class="dial-label"><span id="dialValue"></span><span id="dialHint"></span></div>
+    <span class="ripple" aria-hidden="true"></span>
+    </div>
+    <div class="cue">
+      <p class="phase" id="phase" aria-live="polite"></p>
+      <p class="sub" id="sub"></p>
+    </div>
+  </section>
+
+  <div class="screens">
+    <!-- Inicio -->
+    <section class="screen" id="s-home">
+      <h1>Respira</h1>
+      <p class="lede">Unos minutos para ti. Respira, calma la mente y vuelve.</p>
+      <div class="list home-list">
+        <button class="tcard" data-go="check"><span class="mo" style="animation-name:k-idle;animation-duration:11s"></span><span class="tbody"><span class="tname">¿Qué te pide el cuerpo?</span><span class="tpara">Dos preguntas y te propongo una respiración.</span></span></button>
+        <button class="tcard" data-go="techs"><span class="mo" style="animation-name:k-idle;animation-duration:8s"></span><span class="tbody"><span class="tname">Técnicas</span><span class="tpara">Diez formas de respirar, explicadas paso a paso.</span></span></button>
+        <button class="tcard" data-go="sky"><svg class="skyico" viewBox="0 0 26 26" aria-hidden="true"><path d="M7 17 L11 8 L19 12" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="7" cy="17" r="1.8" fill="currentColor"/><circle cx="11" cy="8" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="2.2" fill="currentColor"/></svg><span class="tbody"><span class="tname">Tu cielo</span><span class="tpara" id="homeSky">Cada respiración enciende una estrella.</span></span></button>
+      </div>
+      <div class="quiet">
+        <button class="textbtn" id="share">Compartir</button>
+        <button class="textbtn" id="install" hidden>Instalar</button>
+      </div>
+      <details class="credits" id="credits">
+        <summary>Diseñada y desarrollada por Mery Villena <span class="chev" aria-hidden="true">↓</span></summary>
+        <div class="credits-body">
+          <p>Últimamente todo parece ir un poco más rápido. La IA también ha cambiado mi forma de trabajar: ahora puedo convertir ideas en productos digitales que antes necesitaban mucho más tiempo y recursos.</p>
+          <p>Quizá por eso hice Respira. Entre tanta velocidad, me apetecía crear algo para parar cinco minutos y respirar.</p>
+          <p>Diseño y desarrollo productos digitales a medida con IA.</p>
+          <p>Si tienes una idea en mente, cuéntamela.</p>
+          <a class="talk" id="talk" target="_blank" rel="noopener" hidden>Hablamos →</a>
+        </div>
+      </details>
+    </section>
+
+    <!-- Lista de técnicas -->
+    <section class="screen" id="s-techs">
+      <div class="bar"><button class="back" data-go="home" aria-label="Volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Técnicas</h2></div>
+      <div class="list" id="techList"></div>
+      <p class="label">Para cuando tengas experiencia</p>
+      <div class="list" id="lockList"></div>
+      <p class="note" id="practiceNote"></p>
+    </section>
+
+    <!-- Ficha -->
+    <section class="screen" id="s-tech">
+      <div class="bar"><button class="back" data-go="techs" aria-label="Volver a las técnicas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2 id="f-name"></h2></div>
+      <p class="alt" id="f-alt"></p>
+      <p class="whyline" id="f-why" hidden></p>
+      <p class="lockline" id="f-lockline" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span id="f-lockline-t"></span></p>
+      <p class="para" id="f-para"></p>
+      <div class="how">
+        <span id="f-how"></span>
+        <p class="rhythm" id="f-rhythm"></p>
+      </div>
+      <details class="more" id="f-more">
+        <summary>Saber más</summary>
+        <div id="f-moretext"></div>
+      </details>
+      <div class="warn" id="f-disc" hidden>
+        <p><strong>Antes de empezar</strong></p>
+        <p>Hazla siempre con el cuerpo apoyado, en el suelo, una silla o la cama. Nunca de pie, en el agua ni conduciendo.</p>
+        <p>Si te mareas, para y respira a tu ritmo normal.</p>
+        <p>No es recomendable en el embarazo ni si tienes epilepsia, problemas de corazón, tensión alta o tendencia a ataques de pánico.</p>
+        <label class="check"><input type="checkbox" id="f-ack"><span>Lo he leído. La haré con el cuerpo apoyado.</span></label>
+      </div>
+      <div id="f-play">
+        <div id="f-adjust" hidden>
+          <p class="label" id="f-adj-label"></p>
+          <div class="stepper"><button class="step-btn" id="f-adj-minus" aria-label="Menos">−</button><output id="f-adj-out" aria-live="polite"></output><button class="step-btn" id="f-adj-plus" aria-label="Más">+</button></div>
+        </div>
+        <div id="f-view" hidden>
+          <p class="label">Cómo quieres verla</p>
+          <div class="chips words" id="viewChips" role="radiogroup" aria-label="Forma de la luna"></div>
+        </div>
+        <input class="vh" type="range" id="durA11y" min="0" step="1" aria-label="Duración">
+        <p class="fixed" id="f-fixed" hidden></p>
+        <button class="vh" id="f-start">Empezar</button>
+        <p class="note">Si notas mareo, vuelve a respirar a tu ritmo normal.</p>
+      </div>
+      <div class="lockbox" id="f-lock" hidden>
+        <span class="ring big" id="f-lockring" style="--p:0%"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i></span>
+        <p id="f-locktext"></p>
+        <span class="prog"><i id="f-lockbar"></i></span>
+      </div>
+    </section>
+
+    <!-- Test -->
+    <section class="screen" id="s-check">
+      <div class="bar"><button class="back" data-go="home" aria-label="Volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>¿Qué te pide el cuerpo?</h2></div>
+      <div class="ckhead">
+        <p class="q" id="ck-q">¿Cómo te sientes ahora mismo?</p>
+        <p class="qhint">Toca lo que más se parezca</p>
+      </div>
+      <div class="cwords" id="feelings"></div>
+      <div class="cwords" id="times"></div>
+    </section>
+
+    <!-- Tu cielo -->
+    <section class="screen" id="s-sky">
+      <div class="bar"><button class="back" data-go="home" aria-label="Volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Tu cielo</h2></div>
+      <p class="skyline" id="skyWeek"></p>
+      <p class="skytotal" id="skyTotal"></p>
+      <p class="skynote" id="skyNote"></p>
+      <button class="textbtn" id="skyTest" hidden>Añadir estrella de prueba</button>
+    </section>
+
+    <!-- Ajustes -->
+    <section class="screen" id="s-settings">
+      <div class="bar"><button class="back" id="setBack" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Ajustes</h2></div>
+      <div class="swatches" id="swatches" role="radiogroup" aria-label="Color"></div>
+      <p class="hint" id="hint"></p>
+      <p class="label">Sonido</p>
+      <div class="box">
+        <label class="switch"><span class="switch-text">Sonido suave<small>Un tono que sube y baja con la luna al respirar.</small></span><input class="vh" type="checkbox" id="sound"><span class="track"></span></label>
+        <label class="switch" id="testswitch"><span class="switch-text">Modo prueba<small>Muestra el panel de pruebas. Solo existe en la versión demo.</small></span><input class="vh" type="checkbox" id="testmode"><span class="track"></span></label>
+      </div>
+      <div class="testpanel" id="testpanel" hidden>
+        <p class="label">Panel de pruebas</p>
+        <p class="tp-note">Cambia los datos guardados en este móvil para ver cómo responde la app.</p>
+        <div class="tp-row"><span>Minutos respirados<small id="tpMinHint"></small></span><div class="stepper"><button class="step-btn" data-tp="min" data-d="-1800" aria-label="Menos minutos">−</button><output class="tp-val" id="tpMin"></output><button class="step-btn" data-tp="min" data-d="1800" aria-label="Más minutos">+</button></div></div>
+        <div class="tp-row"><span>Respiraciones terminadas<small id="tpSesHint"></small></span><div class="stepper"><button class="step-btn" data-tp="ses" data-d="-1" aria-label="Menos respiraciones">−</button><output class="tp-val" id="tpSes"></output><button class="step-btn" data-tp="ses" data-d="1" aria-label="Más respiraciones">+</button></div></div>
+        <div class="tp-presets">
+          <button class="tp-chip" data-preset="0,0">Empezar de cero</button>
+          <button class="tp-chip" data-preset="35,7">Primera semana</button>
+          <button class="tp-chip" data-preset="180,30">Abre el Chamán</button>
+          <button class="tp-chip" data-preset="360,60">Abre la Kundalini</button>
+        </div>
+        <div class="box">
+          <label class="switch"><span class="switch-text">Abrir las técnicas bloqueadas<small>Sin esperar a las horas de práctica. Apágalo para probar los minutos.</small></span><input class="vh" type="checkbox" id="openall"><span class="track"></span></label>
+        </div>
+        <button class="textbtn tp-teach" id="tpTeach">Volver a ver las explicaciones y la pista de empezar</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="hud"><span id="remaining"></span><span class="right"><button id="stop">Terminar</button></span></div>
+
+  <section class="pausecard" id="pausecard" aria-live="polite">
+    <h2 id="pc-name"></h2>
+    <p class="pc-how" id="pc-how"></p>
+    <p class="pc-rhythm" id="pc-rhythm"></p>
+    <p class="pc-warn" id="pc-warn" hidden>Si te mareas, para y respira a tu ritmo normal.</p>
+    <p class="pc-hint">Toca la luna para seguir</p>
+  </section>
+
+  <section class="end" id="end" aria-live="polite">
+    <p id="endText"></p>
+    <div class="meta" id="endMeta"></div>
+    <div class="news" id="endNews" hidden></div>
+    <div class="meta" id="endStar" hidden>Una estrella nueva en tu cielo.</div>
+    <div class="row">
+      <button class="primary" id="again">Repetir</button>
+      <button class="ghost" id="back">Volver a las técnicas</button>
+    </div>
+  </section>
+</main>
+<button class="gear" id="gear" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4.3c.4-1.7 3-1.7 3.4 0a1.7 1.7 0 0 0 2.6 1.1c1.5-.9 3.3.8 2.4 2.4a1.7 1.7 0 0 0 1 2.5c1.8.4 1.8 3 0 3.4a1.7 1.7 0 0 0-1 2.6c.9 1.5-.9 3.3-2.4 2.4a1.7 1.7 0 0 0-2.6 1c-.4 1.8-3 1.8-3.4 0a1.7 1.7 0 0 0-2.5-1c-1.6.9-3.3-.9-2.4-2.4a1.7 1.7 0 0 0-1.1-2.6c-1.7-.4-1.7-3 0-3.4a1.7 1.7 0 0 0 1.1-2.5c-.9-1.6.8-3.3 2.4-2.4 1 .6 2.3.1 2.5-1.1z"/><circle cx="12" cy="12" r="3"/></svg></button>
+<div class="toast" id="toast" role="status"></div>
+<div class="sheet" id="iosSheet" role="dialog" aria-modal="true" aria-labelledby="iosTitle" hidden>
+  <div class="sheet-card">
+    <h2 id="iosTitle">Instala Respira en tu iPhone</h2>
+    <ol>
+      <li>Toca <svg class="ios-share" viewBox="0 0 24 24" aria-label="Compartir" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg> abajo en Safari.</li>
+      <li>Elige <b>Añadir a pantalla de inicio</b>.</li>
+    </ol>
+    <p class="sheet-note">Tendrás la luna con su icono, a pantalla completa y sin internet.</p>
+    <button class="primary" id="iosOk">Entendido</button>
+  </div>
+</div>
+<button class="nudge" id="nudge" tabindex="-1"><span id="nudgeText">Para empezar, toca la luna</span></button>
+<script>
+(function () {
+  // Firma. Cambia aquí tu nombre o añade un enlace de contacto.
+  const AUTHOR = { name: 'Mery Villena', url: 'https://www.linkedin.com/in/meryvillenamontes' };
+
+  const PALETTES = {
+    lavanda:    { name: 'Lavanda',     hint: 'Lavanda, para soltar tensión',          c: ['#7E6FD8', '#B9A7F2', '#8FB4F0', '#F0B8E4', '#F7F3FF'], glow: '#A99BF0' },
+    aguamarina: { name: 'Aguamarina',  hint: 'Aguamarina, para despejar la mente',    c: ['#3FB8B0', '#7FD6CF', '#8CC7F2', '#C9F2D8', '#F0FFFC'], glow: '#7FCFD6' },
+    brasa:      { name: 'Brasa',       hint: 'Brasa, para sentir calor y presencia',                 c: ['#B2433A', '#E07A5F', '#B85C9E', '#F2B07B', '#FFF0E6'], glow: '#E0866E' },
+    cuarzo:     { name: 'Rosa cuarzo', hint: 'Rosa cuarzo, para tratarte con cariño', c: ['#E07FAE', '#F2A9C8', '#C9A9F0', '#FBD0C8', '#FFF3F8'], glow: '#EFA3C4' },
+    oro:        { name: 'Oro suave',   hint: 'Oro suave, energía tranquila',          c: ['#E8A94F', '#F4CF86', '#F6B08A', '#FBE8A8', '#FFFBEE'], glow: '#F0C27A' },
+    salvia:     { name: 'Salvia',      hint: 'Salvia, para recuperar el equilibrio',  c: ['#6FB58A', '#A8D5A9', '#8EC9C0', '#E4E9B0', '#F6FCF2'], glow: '#9ED2AE' },
+    indigo:     { name: 'Índigo',      hint: 'Índigo, para antes de dormir',          c: ['#4C55C8', '#7C86E6', '#A08CEB', '#8FC3F2', '#EEF0FF'], glow: '#7E88EA' }
+  };
+  PALETTES.aurora = Object.assign({}, PALETTES.lavanda, { name: 'Aurora', hint: 'Aurora, pasa por todos los colores', aurora: true });
+  const APP_PALETTES = Object.keys(PALETTES).filter(k => k !== 'aurora');
+  const ROTATION = ['indigo', 'lavanda', 'cuarzo', 'brasa', 'oro', 'salvia', 'aguamarina'];
+
+  const MIN = 0.55, MAX = 1.0;
+  const fs = (n) => String(n).replace('.', ',');
+  const HOUR = 3600;
+
+  // Las diez técnicas
+  const T = {
+    sigh: {
+      name: 'Suspiro', para: 'Para bajar la ansiedad rápido.',
+      how: 'Dos inhalaciones por la nariz, la segunda cortita para llenar del todo. Suelta todo el aire por la boca, sin prisa.',
+      rhythm: 'Inhala 2 s, un poco más 1 s, suelta 6 s.',
+      more: ['En un estudio de la Universidad de Stanford de 2023, cinco minutos al día de esta técnica mejoraron el ánimo más que las otras técnicas que compararon.', 'La segunda inhalación vuelve a abrir los pequeños sacos de aire de los pulmones que se cierran un poco, y la exhalación larga es la que le dice al cuerpo que puede frenar.'],
+      close: 'Con cada exhalación larga, tu cuerpo ha ido bajando el ritmo.',
+      dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 5 },
+      cycle: () => [
+        { dur: 2, from: MIN, to: 0.88, label: 'Inhala por la nariz', teach: 'Llena los pulmones.' },
+        { dur: 1, from: 0.88, to: MAX, label: 'Un poco más', teach: 'Una inhalación cortita para llenar del todo.' },
+        { dur: 6, from: MAX, to: MIN, label: 'Suelta por la boca', teach: 'Despacio, como un suspiro largo.' } ]
+    },
+    res: {
+      name: 'Resonancia', para: 'Para bajar revoluciones y equilibrar.',
+      how: 'Inhala por la nariz y exhala por la nariz un poco más largo. Suave, sin forzar y sin pausas.',
+      rhythm: 'Inhala 4 s, exhala 6 s. Seis respiraciones por minuto.',
+      more: ['A unas seis respiraciones por minuto, el corazón y la respiración se acompasan: el pulso sube un poco al inhalar y baja al exhalar, en olas regulares.', 'Es una de las técnicas más estudiadas para el estrés. No hace falta respirar hondo, solo lento.'],
+      close: 'Durante unos minutos, corazón y aire han ido al mismo ritmo.',
+      dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 5 },
+      cycle: () => [
+        { dur: 4, from: MIN, to: MAX, label: 'Inhala por la nariz', teach: 'Sin forzar.' },
+        { dur: 6, from: MAX, to: MIN, label: 'Exhala por la nariz', teach: 'Un poco más largo que al entrar.' } ]
+    },
+    box: {
+      name: 'Caja', alt: 'Sthirata', para: 'Para centrarte cuando la cabeza va rápida.',
+      how: 'Espalda recta, hombros sueltos. Inhala por la nariz, mantén el aire, exhala por la nariz y mantén sin aire. Las cuatro partes duran lo mismo.',
+      rhythm: (a) => `Cuatro lados de ${fs(a.box)} s.`,
+      more: ['En el yoga se llama Sama Vritti, respiración de partes iguales. Las pausas le dan a la mente algo concreto que contar, y eso la saca del bucle.', 'Si las pausas se te hacen largas, baja los segundos. Es mejor un cuadrado pequeño y cómodo que uno grande y forzado.'],
+      close: 'La cuenta le ha dado a tu cabeza un sitio donde quedarse.',
+      dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 3 },
+      adj: { key: 'box', label: 'Segundos de cada lado', min: 3, max: 6, step: 0.5, def: 4, unit: 's' },
+      cycle: (a) => [
+        { dur: a.box, from: MIN, to: MAX, label: 'Inhala por la nariz', teach: 'Llena despacio.' },
+        { dur: a.box, from: MAX, to: MAX, label: 'Mantén el aire', teach: 'Sin apretar la garganta.' },
+        { dur: a.box, from: MAX, to: MIN, label: 'Exhala por la nariz', teach: 'Al mismo ritmo.' },
+        { dur: a.box, from: MIN, to: MIN, label: 'Mantén sin aire', teach: 'Sin tensión.' } ]
+    },
+    sleep: {
+      name: '4-7-8', para: 'Para dormir o soltar tensión antes de acostarte.',
+      how: 'Inhala por la nariz, aguanta el aire y suéltalo por la boca con un soplido suave. Empieza con cuatro rondas.',
+      rhythm: (a) => `Inhala 4 s, aguanta ${fs(a.sleep)} s, suelta 8 s.`,
+      more: ['La exhalación dura el doble que la inhalación, y eso es lo que le dice al cuerpo que puede frenar.', 'Si aguantar 7 segundos se te hace largo, bájalo. Lo importante es que soltar dure más que coger aire.'],
+      close: 'El corazón ha bajado el ritmo. Ahora deja que llegue el sueño.',
+      dur: { type: 'rounds', opts: [4, 8], def: 4, unit: 'rondas' },
+      adj: { key: 'sleep', label: 'Tiempo con el aire dentro', min: 4, max: 10, step: 0.5, def: 7, unit: 's' },
+      cycle: (a) => [
+        { dur: 4, from: MIN, to: MAX, label: 'Inhala por la nariz', teach: 'Con la boca cerrada.' },
+        { dur: a.sleep, from: MAX, to: MAX, label: 'Mantén el aire', teach: 'Sin apretar.' },
+        { dur: 8, from: MAX, to: MIN, label: 'Suelta por la boca', teach: 'Con un soplido suave.' } ]
+    },
+    wake: {
+      name: 'Despertar', para: 'Para activarte sin café.',
+      how: 'Inhala fuerte por la nariz y suelta por la boca, a buen ritmo. Solo uno o dos minutos.',
+      rhythm: 'Inhala 2 s, suelta 2 s.',
+      more: ['Respirar más rápido sube un poco la alerta. Por eso es corta: más tiempo no activa más, marea.'],
+      close: 'Este ritmo te ha despejado. Justo lo que venías buscando.',
+      dur: { type: 'min', opts: [1, 2], def: 1 },
+      cycle: () => [
+        { dur: 2, from: MIN, to: MAX, label: 'Inhala fuerte por la nariz', teach: 'Rápido y con energía.' },
+        { dur: 2, from: MAX, to: MIN, label: 'Suelta por la boca', teach: 'Sin forzar.' } ]
+    },
+    ana: {
+      name: 'Anuloma Viloma', para: 'Para la claridad y el equilibrio.',
+      how: 'Se hace con la mano derecha. Tapa la fosa derecha con el pulgar e inhala por la izquierda. Tapa la izquierda con el anular, suelta el pulgar y exhala por la derecha. Inhala por la derecha, cambia y exhala por la izquierda. Eso es una ronda.',
+      rhythm: 'Inhala 4 s por un lado, suelta 8 s por el otro.',
+      more: ['Es una técnica clásica del yoga, también llamada respiración alterna. Alternar las fosas obliga a ir despacio y a prestar atención a cada respiración.', 'El orden es siempre el mismo: inhala por la izquierda, exhala por la derecha, inhala por la derecha, exhala por la izquierda. La luna te marca el lado y el ritmo.'],
+      close: 'Ir de un lado al otro te ha calmado el ritmo.',
+      dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 3 },
+      view: true,
+      prep: 'Prepara la mano derecha: el pulgar tapará la fosa derecha y el anular, la izquierda.',
+      cycle: () => [
+        // teach: la primera vuelta de las primeras sesiones; cue: todas las vueltas, para saber siempre cómo va la mano
+        { dur: 4, from: MIN, to: MAX, side: -1, label: 'Inhala por la izquierda', teach: 'Tapa la fosa derecha con el pulgar.', cue: 'Con la derecha tapada.' },
+        { dur: 8, from: MAX, to: MIN, side: 1, label: 'Exhala por la derecha', teach: 'Cambia: tapa la izquierda con el anular y suelta el pulgar.', cue: 'Cambia: tapa la izquierda.' },
+        { dur: 4, from: MIN, to: MAX, side: 1, label: 'Inhala por la derecha', teach: 'Sigue con la izquierda tapada.', cue: 'Sigue con la izquierda tapada.' },
+        { dur: 8, from: MAX, to: MIN, side: -1, label: 'Exhala por la izquierda', teach: 'Cambia: tapa la derecha con el pulgar y suelta el anular.', cue: 'Cambia: tapa la derecha.' } ]
+    },
+    bee: {
+      name: 'Bhramari', alt: 'la abeja', para: 'Para apagar el ruido de la cabeza.',
+      how: 'Inhala por la nariz y, al soltar el aire, zumba con la boca cerrada, como una abeja.',
+      rhythm: 'Inhala 4 s, zumba 7 s.',
+      more: ['El zumbido alarga la exhalación sin esfuerzo y ocupa la atención, así que cuesta más seguir pensando.', 'Si quieres más intensidad, tápate los oídos con los pulgares: el zumbido se oye por dentro.'],
+      close: 'Durante unos minutos, el zumbido no ha dejado sitio al ruido.',
+      dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 3 },
+      cycle: () => [
+        { dur: 4, from: MIN, to: MAX, label: 'Inhala por la nariz', teach: 'Boca cerrada.' },
+        { dur: 7, from: MAX, to: MIN, buzz: true, label: 'Zumba con la boca cerrada', teach: 'El aire sale por la nariz. Mmmmm.' } ]
+    },
+    ocean: {
+      name: 'Ujjayi', alt: 'el aliento oceánico', para: 'Para concentrarte y entrar en calma profunda.',
+      how: 'Boca cerrada. Cierra un poco la garganta, como si empañaras un espejo pero por la nariz. Suena como el mar.',
+      rhythm: 'Inhala 5 s, suelta 5 s.',
+      more: ['El sonido te da algo a lo que agarrarte y alarga cada respiración sin que tengas que contar.', 'Es la respiración más usada en yoga. Si no te sale el sonido, prueba primero con la boca abierta diciendo «haaa» en un susurro, y luego cierra la boca manteniendo la garganta igual.'],
+      close: 'El sonido te ha dado un lugar al que volver.',
+      dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 5 },
+      lum: 1,
+      cycle: () => [
+        { dur: 5, from: MIN, to: MAX, label: 'Inhala por la nariz', teach: 'Garganta un poco cerrada. Suena como el mar.' },
+        { dur: 5, from: MAX, to: MIN, label: 'Exhala por la nariz', teach: 'Igual, como si empañaras un espejo.' } ]
+    },
+    shaman: {
+      name: 'El Viaje del Chamán', para: 'Para el hormigueo, la claridad intensa y la sensación de viaje.',
+      how: 'Con la espalda recta, en una silla, en el suelo o tumbándote. 30 soplidos cortos por la nariz, empujando desde la tripa: el aire entra solo. Luego vacía y quédate sin aire el tiempo que elijas. Inhala hondo por la nariz y suelta por la boca. Tres rondas.',
+      rhythm: (a) => `Tres rondas de 30 soplidos y ${a.shaman} s sin aire.`,
+      more: ['Está inspirada en Kapalabhati, una técnica del yoga. Al soltar el aire rápido muchas veces seguidas, expulsas más CO₂ del que produces.', 'Cuando el CO₂ de la sangre baja, los nervios se vuelven más sensibles y los vasos del cerebro se estrechan un poco. De ahí el hormigueo en manos y cara, la ligereza y esa claridad intensa. Y por eso mismo puede marear.', 'Al quedarte sin aire, el cuerpo tarda más de lo normal en pedirte respirar, precisamente porque le falta CO₂. Ese aviso llega tarde, así que no lo esperes: si te mareas, toca la pantalla e inhala.'],
+      close: 'Tómate un momento antes de levantarte.',
+      lock: 3 * HOUR, gated: true,
+      dur: { type: 'fixed' },
+      adj: { key: 'shaman', label: 'Tiempo sin aire', min: 15, max: 60, step: 5, def: 30, unit: 's' },
+      build: (a, _d, teach) => {
+        const out = [];
+        for (let r = 0; r < 3; r++) {
+          out.push({ dur: 2.5, from: MIN, to: 0.82, label: r === 0 ? 'Coge aire por la nariz' : 'Ronda ' + (r + 1), teach: r === 0 ? 'Ahora vienen los soplidos.' : 'Coge aire por la nariz.' });
+          for (let i = 1; i <= 30; i++) {
+            const tch = r === 0 && i <= 5 ? 'Suelta por la nariz con un golpe de tripa. Entra solo.' : '';
+            out.push({ dur: 0.32, from: 0.82, to: 0.7, pulse: true, label: String(i), fast: true, teach: tch });
+            out.push({ dur: 0.68, from: 0.7, to: 0.82, label: String(i), fast: true, teach: tch });
+          }
+          out.push({ dur: 3, from: 0.82, to: MIN, label: 'Vacía por la nariz', teach: 'Todo el aire.' });
+          out.push({ dur: a.shaman, from: MIN, to: MIN, label: 'Sin aire', skip: true, countdown: true });
+          out.push({ dur: 4, from: MIN, to: MAX, label: 'Inhala hondo por la nariz', teach: '' });
+          out.push({ dur: 6, from: MAX, to: MIN, label: 'Suelta despacio por la boca', teach: '' });
+          if (r < 2) {
+            out.push({ dur: 4, from: MIN, to: 0.8, label: 'Respira a tu ritmo', teach: 'Descansa antes de la siguiente ronda.' });
+            out.push({ dur: 6, from: 0.8, to: MIN, label: 'Respira a tu ritmo', teach: 'Descansa antes de la siguiente ronda.' });
+          }
+        }
+        return out;
+      }
+    },
+    kunda: {
+      name: 'El Despertar de la Kundalini', para: 'Para sentir el cuerpo como una ola y soltar el control.',
+      how: 'Respira por la nariz sin pausas, como un círculo: al terminar de coger aire empiezas a soltarlo, y al terminar de soltarlo vuelves a cogerlo. No dirijas nada, deja que pase.',
+      rhythm: 'Inhala 4 s, suelta 4 s, sin parar. Después, dos minutos sin moverte.',
+      more: ['La respiración conectada, sin pausas entre coger y soltar aire, se usa en varias prácticas de trabajo con la respiración. Al no haber pausas, la mente pierde los puntos donde suele engancharse a pensar y la atención se va al cuerpo.', 'Calor, oleadas u hormigueo son normales. A este ritmo es una práctica tranquila. Si aceleras o respiras muy hondo, las sensaciones crecen porque baja el CO₂ de la sangre. Si se hacen fuertes, ve más lenta.'],
+      close: 'Durante unos minutos, el cuerpo ha llevado el ritmo por ti.',
+      lock: 6 * HOUR, gated: true,
+      dur: { type: 'min', opts: [5, 10, 15, 20, 30], def: 5, after: 'Más 2 minutos al final para quedarte sin moverte.' },
+      build: (_a, d, teach) => {
+        const out = [], n = Math.round(d * 60 / 8);
+        for (let i = 0; i < n; i++) {
+          out.push({ dur: 4, from: MIN, to: MAX, label: 'Inhala por la nariz', turn: true, teach: teach && i === 0 ? 'Sin pausa arriba.' : '' });
+          out.push({ dur: 4, from: MAX, to: MIN, label: 'Suelta por la nariz', turn: true, teach: teach && i === 0 ? 'Sin pausa abajo.' : '' });
+        }
+        out.push({ dur: 60, from: 0.78, to: 0.78, label: 'Quédate aquí', teach: 'Respira como quieras. Solo nota el cuerpo.', settle: true });
+        out.push({ dur: 60, from: 0.78, to: 0.78, label: 'Deja que todo se asiente', teach: '', settle: true });
+        return out;
+      }
+    }
+  };
+  const ORDER = ['sigh', 'res', 'box', 'sleep', 'wake', 'ana', 'bee', 'ocean'];
+  const LOCKED = ['shaman', 'kunda'];
+
+  const $ = (id) => document.getElementById(id);
+  const body = document.body, root = document.documentElement;
+  const scaler = $('scaler'), scaler2 = $('scaler2'), halo = $('halo'), halo2 = $('halo2'), phaseEl = $('phase'), subEl = $('sub');
+  const hexToRgb = (h) => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+  let targetCols = null, curCols = null;
+
+  // Preferencias
+  let prefs = { color: {}, theme: 'auto', palette: 'lavanda', sound: false, test: false, practice: 0, adj: {}, dur: {}, done: {}, ack: {}, view: 'dos', stars: [] };
+  // Una sola app, dos variantes:
+  // - Versión de regalo (respira.mvmmaison.com): sin modo prueba ni panel.
+  // - Versión demo (?demo, la del portfolio): con modo prueba y panel. Guarda sus datos aparte para no mezclarlos con los reales.
+  // Fuera de mvmmaison.com (el artifact de claude.ai, el archivo local) es demo por defecto; ?demo=0 fuerza la de regalo para probarla.
+  const qs = new URLSearchParams(location.search);
+  const DEMO = qs.has('demo') ? qs.get('demo') !== '0' : !/(^|\.)mvmmaison\.com$/.test(location.hostname);
+  const STORE = DEMO ? 'respira-demo-v3' : 'respira-v3';
+  let stored = false;
+  try { const s = localStorage.getItem(STORE); if (s) { prefs = Object.assign(prefs, JSON.parse(s)); stored = true; } } catch (e) {}
+  if (!DEMO) prefs.test = false;
+  else if (!stored) prefs.test = true;  // en la demo, el panel de pruebas viene activado la primera vez
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(prefs)); } catch (e) {} };
+  if (!PALETTES[prefs.palette] || prefs.palette === 'aurora') prefs.palette = 'lavanda';
+  const adjOf = () => {
+    const a = {};
+    Object.values(T).forEach(t => { if (t.adj) a[t.adj.key] = prefs.adj[t.adj.key] != null ? prefs.adj[t.adj.key] : t.adj.def; });
+    return a;
+  };
+
+  function applyPalette(key, quiet) {
+    const p = PALETTES[key] || PALETTES.lavanda;
+    root.style.setProperty('--c0', p.c[0]); root.style.setProperty('--c1', p.c[1]); root.style.setProperty('--c2', p.c[2]);
+    root.style.setProperty('--c3', p.c[3]); root.style.setProperty('--c4', p.c[4]);
+    root.style.setProperty('--glow', p.glow);
+    if (!quiet) $('hint').textContent = p.hint;
+    targetCols = p.c.map(hexToRgb);
+    if (!curCols) curCols = targetCols.map(c => c.slice());
+  }
+
+  // Firma: el enlace de "Hablamos" aparece cuando AUTHOR.url tenga destino
+  if (AUTHOR.url) { $('talk').href = AUTHOR.url; $('talk').hidden = false; }
+
+  // Tiempo de práctica
+  const fmtPractice = (sec) => {
+    const m = Math.floor(sec / 60);
+    if (m < 60) return m + ' min';
+    const h = Math.floor(m / 60), r = m % 60;
+    return h + ' h' + (r ? ' ' + r + ' min' : '');
+  };
+  // Tu cielo
+  // Cada respiración terminada guarda una estrella {t: cuándo, m: minutos, x/y: % de la pantalla}.
+  // Las de la semana (de lunes a domingo) forman una constelación unida con líneas.
+  const weekOf = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return d.getTime(); };
+  const seeded = (n) => () => { n |= 0; n = n + 0x6D2B79F5 | 0; let x = Math.imul(n ^ n >>> 15, 1 | n); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; };
+  // Las estrellas rodean la luna del inicio (centro 50%, 26%) en un anillo; cada semana ocupa su propio tramo.
+  // Medidas en % del ancho; en vertical se corrigen por la proporción de un móvil (390 × 844).
+  const SKY = { cx: 50, cy: 26, r0: 31, r1: 48, k: 390 / 844 };
+  const onSessionOrb = (x, y) => ((x - 50) / 27) ** 2 + ((y - 50) / 13) ** 2 < 1;
+  const crowded = (x, y, gap) => prefs.stars.some(s => Math.hypot(s.x - x, (s.y - y) / SKY.k) < gap);
+  function placeStar(seed) {
+    const rnd = seeded(seed), wrnd = seeded(weekOf(seed));
+    const a0 = wrnd() * 360, n = prefs.stars.filter(s => weekOf(s.t) === weekOf(seed)).length;
+    const span = Math.min(220, 70 + n * 16);  // el tramo crece con las estrellas de la semana
+    for (let i = 0; i < 80; i++) {
+      const off = i < 50 ? rnd() * span : rnd() * 360;
+      const a = (a0 + off) * Math.PI / 180, r = SKY.r0 + rnd() * (SKY.r1 - SKY.r0);
+      const x = SKY.cx + r * Math.cos(a), y = SKY.cy + r * Math.sin(a) * SKY.k;
+      if (x < 5 || x > 95 || y < 4 || y > 74 || onSessionOrb(x, y) || crowded(x, y, 7)) continue;
+      return { x: +x.toFixed(2), y: +y.toFixed(2), a: +off.toFixed(1) };
+    }
+    return { x: +(8 + rnd() * 84).toFixed(2), y: +(4 + rnd() * 8).toFixed(2), a: 400 };
+  }
+  function addStar(mins) {
+    const t = Date.now();
+    const p = placeStar(t);
+    prefs.stars.push({ t, m: Math.round(mins * 10) / 10, x: p.x, y: p.y, a: p.a });
+    if (prefs.stars.length > 400) prefs.stars.shift();
+    save();
+    return t;
+  }
+  const DUST = (() => {
+    const rnd = seeded(20261010); let out = '';
+    for (let i = 0; i < 90; i++) {
+      const x = (rnd() * 100).toFixed(2), y = (rnd() * 100).toFixed(2), r = (.35 + rnd() * .65).toFixed(2), o = (.12 + rnd() * .33).toFixed(2);
+      out += `<circle${rnd() < .2 ? ` class="tw2" style="--o1:${o};animation-delay:${(-rnd() * 9).toFixed(1)}s"` : ''} cx="${x}%" cy="${y}%" r="${r}" opacity="${o}"/>`;
+    }
+    return out;
+  })();
+  function renderSky(bornT) {
+    const now = weekOf(Date.now()), weeks = new Map();
+    prefs.stars.forEach(s => { const k = weekOf(s.t); if (!weeks.has(k)) weeks.set(k, []); weeks.get(k).push(s); });
+    let far = '', near = '';
+    weeks.forEach((list, k) => {
+      const cls = k === now ? 'cur' : 'old';
+      let g = `<g class="${cls}">`;
+      const path = list.slice().sort((p, q) => (p.a ?? p.t) - (q.a ?? q.t));
+      for (let i = 1; i < path.length; i++) if (Math.hypot(path[i].x - path[i - 1].x, (path[i].y - path[i - 1].y) / SKY.k) < 26) g += `<line x1="${path[i - 1].x}%" y1="${path[i - 1].y}%" x2="${path[i].x}%" y2="${path[i].y}%"/>`;
+      list.forEach(s => {
+        const r = (1.4 + Math.min(2.4, s.m / 6)) * (k === now ? 1 : .8), rnd = seeded(s.t);
+        g += `<g class="st${s.t === bornT ? ' born' : ''}" style="--d:${(-rnd() * 7).toFixed(1)}s;--tw:${(5 + rnd() * 4).toFixed(1)}s"><circle class="glow" cx="${s.x}%" cy="${s.y}%" r="${(r * 5).toFixed(1)}"/><circle cx="${s.x}%" cy="${s.y}%" r="${r.toFixed(1)}"/></g>`;
+      });
+      if (k === now) near += g + '</g>'; else far += g + '</g>';
+    });
+    $('stars').innerHTML = '<defs><radialGradient id="sglow"><stop offset="0" stop-opacity=".55"/><stop offset=".35" stop-opacity=".16"/><stop offset="1" stop-opacity="0"/></radialGradient></defs>'
+      + `<g class="L" style="--k:3"><g class="drift dust" style="--dd:70s;--dx:-6px;--dy:4px">${DUST}</g></g>`
+      + `<g class="L Lfar" style="--k:7"><g class="drift" style="--dd:55s;--dx:5px;--dy:-4px">${far}</g></g>`
+      + `<g class="L" style="--k:14"><g class="drift" style="--dd:40s;--dx:-8px;--dy:-6px">${near}</g></g>`;
+    const n = prefs.stars.filter(s => weekOf(s.t) === now).length;
+    const week = n ? `Esta semana: ${n} ${n === 1 ? 'respiración' : 'respiraciones'}` : 'Esta semana todavía no hay estrellas';
+    $('skyWeek').textContent = week;
+    $('skyTotal').textContent = prefs.practice >= 60 ? `En total, ${fmtPractice(prefs.practice)} respirando.` : '';
+    $('skyNote').textContent = prefs.stars.length
+      ? 'Cada respiración que terminas enciende una estrella. Las de esta semana forman tu constelación; el lunes empieza otra.'
+      : 'Tu cielo está vacío todavía. Termina una respiración y se encenderá la primera estrella.';
+    $('homeSky').textContent = n ? week + '.' : 'Cada respiración enciende una estrella.';
+    $('skyTest').hidden = !prefs.test;
+  }
+  const colorOf = () => prefs.palette;
+  const unlocked = (id) => !T[id].lock || (prefs.test && prefs.openAll !== false) || prefs.practice >= T[id].lock;
+  const rhythmOf = (t) => typeof t.rhythm === 'function' ? t.rhythm(adjOf()) : t.rhythm;
+
+  // Lista
+  const lockSvg = '<svg class="lockico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  // Lunitas: cada una respira con el ritmo real de su técnica
+  const kfEl = document.createElement('style'); document.head.appendChild(kfEl);
+  function miniCycle(id) {
+    const t = T[id], a = adjOf();
+    if (id === 'shaman') {
+      const c = [];
+      for (let i = 0; i < 6; i++) c.push({ dur: 0.32, from: 0.82, to: 0.7 }, { dur: 0.68, from: 0.7, to: 0.82 });
+      c.push({ dur: 2, from: 0.82, to: MIN }, { dur: 4, from: MIN, to: MIN }, { dur: 3, from: MIN, to: 0.82 });
+      return c;
+    }
+    if (id === 'kunda') return [{ dur: 4, from: MIN, to: MAX }, { dur: 4, from: MAX, to: MIN }];
+    return t.cycle(a);
+  }
+  function buildKeyframes() {
+    const sc = (v) => (0.62 + (v - MIN) / (MAX - MIN) * 0.38).toFixed(3);
+    kfEl.textContent = Object.keys(T).map(id => {
+      const c = miniCycle(id), len = c.reduce((s, x) => s + x.dur, 0);
+      let acc = 0, out = [];
+      c.forEach(x => { out.push(`${(acc / len * 100).toFixed(2)}% { transform: scale(${sc(x.from)}); animation-timing-function: ease-in-out; }`); acc += x.dur; });
+      out.push(`100% { transform: scale(${sc(c[c.length - 1].to)}); }`);
+      T[id].miniLen = len;
+      return `@keyframes k-${id} { ${out.join(' ')} }`;
+    }).join('\n');
+  }
+  const mini = (id) => `<span class="mo" style="animation-name:k-${id};animation-duration:${T[id].miniLen}s"></span>`;
+  buildKeyframes();
+  function renderList() {
+    buildKeyframes();
+    $('techList').innerHTML = ORDER.map(id => {
+      const t = T[id];
+      return `<button class="tcard" data-tech="${id}">${mini(id)}<span class="tbody"><span class="tname">${t.name}</span><span class="tpara">${t.para}</span></span></button>`;
+    }).join('');
+    $('lockList').innerHTML = LOCKED.map(id => {
+      const t = T[id];
+      if (unlocked(id)) return `<button class="tcard" data-tech="${id}">${mini(id)}<span class="tbody"><span class="tname">${t.name}</span><span class="tpara">${t.para}</span></span></button>`;
+      const pct = Math.min(100, prefs.practice / t.lock * 100);
+      return `<button class="tcard locked" data-tech="${id}"><span class="ring" style="--p:${pct.toFixed(1)}%"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i></span><span class="tbody"><span class="tname">${t.name}</span><span class="tpara"><strong>Bloqueada.</strong> Se abre con ${t.lock / HOUR} h de práctica. Llevas ${fmtPractice(prefs.practice)}.</span></span></button>`;
+    }).join('');
+    $('practiceNote').textContent = 'Todo lo que respires, en cualquier técnica, cuenta para abrir las avanzadas.';
+  }
+  document.addEventListener('click', (e) => {
+    const c = e.target.closest('[data-tech]'); if (c) openTech(c.dataset.tech);
+  });
+
+  // Ficha
+  let current = 'sigh';
+  function chipGroup(name, opts, sel, labelFn) {
+    return opts.map(v => `<span><input class="vh" type="radio" name="${name}" id="${name}-${v}" value="${v}" ${String(v) === String(sel) ? 'checked' : ''}><label class="chip" for="${name}-${v}">${labelFn(v)}</label></span>`).join('');
+  }
+  function durOf(id) { const t = T[id]; return prefs.dur[id] != null && (t.dur.opts || []).includes(prefs.dur[id]) ? prefs.dur[id] : t.dur.def; }
+  function approxShaman() {
+    const segs = T.shaman.build(adjOf(), 0, false);
+    return Math.round(segs.reduce((s, x) => s + x.dur, 0) / 60);
+  }
+  let techFrom = 'techs';
+  function openTech(id, from, why) {
+    current = id; techFrom = from || 'techs';
+    const t = T[id];
+    $('f-why').hidden = !why;
+    $('f-why').innerHTML = why ? '<b>Te propongo esta</b>' + why : '';
+    document.querySelector('#s-tech .back').dataset.go = techFrom === 'check' ? 'home' : 'techs';
+    $('f-name').textContent = t.name;
+    $('f-alt').textContent = t.alt ? 'También llamada ' + t.alt : '';
+    $('f-alt').hidden = !t.alt;
+    $('f-para').textContent = t.para;
+    $('f-how').textContent = t.how;
+    $('f-rhythm').textContent = rhythmOf(t);
+    $('f-moretext').innerHTML = t.more.map(p => `<p>${p}</p>`).join('');
+    const open = unlocked(id);
+    $('f-more').open = !!(t.gated && !prefs.ack[id]) || (t.lock && !open);
+    $('f-disc').hidden = !t.gated || !open;
+    $('f-ack').checked = !!prefs.ack[id];
+    $('f-play').hidden = !open;
+    $('f-lockline').hidden = open;
+    if (!open) $('f-lockline-t').textContent = `Bloqueada hasta ${t.lock / HOUR} h de práctica`;
+    $('f-lock').hidden = open;
+    if (!open) {
+      $('f-locktext').textContent = `Necesitas experiencia antes de esta. Se abre con ${t.lock / HOUR} h de práctica en cualquier técnica. Llevas ${fmtPractice(prefs.practice)}.`;
+      $('f-lockring').style.setProperty('--p', Math.min(100, prefs.practice / t.lock * 100).toFixed(1) + '%');
+    }
+    // Ajustador
+    if (t.adj) {
+      const a = t.adj, v = adjOf()[a.key];
+      $('f-adjust').hidden = false;
+      $('f-adj-label').textContent = a.label;
+      paintAdj(v);
+    } else $('f-adjust').hidden = true;
+    // Vista (Anuloma)
+    $('f-view').hidden = !t.view;
+    if (t.view) $('viewChips').innerHTML = chipGroup('view', ['dos', 'una'], prefs.view, v => v === 'dos' ? 'Dos lunas' : 'Una luna que viaja');
+    // Duración
+    const d = t.dur;
+    $('f-fixed').hidden = !d.after; $('f-fixed').textContent = d.after || '';
+    $('stage').classList.toggle('nodial', !open);
+    renderDial();
+    updateStart();
+    go('tech');
+    armNudge();
+  }
+  const needsAck = () => !!(T[current].gated && !$('f-ack').checked);
+  function updateStart() {
+    $('dialHint').textContent = needsAck() ? 'Lee el aviso para empezar' : 'Toca la luna para empezar';
+  }
+  // Pista para empezar: las primeras veces, si en la ficha no tocas la luna en unos segundos,
+  // o das vueltas (mueves el ratón, bajas y subes, tocas fuera), aparece "Para empezar, toca la luna"
+  const NUDGE_UNTIL = 3;
+  let nudgeT = null, wander = 0, lastMove = null;
+  const nudgeOn = () => body.classList.contains('nudging');
+  const nudgeWanted = () => (prefs.starts || 0) < NUDGE_UNTIL && body.dataset.screen === 'tech' && body.dataset.state === 'setup' && !$('f-play').hidden;
+  function armNudge() { hideNudge(); clearTimeout(nudgeT); wander = 0; if (nudgeWanted()) nudgeT = setTimeout(showNudge, 5000); }
+  function hideNudge() { clearTimeout(nudgeT); body.classList.remove('nudging'); }
+  function showNudge() { if (!nudgeWanted() || nudgeOn()) return; body.classList.add('nudging'); placeNudge(); }
+  function placeNudge() {
+    if (!nudgeOn()) return;
+    const r = $('orbA').getBoundingClientRect(), top = r.top + r.height * .17, n = $('nudge');
+    const low = top < 70;  // la luna se ha quedado arriba, fuera de la vista: la etiqueta baja y apunta hacia arriba
+    n.classList.toggle('low', low);
+    $('nudgeText').textContent = low ? 'Para empezar, sube y toca la luna' : 'Para empezar, toca la luna';
+    n.style.setProperty('--ny', (low ? 18 : top - 56) + 'px');
+  }
+  const wanderBy = (d) => { if (!nudgeOn() && nudgeWanted()) { wander += d; if (wander > 1600) showNudge(); } };
+  window.addEventListener('pointermove', (e) => { if (lastMove) wanderBy(Math.hypot(e.clientX - lastMove[0], e.clientY - lastMove[1])); lastMove = [e.clientX, e.clientY]; }, { passive: true });
+  let lastY = 0;
+  window.addEventListener('scroll', () => { wanderBy(Math.abs(scrollY - lastY) * 1.5); lastY = scrollY; placeNudge(); }, { passive: true });
+  document.addEventListener('click', (e) => { if (!e.target.closest('button, input, label, summary, a, .orbs, .dial')) wanderBy(700); });
+  $('nudge').addEventListener('click', () => { if ($('nudge').classList.contains('low')) window.scrollTo({ top: 0, behavior: 'smooth' }); else startFromTech(); });
+
+  function startFromTech() {
+    const t = T[current];
+    if (!unlocked(current)) return;
+    if (needsAck()) { toast('Lee el aviso y marca la casilla para empezar'); $('f-disc').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    startSession({ id: current, dur: t.dur.type === 'fixed' ? 0 : dialOpts[dialIdx], from: techFrom });
+  }
+
+  // Segundos: menos y más
+  function paintAdj(v) {
+    const a = T[current].adj;
+    $('f-adj-out').textContent = fs(v) + ' ' + a.unit;
+    $('f-adj-minus').disabled = v <= a.min; $('f-adj-plus').disabled = v >= a.max;
+  }
+  function stepAdj(dir) {
+    const t = T[current], a = t.adj;
+    const v = Math.min(a.max, Math.max(a.min, Math.round((adjOf()[a.key] + dir * a.step) * 10) / 10));
+    prefs.adj[a.key] = v; save();
+    paintAdj(v);
+    $('f-rhythm').textContent = rhythmOf(t);
+    if (current === 'shaman') paintDial();
+    buildKeyframes();
+  }
+  $('f-adj-minus').addEventListener('click', () => stepAdj(-1));
+  $('f-adj-plus').addEventListener('click', () => stepAdj(1));
+
+  // Anillo de duración: un arco de 270° alrededor de la luna, abierto por abajo
+  const DR = 45, A0 = 135, SPAN = 270;
+  const dialPt = (f) => { const a = (A0 + SPAN * f) * Math.PI / 180; return [50 + DR * Math.cos(a), 50 + DR * Math.sin(a)]; };
+  const dialArc = (f) => {
+    if (f <= 0.002) return '';
+    const [x0, y0] = dialPt(0), [x1, y1] = dialPt(Math.min(f, 0.9999));
+    return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${DR} ${DR} 0 ${SPAN * f > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+  };
+  $('dialTrack').setAttribute('d', dialArc(1)); $('dialHit').setAttribute('d', dialArc(1));
+  let dialOpts = [], dialIdx = 0, dialDrag = false;
+  const durText = (v) => T[current].dur.type === 'rounds' ? v + ' rondas' : v === 1 ? '1 minuto' : v + ' minutos';
+  function renderDial() {
+    const d = T[current].dur, fixed = d.type === 'fixed';
+    dialOpts = fixed ? [] : d.opts;
+    dialIdx = fixed || techFrom !== 'check' ? 0 : Math.max(0, d.opts.indexOf(durOf(current)));  // se empieza por el mínimo y se arrastra para sumar
+    $('dialDots').innerHTML = dialOpts.map((v, i) => { const [x, y] = dialPt(i / (dialOpts.length - 1)); return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r=".8"/>`; }).join('');
+    $('dial').classList.toggle('fixed', fixed);
+    const r = $('durA11y'); r.max = Math.max(0, dialOpts.length - 1); r.hidden = fixed;
+    paintDial();
+  }
+  function paintDial() {
+    if (!dialOpts.length) {
+      $('dialFill').setAttribute('d', dialArc(1));
+      $('dialValue').textContent = `Tres rondas, unos ${approxShaman()} min`;
+      return;
+    }
+    const f = dialIdx / (dialOpts.length - 1), [x, y] = dialPt(f);
+    $('dialFill').setAttribute('d', dialArc(f));
+    $('dialKnob').setAttribute('cx', x.toFixed(2)); $('dialKnob').setAttribute('cy', y.toFixed(2));
+    $('dialValue').textContent = durText(dialOpts[dialIdx]);
+    const r = $('durA11y'); r.value = dialIdx; r.setAttribute('aria-valuetext', durText(dialOpts[dialIdx]));
+  }
+  function setDialIdx(i) {
+    if (i === dialIdx) return;
+    dialIdx = i; paintDial();
+    try { navigator.vibrate && navigator.vibrate(4); } catch (err) {}
+  }
+  function dialFromPointer(e) {
+    const r = $('dial').getBoundingClientRect();
+    const a = Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+    let f = ((((a - A0) % 360) + 360) % 360) / SPAN;
+    if (f > 1) f = f > 1 + (360 - SPAN) / SPAN / 2 ? 0 : 1;
+    setDialIdx(Math.round(f * (dialOpts.length - 1)));
+  }
+  $('dialHit').addEventListener('pointerdown', (e) => {
+    if (!dialOpts.length || session || body.dataset.screen !== 'tech') return;
+    e.preventDefault(); e.stopPropagation(); dialDrag = true;
+    try { $('dialHit').setPointerCapture(e.pointerId); } catch (err) {}
+    dialFromPointer(e);
+  });
+  $('dialHit').addEventListener('pointermove', (e) => { if (dialDrag) dialFromPointer(e); });
+  ['pointerup', 'pointercancel'].forEach(ev => $('dialHit').addEventListener(ev, () => { dialDrag = false; }));
+  $('durA11y').addEventListener('input', (e) => setDialIdx(+e.target.value));
+  $('f-ack').addEventListener('change', (e) => { prefs.ack[current] = e.target.checked; save(); updateStart(); });
+
+  // Ajustes
+  $('swatches').innerHTML = APP_PALETTES.map(k => [k, PALETTES[k]]).map(([k, p]) => `<span><input class="vh" type="radio" name="palette" id="p-${k}" value="${k}" ${k === prefs.palette ? 'checked' : ''}>
+    <label class="sw" for="p-${k}" style="--s1:${p.c[1]};--s2:${p.c[0]};--s3:${p.c[3]};--s4:${p.c[4]}"><i></i><small>${p.name}</small></label></span>`).join('');
+  // Respira es solo oscura
+  root.dataset.theme = 'dark';
+  $('sound').checked = prefs.sound;
+  $('testmode').checked = prefs.test;
+  $('testswitch').hidden = !DEMO;
+  $('openall').checked = prefs.openAll !== false;
+  applyPalette(prefs.palette);
+
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.name === 'palette') { prefs.palette = t.value; applyPalette(t.value); }
+    if (t.name === 'dur') prefs.dur[current] = +t.value;
+    if (t.name === 'view') prefs.view = t.value;
+    if (t.id === 'sound') prefs.sound = t.checked;
+    if (t.id === 'testmode') { prefs.test = t.checked; renderList(); renderSky(); renderPanel(); }
+    if (t.id === 'openall') { prefs.openAll = t.checked; renderList(); renderPanel(); }
+    save();
+  });
+
+  // Navegación
+  let prevScreen = 'home';
+  function go(screen) {
+    if (screen !== 'tech') hideNudge();
+    if (screen === 'settings' && body.dataset.screen !== 'settings') prevScreen = body.dataset.screen;
+    if (screen === 'techs') renderList();
+    if (screen === 'check') resetCheck();
+    if (screen === 'sky') renderSky();
+    if (screen === 'tech') applyPalette(colorOf(current), true);
+    else applyPalette(prefs.palette, screen !== 'settings');
+    body.dataset.screen = screen;
+    window.scrollTo({ top: 0 });
+  }
+  document.addEventListener('click', (e) => {
+    const g = e.target.closest('[data-go]');
+    if (g) go(g.dataset.go);
+  });
+  $('gear').addEventListener('click', () => go('settings'));
+  $('setBack').addEventListener('click', () => go(prevScreen));
+
+  // Luna viva (WebGL)
+  const canvas = $('gl'), canvas2 = $('gl2');
+  const ctx2 = canvas2.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let gl = null, uni = {};
+  const VERT = 'attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }';
+  const FRAG = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform vec2 u_res; uniform float u_time; uniform float u_breath; uniform float u_flow; uniform float u_side; uniform float u_lum; uniform float u_buzz;
+uniform vec3 u_c0; uniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_c3; uniform vec3 u_c4;
+
+float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float noise(vec2 p){
+  vec2 i = floor(p), f = fract(p); vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+float fbm(vec2 p){
+  float v = 0.0, a = 0.5; mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+  for (int i = 0; i < 4; i++){ v += a * noise(p); p = m * p; a *= 0.42; }
+  return v;
+}
+void main(){
+  vec2 p = (gl_FragCoord.xy / u_res) * 2.0 - 1.0;
+  float t = u_time;
+  float R = 0.667;
+  float r = length(p);
+  float ang = atan(p.y, p.x);
+
+  // Borde que respira y ondula
+  vec2 dir = p / max(r, 0.0001);
+  float wob = 0.045 * (noise(dir * 1.3 + vec2(t * 0.07, -t * 0.05)) - 0.5) + 0.025 * (noise(dir * 2.6 + vec2(4.0 - t * 0.08, t * 0.06)) - 0.5);
+  float Re = R * (1.0 + wob);
+  float rr = r / Re;
+  float z = sqrt(max(0.0, 1.0 - rr * rr));
+  vec2 q = p / Re * (0.72 + 0.28 * z);
+
+  // Corrientes internas
+  vec2 w = q * 0.9;
+  vec2 a = vec2(fbm(w + u_flow * vec2(1.0, 0.6)), fbm(w + vec2(5.2, 1.3) - u_flow * 0.8));
+  vec2 b = vec2(fbm(w + 1.3 * a + vec2(1.7, 9.2) + u_flow * 1.3), fbm(w + 1.3 * a + vec2(8.3, 2.8) - u_flow));
+  float n = fbm(w + 1.5 * b + u_flow * 0.5);
+
+  vec3 col = mix(u_c0, u_c1, smoothstep(0.3, 0.52, n));
+  col = mix(col, u_c2, smoothstep(0.38, 0.56, a.x) * 0.95);
+  col = mix(col, u_c3, smoothstep(0.42, 0.6, b.y) * 0.85);
+
+  // Humo: volutas que se enroscan y suben despacio
+  vec2 sw = q * 1.25 + vec2(0.0, -u_flow * 1.6);
+  vec2 cw = vec2(fbm(sw + vec2(u_flow * 0.6, 0.0)), fbm(sw + vec2(3.1, 7.4) - vec2(0.0, u_flow * 0.5)));
+  vec2 cw2 = vec2(fbm(sw + 2.0 * cw + vec2(9.1, 2.3)), fbm(sw + 2.0 * cw + vec2(1.4, 5.8) + u_flow * 0.3));
+  float sm = fbm(sw + 2.6 * cw2);
+  float hebra = 1.0 - smoothstep(0.0, 0.085, abs(sm - 0.42));
+  float velo = 1.0 - smoothstep(0.02, 0.24, abs(sm - 0.42));
+  float hondo = 1.0 - smoothstep(0.2, 0.34, sm);
+  vec3 humo = mix(u_c4, u_c3, 0.3 + 0.3 * cw.x);
+  col = mix(col, u_c0, hondo * 0.35);
+  col = mix(col, humo, velo * 0.32 + hebra * 0.3);
+
+  // Luz interior que crece al inhalar
+  vec2 cc = vec2(u_side * 0.42, 0.0);
+  float core = exp(-dot(q - cc, q - cc) * (1.8 + 1.4 * abs(u_side)));
+  col = mix(col, u_c4, core * (0.06 + 0.22 * u_breath + 0.32 * abs(u_side) + 0.16 * u_lum));
+  col = mix(col, u_c4, u_buzz * 0.12 * (0.5 + 0.5 * sin(r * 38.0 - t * 9.0)) * z);
+  col *= 0.84 + 0.22 * z;
+
+  // Borde translúcido
+  float rim = pow(1.0 - z, 3.0);
+  col = mix(col, mix(u_c3, u_c1, 0.5), rim * 0.5);
+
+  // Motas de luz
+  vec2 g = q * 6.0 + vec2(t * 0.04, -t * 0.03) + (a - 0.5) * 1.5;
+  vec2 id = floor(g); vec2 f = fract(g) - 0.5;
+  vec2 off = (vec2(hash(id), hash(id + 3.1)) - 0.5) * 0.6;
+  float dd = length(f - off);
+  float lit = step(0.78, hash(id + 7.3));
+  float tw = 0.5 + 0.5 * sin(t * 0.45 + hash(id + 1.9) * 6.283);
+  col = mix(col, u_c4, lit * (1.0 - smoothstep(0.0, 0.11, dd)) * tw * 0.55 * z);
+
+  float inner = 1.0 - smoothstep(0.6, 1.04, rr);
+  float aIn = inner * min(1.0, 0.68 + 0.28 * n + 0.2 * u_lum);
+
+  // Aura
+  float d = max(r - Re * 0.85, 0.0);
+  float aura = exp(-d * 7.5) * (0.3 + 0.32 * u_breath) * (0.7 + 0.3 * fbm(p * 2.2 + t * 0.03));
+  vec3 auraCol = mix(u_c1, u_c3, 0.45 + 0.3 * sin(ang + t * 0.06));
+
+  vec3 outc = col * aIn + auraCol * aura * (1.0 - aIn);
+  float outa = aIn + aura * (1.0 - aIn);
+  float edge = 1.0 - smoothstep(0.62, 0.97, r);
+  gl_FragColor = vec4(outc * edge, outa * edge);
+}`;
+  function initGL() {
+    try {
+      gl = canvas.getContext('webgl', { premultipliedAlpha: true, alpha: true, antialias: false, preserveDrawingBuffer: true });
+      if (!gl) return;
+      const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+      const prog = gl.createProgram();
+      gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT));
+      gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FRAG));
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error('link');
+      gl.useProgram(prog);
+      const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      ['u_res', 'u_time', 'u_breath', 'u_flow', 'u_side', 'u_lum', 'u_buzz', 'u_c0', 'u_c1', 'u_c2', 'u_c3', 'u_c4'].forEach(n => uni[n] = gl.getUniformLocation(prog, n));
+      gl.clearColor(0, 0, 0, 0);
+      body.classList.add('gl-on');
+      canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); gl = null; body.classList.remove('gl-on'); });
+    } catch (e) { gl = null; body.classList.remove('gl-on'); }
+  }
+  initGL();
+  let glTime = 0, flow = 7, breathSmooth = 0, lastNow = 0;
+  let fx = { side: 0, lum: 0, buzz: 0 };
+  function drawGL(dt, norm) {
+    if (!gl) return;
+    const w = canvas.clientWidth;
+    const px = Math.max(64, Math.round(w * Math.min(window.devicePixelRatio || 1, 1.5) * 0.85));
+    if (canvas.width !== px) { canvas.width = px; canvas.height = px; gl.viewport(0, 0, px, px); }
+    const k = reduceMotion ? 0.4 : 1;
+    glTime += dt * k;
+    breathSmooth += (norm - breathSmooth) * 0.03;
+    flow += dt * k * (0.028 + 0.008 * breathSmooth);
+    for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++) curCols[i][j] += (targetCols[i][j] - curCols[i][j]) * 0.04;
+    gl.uniform2f(uni.u_res, px, px);
+    gl.uniform1f(uni.u_time, glTime + 20);
+    gl.uniform1f(uni.u_breath, norm);
+    gl.uniform1f(uni.u_flow, flow);
+    gl.uniform1f(uni.u_side, fx.side);
+    gl.uniform1f(uni.u_lum, fx.lum);
+    gl.uniform1f(uni.u_buzz, fx.buzz);
+    ['u_c0', 'u_c1', 'u_c2', 'u_c3', 'u_c4'].forEach((n, i) => gl.uniform3fv(uni[n], curCols[i]));
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (body.classList.contains('twin')) {
+      if (canvas2.width !== px) { canvas2.width = px; canvas2.height = px; }
+      ctx2.setTransform(1, 0, 0, 1, 0, 0); ctx2.clearRect(0, 0, px, px);
+      ctx2.setTransform(-1, 0, 0, 1, px, 0); ctx2.drawImage(canvas, 0, 0);
+    }
+  }
+
+  // Texto
+  let currentLabel = '', labelTimer = null, currentSub = '', subTimer = null;
+  let currentCls = '';
+  function setLabel(text, fast, cls) {
+    cls = cls || '';
+    if (text === currentLabel && cls === currentCls) return;
+    const sameCls = cls === currentCls;
+    currentLabel = text; currentCls = cls; clearTimeout(labelTimer);
+    if (fast && sameCls && phaseEl.classList.contains('on')) { phaseEl.textContent = text; return; }
+    phaseEl.classList.remove('on');
+    labelTimer = setTimeout(() => { phaseEl.className = 'phase' + (cls ? ' ' + cls : ''); phaseEl.textContent = text; if (text) phaseEl.classList.add('on'); }, 300);
+  }
+  function setSub(text, instant) {
+    if (text === currentSub) return;
+    currentSub = text; clearTimeout(subTimer);
+    if (instant && subEl.classList.contains('on') && text) { subEl.textContent = text; return; }
+    subEl.classList.remove('on');
+    subTimer = setTimeout(() => { subEl.textContent = text; if (text) subEl.classList.add('on'); }, 350);
+  }
+
+  // Audio: tono que respira y campana
+  let actx = null, pad = null;
+  function getCtx() {
+    try { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) { actx = null; }
+    return actx;
+  }
+  function chime() {
+    const ctx = getCtx(); if (!ctx) return;
+    const t = ctx.currentTime;
+    [[528, 0.11], [792, 0.04], [1188, 0.02]].forEach(([f, g]) => {
+      const o = ctx.createOscillator(), gn = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(g, t + 0.02); gn.gain.exponentialRampToValueAtTime(0.0001, t + 5);
+      o.connect(gn); gn.connect(ctx.destination); o.start(t); o.stop(t + 5.2);
+    });
+  }
+  function startPad() {
+    const ctx = getCtx(); if (!ctx) return;
+    const master = ctx.createGain(); master.gain.value = 0;
+    const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 400; filter.Q.value = 0.4;
+    filter.connect(master); master.connect(ctx.destination);
+    const oscs = [196, 293.66, 392.0, 196.6].map((f, i) => {
+      const o = ctx.createOscillator(); o.type = i === 3 ? 'triangle' : 'sine'; o.frequency.value = f;
+      const g = ctx.createGain(); g.gain.value = i === 2 ? 0.25 : 0.5; o.connect(g); g.connect(filter); o.start(); return o;
+    });
+    pad = { master, filter, oscs };
+  }
+  function updatePad(norm) {
+    if (!pad || !actx) return;
+    const t = actx.currentTime;
+    pad.master.gain.setTargetAtTime(0.035 + 0.06 * norm, t, 0.12);
+    pad.filter.frequency.setTargetAtTime(260 + 900 * norm, t, 0.12);
+  }
+  function stopPad() {
+    if (!pad || !actx) return;
+    const p = pad; pad = null;
+    try { p.master.gain.setTargetAtTime(0, actx.currentTime, 1.2); setTimeout(() => { try { p.oscs.forEach(o => o.stop()); } catch (e) {} }, 5000); } catch (e) {}
+  }
+
+  // Pantalla encendida
+  let wakeLock = null;
+  async function keepAwake() { try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch (e) {} }
+  function releaseAwake() { try { wakeLock && wakeLock.release(); } catch (e) {} wakeLock = null; }
+
+  // Línea de tiempo
+  function buildTimeline(id, a, d, teach) {
+    const t = T[id];
+    let segs;
+    if (t.build) segs = t.build(a, d, teach);
+    else {
+      const cyc = t.cycle(a), len = cyc.reduce((s, x) => s + x.dur, 0);
+      const n = t.dur.type === 'rounds' ? d : Math.max(1, Math.round(d * 60 / len));
+      segs = [];
+      for (let i = 0; i < n; i++) cyc.forEach(s => segs.push(Object.assign({}, s, { teach: teach && i === 0 ? s.teach : (s.cue || '') })));
+    }
+    let acc = 0;
+    segs.forEach(s => { s.start = acc; acc += s.dur; });
+    return { segs, total: acc };
+  }
+
+  // Motor de sesión
+  const ease = (p) => 0.5 - 0.5 * Math.cos(Math.PI * p);
+  const PREP = 8800;
+  let session = null, lastCfg = null, shown = 0.66, sA = 0.66, sB = 0.66;
+  const fmt = (ms) => { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  let rot = 0, hold = 0, travel = 0, travelT = 0, arcK = 0;
+  const trailHist = [];
+
+  function frame(now) {
+    const dt = lastNow ? Math.min(0.1, (now - lastNow) / 1000) : 0; lastNow = now;
+    let side = 0, lum = 0, buzz = 0, pulse = 0;
+    travelT = 0;
+    if (session) {
+      const t = ((session.paused || now) - session.start) / 1000;
+      lum = session.lum;
+      if (session.paused) {
+        setLabel(''); setSub('');
+      } else if (t < 0) {
+        shown += (MIN - shown) * 0.04;
+        if (t < -4.8) { setLabel(session.prepLabel || 'Acomódate', false, session.prepLabel ? 'part' : ''); setSub(session.prepSub || (session.teach ? 'Busca una postura cómoda. Toca la luna si necesitas pausar.' : 'Busca una postura cómoda.')); }
+        else { setLabel(String(Math.ceil(-t / 1.6)), false, 'count'); setSub(''); }
+        $('remaining').textContent = fmt(session.total * 1000);
+      } else if (t >= session.total) {
+        finish(false);
+      } else {
+        const segs = session.segs;
+        while (session.idx < segs.length - 1 && t >= segs[session.idx].start + segs[session.idx].dur) {
+          session.idx++;
+          const s = segs[session.idx];
+          if (s.turn && rot >= 0) { rot = (rot + 1) % ROTATION.length; applyPalette(ROTATION[rot], true); }
+          if (s.chime) chime();
+        }
+        const s = segs[session.idx];
+        const p = Math.min(1, (t - s.start) / s.dur);
+        shown = s.from + (s.to - s.from) * (s.pulse ? 1 - (1 - p) * (1 - p) : ease(p));
+        setLabel(s.label, s.fast, s.part ? 'part' : s.med ? 'med' : '');
+        if (s.countdown) setSub(`Quedan ${Math.ceil(s.start + s.dur - t)} s. Toca la pantalla para inhalar antes.`, true);
+        else setSub(s.teach || '');
+        side = s.side || 0;
+        // Viaje: al inhalar se queda en su lado; al soltar cruza hacia el lado por el que sale el aire
+        if (side && body.classList.contains('travel')) travelT = s.to > s.from ? side : -side + 2 * side * ease(p);
+        buzz = s.buzz ? 1 : 0;
+        pulse = s.pulse ? 1 - p : 0;
+        session.cur = s; session.t = t;
+        $('remaining').textContent = fmt((session.total - t) * 1000);
+        session.practiced += dt;
+        session.unsaved += dt;
+        if (session.unsaved >= 10) { prefs.practice += session.unsaved; session.unsaved = 0; save(); }
+      }
+    } else {
+      hold += ((holding ? 1 : 0) - hold) * (holding ? 0.012 : 0.018);
+      const target = 0.66 + 0.035 * Math.sin(now / 1000 * 2 * Math.PI / 9) * (1 - hold) + hold * (MAX - 0.66);
+      shown += (target - shown) * 0.03;
+    }
+    // Efectos suaves
+    const twin = body.classList.contains('twin');
+    fx.side += ((twin ? 0 : side) - fx.side) * 0.05;
+    fx.lum += (lum - fx.lum) * 0.03;
+    fx.buzz += (buzz - fx.buzz) * 0.08;
+    let sc = shown + (reduceMotion ? 0 : fx.buzz * 0.006 * Math.sin(now * 0.045));
+    const norm = Math.min(1, Math.max(0, (shown - MIN) / (MAX - MIN)));
+    if (twin) {
+      const low = MIN * 0.9;
+      const tA = side < 0 ? sc : side > 0 ? low : sc;
+      const tB = side > 0 ? sc : side < 0 ? low : sc;
+      sA += (tA - sA) * 0.1; sB += (tB - sB) * 0.1;
+      const nA = Math.min(1, Math.max(0, (sA - MIN) / (MAX - MIN))), nB = Math.min(1, Math.max(0, (sB - MIN) / (MAX - MIN)));
+      scaler.style.transform = `scale(${sA.toFixed(4)})`;
+      scaler2.style.transform = `scale(${sB.toFixed(4)})`;
+      halo.style.opacity = ((0.2 + 0.7 * nA) * (gl ? 0.55 : 1)).toFixed(3);
+      halo2.style.opacity = ((0.2 + 0.7 * nB) * (gl ? 0.55 : 1)).toFixed(3);
+      halo.style.transform = `scale(${(0.85 + 0.25 * nA).toFixed(4)})`;
+      halo2.style.transform = `scale(${(0.85 + 0.25 * nB).toFixed(4)})`;
+      $('orbA').style.opacity = (0.55 + 0.45 * Math.max(nA, side ? 0 : 1)).toFixed(3);
+      $('orbB').style.opacity = (0.55 + 0.45 * Math.max(nB, side ? 0 : 1)).toFixed(3);
+    } else {
+      sA = sB = sc;
+      scaler.style.transform = `scale(${sc.toFixed(4)})`;
+      halo.style.opacity = Math.min(1, (0.28 + 0.62 * norm + 0.35 * pulse) * (gl ? 0.55 : 1)).toFixed(3);
+      halo.style.transform = `scale(${(0.85 + 0.25 * norm + 0.06 * pulse).toFixed(4)})`;
+      $('orbA').style.opacity = '';
+    }
+    if (session) {
+      const el = ((session.paused || now) - session.start) / 1000;
+      $('dialFill').setAttribute('d', dialArc(Math.min(1, Math.max(0, 1 - el / session.total))));
+    }
+    springOrb();
+    skyParallax();
+    travel += (travelT - travel) * .06; if (Math.abs(travel) < .001 && !travelT) travel = 0;
+    // Al cruzar, la luna sube en arco (más alta en el centro) y deja una estela de luz que la sigue con retraso
+    const arcOn = body.classList.contains('travel') && session && !session.paused;
+    arcK += ((arcOn ? 1 : 0) - arcK) * .05; if (arcK < .001 && !arcOn) arcK = 0;
+    const lift = -(1 - travel * travel) * 9 * arcK;
+    orbsEl.style.transform = pos.x || pos.y || travel || lift ? `translate(calc(${(travel * 22).toFixed(2)}vw + ${pos.x.toFixed(1)}px), calc(${lift.toFixed(2)}vh + ${pos.y.toFixed(1)}px))` : '';
+    // Estela: cinco luces en los puntos por donde pasó la luna en los últimos ~4,5 s, cada vez más pequeñas y tenues
+    trailHist.push([travel * 22, lift]); if (trailHist.length > 290) trailHist.shift();
+    document.querySelectorAll('#trail i').forEach((g, k) => {
+      const back = (k + 1) * 55, h = trailHist[Math.max(0, trailHist.length - 1 - back)] || [0, 0];
+      const moving = Math.min(1, Math.hypot(travel * 22 - h[0], lift - h[1]) / 3);
+      const sz = 1 - k * .15;
+      g.style.transform = `translate(-50%, -50%) translate(${h[0].toFixed(2)}vw, ${h[1].toFixed(2)}vh) scale(${sz.toFixed(2)})`;
+      g.style.opacity = (arcK * moving * (.7 - k * .11)).toFixed(3);
+    });
+    drawGL(dt, Math.min(1, norm + 0.4 * pulse));
+    if (session) updatePad(norm);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // Tocar para saltar la retención
+  function togglePause() {
+    if (!session) return;
+    const now = performance.now();
+    if (session.paused) {
+      session.start += now - session.paused; session.paused = 0;
+      currentLabel = ''; currentSub = '';
+      body.classList.remove('paused');
+      if (prefs.sound && !pad) startPad();
+      keepAwake();
+    } else {
+      session.paused = now;
+      const t = T[session.id];
+      $('pc-name').textContent = t.name;
+      $('pc-how').textContent = t.how;
+      $('pc-rhythm').textContent = rhythmOf(t);
+      $('pc-warn').hidden = !t.gated;
+      body.classList.add('paused');
+      stopPad();
+    }
+  }
+  function trySkip() {
+    if (!session || session.paused || !session.cur || !session.cur.skip) return false;
+    const rem = session.cur.start + session.cur.dur - session.t;
+    if (rem > 0.3) session.start -= rem * 1000;
+    return true;
+  }
+  $('stage').addEventListener('click', (e) => {
+    if (!session || e.target.closest('.orbs')) return;
+    if (!trySkip()) togglePause();
+  });
+
+  // La luna se toca: un toque empieza o pausa, mantener la hincha, arrastrar la estira y vuelve a su sitio
+  const orbsEl = document.querySelector('.orbs');
+  let drag = null, holding = false;
+  const pos = { x: 0, y: 0, vx: 0, vy: 0 };
+  const stretch = (d) => d / (1 + Math.abs(d) / 140);
+  function tapOrb() {
+    if (session) { if (!trySkip()) togglePause(); return; }
+    if (body.dataset.state !== 'setup') return;
+    const scr = body.dataset.screen;
+    if (scr === 'tech') startFromTech();
+  }
+  orbsEl.addEventListener('pointerdown', (e) => {
+    drag = { id: e.pointerId, x0: e.clientX, y0: e.clientY, t0: performance.now(), moved: false };
+    try { orbsEl.setPointerCapture(e.pointerId); } catch (err) {}
+    holding = body.dataset.state === 'setup';
+  });
+  orbsEl.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+    if (!drag.moved && Math.hypot(dx, dy) > 8) { drag.moved = true; holding = false; }
+    if (drag.moved && !session) { pos.x = stretch(dx); pos.y = stretch(dy); pos.vx = pos.vy = 0; }
+  });
+  orbsEl.addEventListener('pointerup', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const tap = !drag.moved && performance.now() - drag.t0 < 350;
+    drag = null; holding = false;
+    if (tap) tapOrb();
+  });
+  orbsEl.addEventListener('pointercancel', () => { drag = null; holding = false; });
+  // Paralaje del cielo: el dedo o el ratón, la luna arrastrada y la inclinación del móvil (Android) mueven los planos
+  const par = { tx: 0, ty: 0, x: 0, y: 0, tiltX: 0, tiltY: 0 };
+  window.addEventListener('pointermove', (e) => { par.tx = e.clientX / innerWidth * 2 - 1; par.ty = e.clientY / innerHeight * 2 - 1; }, { passive: true });
+  window.addEventListener('deviceorientation', (e) => {
+    if (e.gamma == null) return;
+    par.tiltX = Math.max(-1, Math.min(1, e.gamma / 30)); par.tiltY = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+  }, { passive: true });
+  function skyParallax() {
+    if (reduceMotion) return;
+    const gx = Math.max(-1.5, Math.min(1.5, par.tx * .6 + par.tiltX + pos.x / 70)), gy = Math.max(-1.5, Math.min(1.5, par.ty * .6 + par.tiltY + pos.y / 70));
+    const nx = par.x + (gx - par.x) * .04, ny = par.y + (gy - par.y) * .04;
+    if (Math.abs(nx - par.x) + Math.abs(ny - par.y) < .0005) return;
+    par.x = nx; par.y = ny;
+    const st = $('stars').style; st.setProperty('--px', nx.toFixed(4)); st.setProperty('--py', ny.toFixed(4));
+  }
+  function springOrb() {
+    if (drag && drag.moved && !session) return;
+    pos.vx = (pos.vx - pos.x * 0.07) * 0.84; pos.vy = (pos.vy - pos.y * 0.07) * 0.84;
+    pos.x += pos.vx; pos.y += pos.vy;
+    if (Math.abs(pos.x) + Math.abs(pos.y) + Math.abs(pos.vx) + Math.abs(pos.vy) < 0.05) pos.x = pos.y = pos.vx = pos.vy = 0;
+  }
+
+  let timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+
+  function startSession(cfg) {
+    hideNudge(); prefs.starts = (prefs.starts || 0) + 1;
+    lastCfg = cfg;
+    clearTimers();
+    $('end').classList.remove('on');
+    body.classList.remove('settled');
+    const t = T[cfg.id], key = cfg.id;
+    const teach = (prefs.done[key] || 0) < 2;
+    const tl = buildTimeline(cfg.id, adjOf(), cfg.dur, teach);
+    const col = colorOf(cfg.id);
+    rot = cfg.id === 'kunda' ? Math.max(0, ROTATION.indexOf(col)) : -1;
+    applyPalette(col, true);
+    body.classList.toggle('twin', cfg.id === 'ana' && prefs.view === 'dos');
+    body.classList.toggle('travel', cfg.id === 'ana' && prefs.view !== 'dos');
+    getCtx(); chime();
+    body.dataset.state = 'focus';
+    later(() => body.classList.add('full'), 1000);
+    currentLabel = ''; currentSub = '';
+    body.classList.remove('paused');
+    currentCls = '';
+    session = { paused: 0, key, id: cfg.id, segs: tl.segs, total: tl.total, idx: 0, teach, start: performance.now() + PREP, practiced: 0, unsaved: 0, lum: t.lum || 0, before: LOCKED.filter(unlocked), prepLabel: tl.prepLabel || '', prepSub: tl.prepSub || t.prep || '' };
+    if (prefs.sound) startPad();
+    keepAwake();
+  }
+
+  function finish(early) {
+    if (!session) return;
+    body.classList.remove('paused');
+    const done = session; session = null;
+    prefs.practice += done.unsaved;
+    if (done.practiced > 30) prefs.done[done.key] = (prefs.done[done.key] || 0) + 1;
+    save();
+    clearTimers(); stopPad(); releaseAwake();
+    if (!early) chime();
+    setSub('');
+    $('back').textContent = lastCfg && lastCfg.from === 'check' ? 'Volver al inicio' : 'Volver a las técnicas';
+    setLabel(early ? '' : 'Vuelve despacio');
+    if (!early) later(() => setSub('Deja que la respiración vuelva sola.'), 900);
+    root.style.setProperty('--dawn', (early ? 7 : 16) + 's');
+    body.dataset.state = 'dawn';
+    later(() => body.classList.add('settled'), 11000);
+    if (early) later(() => setLabel(''), 400);
+    else {
+      later(() => { setLabel(''); setSub(''); }, 5400);
+      later(() => { setLabel('Nota cómo estás ahora'); setSub('Sin cambiar nada.'); }, 8600);
+      later(() => { setLabel(''); setSub(''); }, 13200);
+    }
+    const opened = prefs.test ? [] : LOCKED.filter(id => unlocked(id) && !done.before.includes(id));
+    const showEnd = () => {
+      dawnSkip = null;
+      const mins = Math.max(0, Math.round(done.practiced / 60));
+      $('endText').textContent = early ? (mins >= 1 ? 'Lo que has respirado también cuenta.' : 'Sesión terminada.') : T[done.id].close;
+      $('endMeta').textContent = mins >= 1 ? `${mins} min de práctica` : '';
+      $('endNews').hidden = !opened.length;
+      $('endNews').textContent = opened.length ? `Se ha abierto ${T[opened[0]].name}. Ya tienes la experiencia para probarla.` : '';
+      $('endStar').hidden = early;
+      if (!early) renderSky(addStar(done.practiced / 60));
+      $('end').classList.add('on');
+      $('again').focus({ preventScroll: true });
+    };
+    dawnSkip = () => { clearTimers(); body.classList.add('settled'); setLabel(''); setSub(''); showEnd(); };
+    later(showEnd, early ? 2500 : 14000);
+  }
+  let dawnSkip = null;
+  $('stage').addEventListener('click', () => { if (body.dataset.state === 'dawn' && dawnSkip) dawnSkip(); });
+
+  function backToList() {
+    clearTimers(); dawnSkip = null;
+    $('end').classList.remove('on');
+    body.classList.remove('full', 'settled', 'twin', 'travel');
+    body.dataset.state = 'setup';
+    applyPalette(prefs.palette);
+    go(lastCfg && lastCfg.from === 'check' ? 'home' : 'techs');
+  }
+
+  const FEELINGS = [
+    { id: 'nervios', tech: 'sigh', label: 'Con nervios', why: 'El Suspiro alarga la exhalación, que es lo que antes calma el cuerpo. En un estudio de Stanford fue la técnica que más mejoró el ánimo.' },
+    { id: 'sueno', tech: 'sleep', label: 'Con sueño o sin poder dormir', why: 'La exhalación larga del 4-7-8 le dice al cuerpo que puede frenar. Mejor hazla ya en la cama.' },
+    { id: 'dispersa', tech: 'box', label: 'Con la mente dispersa', why: 'Un ritmo cuadrado y predecible ordena la atención y le da a la mente algo que contar.' },
+    { id: 'animo', tech: 'res', label: 'Con el ánimo bajo', why: 'A seis respiraciones por minuto, corazón y respiración se acompasan. Si te apetece, pon una mano en el pecho.' },
+    { id: 'energia', tech: 'wake', label: 'Sin energía', why: 'Un ritmo más vivo para despejarte. Es corta a propósito: más tiempo no activa más, marea.' },
+    { id: 'ruido', tech: 'bee', label: 'Con mucho ruido en la cabeza', why: 'El zumbido de la abeja ocupa la atención y apaga el ruido de la cabeza casi de golpe.' }
+  ];
+  const TIMES = [{ m: 1, label: 'Un minuto' }, { m: 3, label: 'Tres minutos' }, { m: 5, label: 'Cinco minutos' }, { m: 10, label: 'Diez o más' }];
+  function durFor(id, m) {
+    const d = T[id].dur;
+    if (d.type === 'rounds') return m <= 3 ? d.opts[0] : d.opts[d.opts.length - 1];
+    return d.opts.reduce((best, o) => Math.abs(o - m) < Math.abs(best - m) ? o : best, d.opts[0]);
+  }
+  const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
+  // Cada frase lleva su estrella en el margen, todas en línea recta y unidas por un hilo
+  const STAR_X = [40, 40, 40, 40, 40, 40], STAR_R = [3, 3, 3, 3, 3, 3], ROW = 46;
+  function cList(items) {
+    const pts = items.map((_, i) => [STAR_X[i % 6], i * ROW + ROW / 2]);
+    const lines = pts.slice(1).map((p, i) => { const q = pts[i], len = Math.hypot(p[0] - q[0], p[1] - q[1]).toFixed(1);
+      return `<line style="--i:${i};--len:${len}" x1="${q[0]}" y1="${q[1]}" x2="${p[0]}" y2="${p[1]}"/>`; }).join('');
+    const stars = pts.map((p, i) => `<circle style="--i:${i}" data-i="${i}" cx="${p[0]}" cy="${p[1]}" r="${STAR_R[i % 6]}"/>`).join('');
+    return `<div class="clist"><svg class="cline" aria-hidden="true">${lines}${stars}</svg>${items.map((it, i) => it.replace('<button ', `<button data-i="${i}" `)).join('')}</div>`;
+  }
+  $('feelings').innerHTML = cList(['nervios', 'ruido', 'dispersa', 'sueno', 'energia', 'animo'].map(id => { const f = FEELINGS.find(x => x.id === id); return `<button class="cword" data-feel="${f.id}" aria-pressed="false">${low(f.label)}</button>`; }));
+  $('times').innerHTML = cList(TIMES.map(t => `<button class="cword" data-time="${t.m}" aria-pressed="false">${low(t.label)}</button>`));
+  // Vuelve a dibujar la constelación (al entrar en la pantalla o al cambiar de pregunta)
+  const drawIn = (el) => { el.classList.remove('draw'); void el.offsetWidth; el.classList.add('draw'); };
+  const lightStar = (box, b) => box.querySelectorAll('.cline circle').forEach(c => c.classList.toggle('on', c.dataset.i === b.dataset.i));
+
+  let ck = { feel: null, time: null, tech: null, dur: 0 };
+  function resetCheck() {
+    ck = { feel: null, time: null, tech: null, dur: 0 };
+    document.querySelectorAll('#s-check .cword').forEach(b => b.setAttribute('aria-pressed', 'false'));
+    $('feelings').className = 'cwords'; $('times').className = 'cwords off';
+    document.querySelectorAll('#s-check .cline circle').forEach(c => c.classList.remove('on'));
+    drawIn($('feelings'));
+    $('ck-q').textContent = '¿Cómo te sientes ahora mismo?'; $('ck-q').parentNode.classList.remove('swap');
+  }
+  // Al elegir cómo te sientes, esas frases se apagan y en su lugar aparecen las del tiempo
+  $('feelings').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-feel]'); if (!b || ck.feel) return;
+    ck.feel = b.dataset.feel;
+    $('feelings').querySelectorAll('.cword').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $('feelings').classList.add('picked'); lightStar($('feelings'), b);
+    const head = $('ck-q').parentNode;
+    setTimeout(() => { $('feelings').classList.add('off'); head.classList.add('swap'); }, 700);
+    setTimeout(() => { $('ck-q').textContent = '¿Cuánto tiempo tienes?'; head.classList.remove('swap'); $('times').classList.remove('off'); drawIn($('times')); }, 1250);
+  });
+  $('times').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-time]'); if (!b || ck.time) return;
+    ck.time = +b.dataset.time;
+    $('times').querySelectorAll('.cword').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $('times').classList.add('picked'); lightStar($('times'), b);
+    showResult();
+  });
+  function showResult() {
+    const f = FEELINGS.find(x => x.id === ck.feel), d = durFor(f.tech, ck.time);
+    prefs.dur[f.tech] = d; save();
+    let why = f.why;
+    if (f.tech === 'wake' && ck.time > d) why += ' Es corta a propósito.';
+    holding = true;
+    setTimeout(() => { holding = false; openTech(f.tech, 'check', why); }, 1100);
+  }
+
+  $('f-start').addEventListener('click', startFromTech);
+  $('stop').addEventListener('click', (e) => { e.stopPropagation(); finish(true); });
+  $('again').addEventListener('click', () => lastCfg && startSession(lastCfg));
+  $('back').addEventListener('click', backToList);
+  document.addEventListener('keydown', (e) => {
+    if (!session) return;
+    if (e.key === 'Escape') finish(true);
+    if (e.key === ' ') { e.preventDefault(); if (!trySkip()) togglePause(); }
+  });
+
+  $('skyTest').addEventListener('click', () => {
+    // En modo prueba: una estrella como si hubieras respirado entre 1 y 20 minutos, repartidas en las últimas semanas
+    const back = prefs.stars.length % 3 === 2 ? 7 * 86400000 * (1 + Math.floor(Math.random() * 3)) : 0;
+    const t = Date.now() - back - Math.floor(Math.random() * 3600000);
+    const p = placeStar(t);
+    prefs.stars.push({ t, m: 1 + Math.floor(Math.random() * 20), x: p.x, y: p.y, a: p.a });
+    prefs.stars.sort((a, b) => a.t - b.t); save();
+    renderSky(t); renderPanel();
+  });
+  renderSky();
+
+  // Panel de pruebas
+  function fakeStars(n) {
+    // n respiraciones repartidas hacia atrás, unas cinco por semana, con duraciones variadas
+    const now = Date.now(), DAY = 86400000, times = [];
+    for (let i = 0; i < n; i++) times.push(now - Math.round(i * 1.35 * DAY) - (i ? (i % 7) * 3600000 : 0));
+    prefs.stars = [];
+    times.reverse().forEach((t, i) => { const p = placeStar(t); prefs.stars.push({ t, m: [1, 3, 5, 10, 5, 3, 15, 20][i % 8], x: p.x, y: p.y, a: p.a }); });
+  }
+  function renderPanel() {
+    if (!DEMO) { $('testpanel').hidden = true; return; }
+    $('testpanel').hidden = !prefs.test;
+    if (!prefs.test) return;
+    $('tpMin').textContent = prefs.practice < 60 ? '0 min' : fmtPractice(prefs.practice);
+    const open = LOCKED.filter(id => prefs.practice >= T[id].lock).map(id => T[id].name.replace(/^El /, ''));
+    $('tpMinHint').textContent = open.length ? 'Abierta: ' + open.join(' y ') : 'El Chamán se abre a las 3 h; la Kundalini, a las 6 h';
+    $('tpSes').textContent = prefs.stars.length;
+    const wk = weekOf(Date.now()), n = prefs.stars.filter(s => weekOf(s.t) === wk).length;
+    $('tpSesHint').textContent = `Esta semana: ${n}`;
+  }
+  function applyTest(min, ses) {
+    prefs.practice = Math.max(0, min); fakeStars(Math.max(0, Math.min(150, ses)));
+    save(); renderSky(); renderList(); renderPanel();
+  }
+  $('testpanel').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-tp]'), pre = e.target.closest('[data-preset]');
+    if (b && b.dataset.tp === 'min') applyTest(prefs.practice + +b.dataset.d, prefs.stars.length);
+    if (b && b.dataset.tp === 'ses') applyTest(prefs.practice, prefs.stars.length + +b.dataset.d);
+    if (pre) { const [m, n] = pre.dataset.preset.split(',').map(Number); applyTest(m * 60, n); toast(pre.textContent); }
+  });
+  $('tpTeach').addEventListener('click', () => { prefs.done = {}; prefs.starts = 0; save(); toast('Las explicaciones y la pista de empezar volverán a salir'); });
+  renderPanel();
+
+  // Instalar como app (solo en la dirección real; en el artifact de claude.ai no tiene sentido)
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const ownSite = /(^|\.)mvmmaison\.com$/.test(location.hostname);
+  let installPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; $('install').hidden = !ownSite || standalone; });
+  if (ownSite && isIOS && !standalone) $('install').hidden = false;
+  $('install').addEventListener('click', async () => {
+    if (installPrompt) { installPrompt.prompt(); try { await installPrompt.userChoice; } catch (e) {} installPrompt = null; $('install').hidden = true; }
+    else if (isIOS) $('iosSheet').hidden = false;
+  });
+  $('iosOk').addEventListener('click', () => { $('iosSheet').hidden = true; });
+  $('iosSheet').addEventListener('click', (e) => { if (e.target.id === 'iosSheet') $('iosSheet').hidden = true; });
+
+  // Compartir: siempre la dirección limpia, sin ?demo, también desde el portfolio
+  function shareUrl() { const u = new URL(location.href); u.searchParams.delete('demo'); u.hash = ''; return u.toString(); }
+
+  // Compartir
+  function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 2400); }
+  $('share').addEventListener('click', async () => {
+    const data = { title: 'Respira', text: 'Para cuando el día va demasiado rápido: una pausa de unos minutos, sin cuenta ni anuncios.', url: shareUrl() };
+    try {
+      if (navigator.share) { await navigator.share(data); return; }
+      await navigator.clipboard.writeText(shareUrl()); toast('Enlace copiado');
+    } catch (e) { if (e && e.name !== 'AbortError') toast('No se pudo compartir desde aquí. Copia el enlace del navegador.'); }
+  });
+})();
+</script>
+<script>
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script>
+</body>
+</html>
