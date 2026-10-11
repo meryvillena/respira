@@ -1167,7 +1167,8 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   try { const s = localStorage.getItem(STORE); if (s) { prefs = Object.assign(prefs, JSON.parse(s)); stored = true; } } catch (e) {}
   // iPhone: la app instalada no comparte datos con Safari. Al instalar, el cielo viaja en la dirección (?cielo=…)
   // y la primera vez que se abre la app lo recoge. Solo una vez, y solo si la app aún no tiene cielo propio.
-  const isStandalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  // Instalada = abierta fuera de la pestaña del navegador (Chrome en ordenador puede usar varios modos de ventana)
+  const isStandalone = matchMedia('(display-mode: standalone), (display-mode: minimal-ui), (display-mode: fullscreen), (display-mode: window-controls-overlay)').matches || navigator.standalone === true;
   if (qs.has('cielo')) {
     try {
       if (isStandalone && !localStorage.getItem('respira-cielo-recogido')) {
@@ -2033,7 +2034,7 @@ void main(){
       $('endNews').hidden = !opened.length;
       $('endNews').textContent = opened.length ? `Se ha abierto ${T[opened[0]].name}. Ya tienes la experiencia para probarla.` : '';
       $('endStar').hidden = early;
-      const invite = !early && !prefs.installAsked && !DEMO && canInstall();
+      const invite = !early && !prefs.installAsked && !DEMO && (isIOS || isAndroid) && canInstall();   // solo en móvil
       $('endInvite').hidden = !invite; body.classList.toggle('inviting', invite);
       if (!early) renderSky(addStar(done.practiced / 60));
       $('end').classList.add('on');
@@ -2176,13 +2177,14 @@ void main(){
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isAndroid = /android/i.test(navigator.userAgent);
   const ownSite = /(^|\.)mvmmaison\.com$/.test(location.hostname);
-  const canInstall = () => ownSite && !standalone && (installPrompt || isIOS || isAndroid);
+  const canInstall = () => ownSite && !standalone && !prefs.installed && (installPrompt || isIOS || isAndroid);
+  if (standalone && !prefs.installed) { prefs.installed = true; save(); }   // recordar que ya está instalada
   let installPrompt = null;
-  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; $('install').hidden = !ownSite || standalone; });
-  if (ownSite && (isIOS || isAndroid) && !standalone) $('install').hidden = false;
-  window.addEventListener('appinstalled', () => { $('install').hidden = true; });
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; $('install').hidden = !ownSite || standalone || !!prefs.installed; });
+  if (ownSite && (isIOS || isAndroid) && !standalone && !prefs.installed) $('install').hidden = false;
+  window.addEventListener('appinstalled', () => { $('install').hidden = true; prefs.installed = true; save(); });
   async function doInstall() {
-    if (installPrompt) { installPrompt.prompt(); try { await installPrompt.userChoice; } catch (e) {} installPrompt = null; $('install').hidden = true; return; }
+    if (installPrompt) { installPrompt.prompt(); try { const c = await installPrompt.userChoice; if (c && c.outcome === 'accepted') { prefs.installed = true; save(); } } catch (e) {} installPrompt = null; $('install').hidden = true; return; }
     if (isIOS) {
       // El cielo viaja en la dirección que el iPhone guarda al añadirla a la pantalla de inicio
       if ((prefs.stars || []).length || prefs.practice) {
