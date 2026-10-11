@@ -679,6 +679,17 @@ body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
 body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
 :root { color-scheme: dark; }
+/* Tus datos */
+.privacy p { margin: 0 0 10px; font-size: .9rem; line-height: 1.6; color: var(--ink-soft); }
+.erase { padding-left: 0; color: color-mix(in srgb, #F2A9A9 70%, var(--ink-soft)); }
+#s-settings { padding-bottom: 40px; }
+#s-sky .skyprivacy { margin: 14px 0 0; font-size: .8rem; opacity: .5; }
+.sheet-card > p { margin: 0; line-height: 1.6; color: var(--ink-soft); }
+.sheet-row { display: flex; gap: 10px; margin-top: 18px; }
+.sheet-row > * { flex: 1; min-height: 50px; margin: 0; }
+.ghostbtn { border-radius: 999px; border: 1px solid var(--line); background: none; font-size: 1rem; }
+:root .sheet-row .primary { margin: 0; min-height: 50px; }
+:root .sheet-row .primary.danger { background: color-mix(in srgb, #E07A7A 42%, transparent); box-shadow: none; }
 /* Onda de luz al tocar la luna */
 .tripple { position: absolute; z-index: 2; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; pointer-events: none;
   border: 1.5px solid color-mix(in srgb, var(--c3) 80%, transparent);
@@ -857,6 +868,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       <p class="skyline" id="skyWeek"></p>
       <p class="skytotal" id="skyTotal"></p>
       <p class="skynote" id="skyNote"></p>
+      <p class="skyprivacy">Tu cielo se guarda solo en este dispositivo.</p>
       <button class="textbtn" id="skyTest" hidden>Añadir estrella de prueba</button>
     </section>
 
@@ -886,6 +898,12 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
         </div>
         <button class="textbtn tp-teach" id="tpTeach">Volver a ver las explicaciones y la pista de empezar</button>
       </div>
+      <p class="label">Tus datos</p>
+      <div class="privacy">
+        <p>Respira guarda tus estrellas, tus minutos y tus ajustes en este dispositivo. No necesitas una cuenta y tu progreso no se guarda online.</p>
+        <p>Eso significa que yo no puedo verlo ni recuperarlo. Tampoco pasa de un dispositivo a otro. Si borras los datos de Respira o eliminas la app, puedes perder tu cielo.</p>
+        <button class="textbtn erase" id="eraseBtn">Borrar mi cielo y mis ajustes</button>
+      </div>
     </section>
   </div>
 
@@ -912,6 +930,13 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
 </main>
 <button class="gear" id="gear" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 4.3c.4-1.7 3-1.7 3.4 0a1.7 1.7 0 0 0 2.6 1.1c1.5-.9 3.3.8 2.4 2.4a1.7 1.7 0 0 0 1 2.5c1.8.4 1.8 3 0 3.4a1.7 1.7 0 0 0-1 2.6c.9 1.5-.9 3.3-2.4 2.4a1.7 1.7 0 0 0-2.6 1c-.4 1.8-3 1.8-3.4 0a1.7 1.7 0 0 0-2.5-1c-1.6.9-3.3-.9-2.4-2.4a1.7 1.7 0 0 0-1.1-2.6c-1.7-.4-1.7-3 0-3.4a1.7 1.7 0 0 0 1.1-2.5c-.9-1.6.8-3.3 2.4-2.4 1 .6 2.3.1 2.5-1.1z"/><circle cx="12" cy="12" r="3"/></svg></button>
 <div class="toast" id="toast" role="status"></div>
+<div class="sheet" id="eraseSheet" role="dialog" aria-modal="true" aria-labelledby="eraseTitle" hidden>
+  <div class="sheet-card">
+    <h2 id="eraseTitle">¿Quieres borrar tu cielo?</h2>
+    <p>Se borrarán tus estrellas, tus minutos y tus ajustes de este dispositivo. No se puede deshacer.</p>
+    <div class="sheet-row"><button class="ghostbtn" id="eraseNo">Cancelar</button><button class="primary danger" id="eraseYes">Borrar todo</button></div>
+  </div>
+</div>
 <div class="sheet" id="iosSheet" role="dialog" aria-modal="true" aria-labelledby="iosTitle" hidden>
   <div class="sheet-card">
     <h2 id="iosTitle">Instala Respira en tu iPhone</h2>
@@ -920,6 +945,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       <li>Elige <b>Añadir a pantalla de inicio</b>.</li>
     </ol>
     <p class="sheet-note">Tendrás la luna con su icono, a pantalla completa y sin internet.</p>
+    <p class="sheet-note">Instálala antes de empezar: lo que hagas en Safari no pasará a la app.</p>
     <button class="primary" id="iosOk">Entendido</button>
   </div>
 </div>
@@ -2122,6 +2148,12 @@ void main(){
   });
   $('iosOk').addEventListener('click', () => { $('iosSheet').hidden = true; });
   $('iosSheet').addEventListener('click', (e) => { if (e.target.id === 'iosSheet') $('iosSheet').hidden = true; });
+
+  // Borrar mis datos: vacía la libreta de este dispositivo y vuelve a empezar
+  $('eraseBtn').addEventListener('click', () => { $('eraseSheet').hidden = false; });
+  $('eraseNo').addEventListener('click', () => { $('eraseSheet').hidden = true; });
+  $('eraseSheet').addEventListener('click', (e) => { if (e.target.id === 'eraseSheet') $('eraseSheet').hidden = true; });
+  $('eraseYes').addEventListener('click', () => { try { localStorage.removeItem(STORE); } catch (e) {} location.reload(); });
 
   // Compartir: siempre la dirección limpia, sin ?demo, también desde el portfolio
   function shareUrl() { const u = new URL(location.href); u.searchParams.delete('demo'); u.hash = ''; return u.toString(); }
