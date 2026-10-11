@@ -1331,10 +1331,10 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   function placeNudge() {
     if (!nudgeOn()) return;
     const r = $('orbA').getBoundingClientRect(), top = r.top + r.height * .17, n = $('nudge');
-    const low = top < 70;  // la luna se ha quedado arriba, fuera de la vista: la etiqueta baja y apunta hacia arriba
+    const low = r.top + r.height * .5 < 60;  // la luna se ha quedado arriba, fuera de la vista: la etiqueta baja y apunta hacia arriba
     n.classList.toggle('low', low);
     $('nudgeText').textContent = low ? 'Para empezar, sube y toca la luna' : 'Para empezar, toca la luna';
-    n.style.setProperty('--ny', (low ? 18 : top - 56) + 'px');
+    n.style.setProperty('--ny', (low ? 18 : Math.max(12, top - 56)) + 'px');
   }
   const wanderBy = (d) => { if (!nudgeOn() && nudgeWanted()) { wander += d; if (wander > 1600) showNudge(); } };
   window.addEventListener('pointermove', (e) => { if (lastMove) wanderBy(Math.hypot(e.clientX - lastMove[0], e.clientY - lastMove[1])); lastMove = [e.clientX, e.clientY]; }, { passive: true });
