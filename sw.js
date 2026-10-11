@@ -1,6 +1,6 @@
-// Copia sin internet de Respira. Versión d34021408d: cambia sola en cada publicación.
-const CACHE = 'respira-d34021408d';
-const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "fonts/fonts.css", "fonts/CormorantGaramond-italic.woff2", "fonts/CormorantGaramond-normal.woff2", "fonts/Manrope-normal.woff2", "icons/apple-touch-icon.png", "icons/favicon-64.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png"];
+// Copia sin internet de Respira. Versión dfc1491d32: cambia sola en cada publicación.
+const CACHE = 'respira-dfc1491d32';
+const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "manifest-ios.webmanifest", "fonts/fonts.css", "fonts/CormorantGaramond-italic.woff2", "fonts/CormorantGaramond-normal.woff2", "fonts/Manrope-normal.woff2", "icons/apple-touch-icon.png", "icons/favicon-64.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png"];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ARCHIVOS)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));

@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Respira</title>
 <link rel="manifest" href="manifest.webmanifest">
+<script>if (/iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) document.querySelector('link[rel=manifest]').href = 'manifest-ios.webmanifest';</script>
 <link rel="icon" type="image/png" href="icons/favicon-64.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -679,6 +680,14 @@ body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
 body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
 :root { color-scheme: dark; }
+/* Invitación a instalar al terminar la primera respiración */
+.invite { margin: -6px auto 18px; max-width: 32ch; }
+.invite p { margin: 0 0 12px; font-family: var(--sans); font-size: .95rem; font-weight: 400; line-height: 1.5; opacity: .9; }
+.invite p b { font-weight: 600; }
+body.inviting .end > .row { display: none; }
+body.inviting .orbwrap { transform: translateY(-16vh); }
+body.full[data-state="dawn"] .dial { opacity: 0; }   /* el anillo del tiempo se va al terminar */
+.sheet-note + .sheet-note { margin-top: 10px; }
 /* Tus datos */
 .privacy p { margin: 0 0 10px; font-size: .9rem; line-height: 1.6; color: var(--ink-soft); }
 .erase { padding-left: 0; color: color-mix(in srgb, #F2A9A9 70%, var(--ink-soft)); }
@@ -923,6 +932,10 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     <div class="meta" id="endMeta"></div>
     <div class="news" id="endNews" hidden></div>
     <div class="meta" id="endStar" hidden>Una estrella nueva en tu cielo.</div>
+    <div class="invite" id="endInvite" hidden>
+      <p><b>¿Quieres conservar tu cielo?</b> Instala Respira y tenlo siempre a mano.</p>
+      <div class="row"><button class="primary" id="inviteYes">Instalar</button><button class="ghost" id="inviteNo">Ahora no</button></div>
+    </div>
     <div class="row">
       <button class="primary" id="again">Repetir</button>
       <button class="ghost" id="back">Volver a las técnicas</button>
@@ -938,6 +951,13 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     <div class="sheet-row"><button class="ghostbtn" id="eraseNo">Cancelar</button><button class="primary danger" id="eraseYes">Borrar todo</button></div>
   </div>
 </div>
+<div class="sheet" id="openSheet" role="dialog" aria-modal="true" aria-labelledby="openTitle" hidden>
+  <div class="sheet-card">
+    <h2 id="openTitle">Ábrela en Chrome</h2>
+    <p>Para instalarla, ábrela en Chrome: toca ⋮ y elige «Abrir en Chrome». Después, toca <b>Instalar</b> otra vez.</p>
+    <button class="primary" id="openOk">Entendido</button>
+  </div>
+</div>
 <div class="sheet" id="iosSheet" role="dialog" aria-modal="true" aria-labelledby="iosTitle" hidden>
   <div class="sheet-card">
     <h2 id="iosTitle">Instala Respira en tu iPhone</h2>
@@ -945,8 +965,8 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       <li>Toca <svg class="ios-share" viewBox="0 0 24 24" aria-label="Compartir" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg> abajo en Safari.</li>
       <li>Elige <b>Añadir a pantalla de inicio</b>.</li>
     </ol>
-    <p class="sheet-note">Tendrás la luna con su icono, a pantalla completa y sin internet.</p>
-    <p class="sheet-note">Instálala antes de empezar: lo que hagas en Safari no pasará a la app.</p>
+    <p class="sheet-note">Tendrás la luna con su icono, a pantalla completa y sin internet. Tu cielo viaja contigo a la app.</p>
+    <p class="sheet-note">¿La abriste desde WhatsApp o Instagram? Primero toca ⋯ o el icono de la brújula y elige «Abrir en Safari».</p>
     <button class="primary" id="iosOk">Entendido</button>
   </div>
 </div>
@@ -1145,6 +1165,19 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   const STORE = DEMO ? 'respira-demo-v3' : 'respira-v3';
   let stored = false;
   try { const s = localStorage.getItem(STORE); if (s) { prefs = Object.assign(prefs, JSON.parse(s)); stored = true; } } catch (e) {}
+  // iPhone: la app instalada no comparte datos con Safari. Al instalar, el cielo viaja en la dirección (?cielo=…)
+  // y la primera vez que se abre la app lo recoge. Solo una vez, y solo si la app aún no tiene cielo propio.
+  const isStandalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (qs.has('cielo')) {
+    try {
+      if (isStandalone && !localStorage.getItem('respira-cielo-recogido')) {
+        const traido = JSON.parse(decodeURIComponent(escape(atob(qs.get('cielo').replace(/-/g, '+').replace(/_/g, '/')))));
+        if (!stored || !(prefs.stars || []).length) { prefs = Object.assign(prefs, traido); stored = true; localStorage.setItem(STORE, JSON.stringify(prefs)); }
+        localStorage.setItem('respira-cielo-recogido', '1');
+      }
+    } catch (e) {}
+    const limpia = new URL(location.href); limpia.searchParams.delete('cielo'); history.replaceState(null, '', limpia);
+  }
   if (!DEMO) prefs.test = false;
   else if (!stored) prefs.test = true;  // en la demo, el panel de pruebas viene activado la primera vez
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(prefs)); } catch (e) {} };
@@ -2000,6 +2033,8 @@ void main(){
       $('endNews').hidden = !opened.length;
       $('endNews').textContent = opened.length ? `Se ha abierto ${T[opened[0]].name}. Ya tienes la experiencia para probarla.` : '';
       $('endStar').hidden = early;
+      const invite = !early && !prefs.installAsked && !DEMO && canInstall();
+      $('endInvite').hidden = !invite; body.classList.toggle('inviting', invite);
       if (!early) renderSky(addStar(done.practiced / 60));
       $('end').classList.add('on');
       $('again').focus({ preventScroll: true });
@@ -2013,7 +2048,7 @@ void main(){
   function backToList() {
     clearTimers(); dawnSkip = null;
     $('end').classList.remove('on');
-    body.classList.remove('full', 'settled', 'twin', 'travel');
+    body.classList.remove('full', 'settled', 'twin', 'travel', 'inviting');
     body.dataset.state = 'setup';
     applyPalette(prefs.palette);
     go(lastCfg && lastCfg.from === 'check' ? 'home' : 'techs');
@@ -2137,18 +2172,36 @@ void main(){
   renderPanel();
 
   // Instalar como app (solo en la dirección real; en el artifact de claude.ai no tiene sentido)
-  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const standalone = isStandalone;
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /android/i.test(navigator.userAgent);
   const ownSite = /(^|\.)mvmmaison\.com$/.test(location.hostname);
+  const canInstall = () => ownSite && !standalone && (installPrompt || isIOS || isAndroid);
   let installPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; $('install').hidden = !ownSite || standalone; });
-  if (ownSite && isIOS && !standalone) $('install').hidden = false;
-  $('install').addEventListener('click', async () => {
-    if (installPrompt) { installPrompt.prompt(); try { await installPrompt.userChoice; } catch (e) {} installPrompt = null; $('install').hidden = true; }
-    else if (isIOS) $('iosSheet').hidden = false;
-  });
+  if (ownSite && (isIOS || isAndroid) && !standalone) $('install').hidden = false;
+  window.addEventListener('appinstalled', () => { $('install').hidden = true; });
+  async function doInstall() {
+    if (installPrompt) { installPrompt.prompt(); try { await installPrompt.userChoice; } catch (e) {} installPrompt = null; $('install').hidden = true; return; }
+    if (isIOS) {
+      // El cielo viaja en la dirección que el iPhone guarda al añadirla a la pantalla de inicio
+      if ((prefs.stars || []).length || prefs.practice) {
+        const datos = { stars: prefs.stars.slice(-300), practice: prefs.practice, done: prefs.done, palette: prefs.palette, sound: prefs.sound, adj: prefs.adj, ack: prefs.ack, view: prefs.view, starts: prefs.starts };
+        const u = new URL(location.href); u.searchParams.set('cielo', btoa(unescape(encodeURIComponent(JSON.stringify(datos)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''));
+        history.replaceState(null, '', u);
+      }
+      $('iosSheet').hidden = false; return;
+    }
+    $('openSheet').hidden = false;   // Android sin instalador (p. ej. dentro de WhatsApp): que la abra en Chrome
+  }
+  $('install').addEventListener('click', doInstall);
   $('iosOk').addEventListener('click', () => { $('iosSheet').hidden = true; });
   $('iosSheet').addEventListener('click', (e) => { if (e.target.id === 'iosSheet') $('iosSheet').hidden = true; });
+  $('openOk').addEventListener('click', () => { $('openSheet').hidden = true; });
+  $('openSheet').addEventListener('click', (e) => { if (e.target.id === 'openSheet') $('openSheet').hidden = true; });
+  const closeInvite = () => { prefs.installAsked = true; save(); $('endInvite').hidden = true; body.classList.remove('inviting'); };
+  $('inviteYes').addEventListener('click', () => { closeInvite(); doInstall(); });
+  $('inviteNo').addEventListener('click', closeInvite);
 
   // Contador de instalaciones (GoatCounter, sin cookies): la primera vez que Respira se abre ya instalada
   // envía un único "+1 instalación" anónimo. No cuenta visitas ni nada de lo que hace cada persona.
@@ -2171,7 +2224,7 @@ void main(){
   $('eraseYes').addEventListener('click', () => { try { localStorage.removeItem(STORE); } catch (e) {} location.reload(); });
 
   // Compartir: siempre la dirección limpia, sin ?demo, también desde el portfolio
-  function shareUrl() { const u = new URL(location.href); u.searchParams.delete('demo'); u.hash = ''; return u.toString(); }
+  function shareUrl() { const u = new URL(location.href); u.searchParams.delete('demo'); u.searchParams.delete('cielo'); u.hash = ''; return u.toString(); }
 
   // Compartir
   function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 2400); }
