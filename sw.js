@@ -8,10 +8,19 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const r = e.request;
   if (r.method !== 'GET' || new URL(r.url).origin !== location.origin) return;
-  const clave = r.mode === 'navigate' ? 'index.html' : r;
+  if (r.mode === 'navigate') {
+    // La página: primero la versión nueva de internet (sin caché del navegador); si no hay conexión o tarda más de 3 s, la guardada
+    e.respondWith(caches.open(CACHE).then(async (c) => {
+      const guardado = await c.match('index.html');
+      const red = fetch(r.url, { cache: 'no-store' }).then((res) => { if (res.ok) c.put('index.html', res.clone()); return res; });
+      const espera = new Promise((ok) => setTimeout(() => ok(null), 3000));
+      try { return (await Promise.race([red, espera])) || guardado || await red; } catch (err) { return guardado || Response.error(); }
+    }));
+    return;
+  }
+  // Fuentes e iconos: los guardados (no cambian); si falta alguno, se descarga y se guarda
   e.respondWith(caches.open(CACHE).then(async (c) => {
-    const guardado = await c.match(clave, { ignoreSearch: true });
-    const red = fetch(r).then((res) => { if (res.ok) c.put(clave, res.clone()); return res; }).catch(() => guardado);
-    return guardado || red;
+    const guardado = await c.match(r, { ignoreSearch: true });
+    return guardado || fetch(r).then((res) => { if (res.ok) c.put(r, res.clone()); return res; });
   }));
 });
