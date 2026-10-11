@@ -902,6 +902,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       <div class="privacy">
         <p>Respira guarda tus estrellas, tus minutos y tus ajustes en este dispositivo. No necesitas una cuenta y tu progreso no se guarda online.</p>
         <p>Eso significa que yo no puedo verlo ni recuperarlo. Tampoco pasa de un dispositivo a otro. Si borras los datos de Respira o eliminas la app, puedes perder tu cielo.</p>
+        <p>Solo cuento, de forma anónima, cuántas veces se instala Respira. Nada más: ni quién eres, ni qué respiras.</p>
         <button class="textbtn erase" id="eraseBtn">Borrar mi cielo y mis ajustes</button>
       </div>
     </section>
@@ -2148,6 +2149,20 @@ void main(){
   });
   $('iosOk').addEventListener('click', () => { $('iosSheet').hidden = true; });
   $('iosSheet').addEventListener('click', (e) => { if (e.target.id === 'iosSheet') $('iosSheet').hidden = true; });
+
+  // Contador de instalaciones (GoatCounter, sin cookies): la primera vez que Respira se abre ya instalada
+  // envía un único "+1 instalación" anónimo. No cuenta visitas ni nada de lo que hace cada persona.
+  // Solo en la versión de regalo y en su dirección real. La marca va aparte para que "Borrar mis datos" no vuelva a contar.
+  const COUNTED = 'respira-instalacion-contada';
+  function countInstall() {
+    if (!ownSite || DEMO || !standalone) return;
+    try { if (localStorage.getItem(COUNTED)) return; } catch (e) { return; }
+    const img = new Image();
+    img.onload = () => { try { localStorage.setItem(COUNTED, '1'); } catch (e) {} };
+    img.src = 'https://meryvillena.goatcounter.com/count?p=' + encodeURIComponent('/instalacion') + '&t=' + encodeURIComponent('Instalación') + '&e=true&rnd=' + Math.random().toString(36).slice(2);
+  }
+  countInstall();
+  window.addEventListener('online', countInstall);
 
   // Borrar mis datos: vacía la libreta de este dispositivo y vuelve a empezar
   $('eraseBtn').addEventListener('click', () => { $('eraseSheet').hidden = false; });
