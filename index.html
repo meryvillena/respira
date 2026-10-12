@@ -756,10 +756,9 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
 .sheet-row > * { flex: none; }
 .end .row, .invite .row { gap: 26px; align-items: center; }
 /* El brillo: igual al pasar el ratón, al tocar con el dedo o al llegar con el teclado */
-.textbtn, .primary, .ghost, .ghostbtn, .tp-chip, .step-btn, .chip, .talk, details summary, .tcard .tname, .tcard .tpara { transition: color .35s ease, text-shadow .35s ease, opacity .35s ease; }
+.textbtn, .primary, .ghost, .ghostbtn, .tp-chip, .step-btn, .chip, .talk, details summary, .tcard .tname { transition: color .35s ease, text-shadow .35s ease, opacity .35s ease; }
 :is(.textbtn, .primary, .ghost, .ghostbtn, .tp-chip, .step-btn, .chip, .talk, details summary):is(:hover, :focus-visible, :active),
 .tcard:is(:hover, :focus-visible, :active) .tname { color: var(--ink); text-shadow: 0 0 14px var(--glow), 0 0 4px var(--c3); outline: none; }
-.tcard:is(:hover, :focus-visible, :active) .tpara { color: var(--ink); }
 .tcard:is(:hover, :focus-visible, :active) .mo, .tcard:is(:hover, :focus-visible, :active) .skyico { filter: drop-shadow(0 0 8px var(--glow)); }
 .tcard:focus-visible { outline: none; }
 .primary.danger:is(:hover, :focus-visible, :active) { color: #FFD6D6; text-shadow: 0 0 14px rgba(240,120,120,.8); }
