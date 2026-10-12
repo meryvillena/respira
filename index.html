@@ -680,11 +680,17 @@ body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
 body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
 :root { color-scheme: dark; }
+/* Pantalla final: tocar la luna repite; «Volver» y la estrella son texto */
+.endhint { margin: 2px 0 6px !important; font-family: var(--serif) !important; font-style: italic; font-size: 1.1rem !important; color: var(--ink-soft); opacity: .85; }
+body.inviting .endhint { display: none; }
+.starlink { display: inline-block; margin: -6px 0 14px; padding: 6px 10px; font-size: .9rem; }
+body[data-state="dawn"] .end.on ~ * .orbs, body[data-state="dawn"] .orbs { cursor: pointer; }
 /* Invitación a instalar al terminar la primera respiración */
 .invite { margin: -6px auto 18px; max-width: 32ch; }
 .invite p { margin: 0 0 12px; font-family: var(--sans); font-size: .95rem; font-weight: 400; line-height: 1.5; opacity: .9; }
 .invite p b { font-weight: 600; }
 body.inviting .end > .row { display: none; }
+body.ended .orbwrap { transform: translateY(-11vh); }
 body.inviting .orbwrap { transform: translateY(-16vh); }
 body.full[data-state="dawn"] .dial { opacity: 0; }   /* el anillo del tiempo se va al terminar */
 .sheet-note + .sheet-note { margin-top: 10px; }
@@ -956,14 +962,15 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     <p id="endText"></p>
     <div class="meta" id="endMeta"></div>
     <div class="news" id="endNews" hidden></div>
-    <div class="meta" id="endStar" hidden>Una estrella nueva en tu cielo.</div>
+    <button class="textbtn starlink" id="endStar" hidden>Una estrella nueva en tu cielo →</button>
     <div class="invite" id="endInvite" hidden>
       <p><b>¿Quieres conservar tu cielo?</b> Instala Respira y tenlo siempre a mano.</p>
       <div class="row"><button class="primary" id="inviteYes">Instalar</button><button class="ghost" id="inviteNo">Ahora no</button></div>
     </div>
+    <p class="endhint">Toca la luna para repetir</p>
     <div class="row">
-      <button class="primary" id="again">Repetir</button>
-      <button class="ghost" id="back">Volver a las técnicas</button>
+      <button class="vh" id="again">Repetir</button>
+      <button class="ghost" id="back">Volver</button>
     </div>
   </section>
 </main>
@@ -2005,6 +2012,7 @@ void main(){
   const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
 
   function startSession(cfg) {
+    body.classList.remove('ended', 'inviting');
     hideNudge(); prefs.starts = (prefs.starts || 0) + 1;
     lastCfg = cfg;
     clearTimers();
@@ -2039,7 +2047,6 @@ void main(){
     clearTimers(); stopPad(); releaseAwake();
     if (!early) chime();
     setSub('');
-    $('back').textContent = lastCfg && lastCfg.from === 'check' ? 'Volver al inicio' : 'Volver a las técnicas';
     setLabel(early ? '' : 'Vuelve despacio');
     if (!early) later(() => setSub('Deja que la respiración vuelva sola.'), 900);
     root.style.setProperty('--dawn', (early ? 7 : 16) + 's');
@@ -2061,25 +2068,30 @@ void main(){
       $('endNews').textContent = opened.length ? `Se ha abierto ${T[opened[0]].name}. Ya tienes la experiencia para probarla.` : '';
       $('endStar').hidden = early;
       const invite = !early && !prefs.installAsked && !DEMO && (isIOS || isAndroid) && canInstall();   // solo en móvil
-      $('endInvite').hidden = !invite; body.classList.toggle('inviting', invite);
+      $('endInvite').hidden = !invite; body.classList.toggle('inviting', invite); body.classList.add('ended');
       if (!early) renderSky(addStar(done.practiced / 60));
       $('end').classList.add('on');
-      $('again').focus({ preventScroll: true });
     };
     dawnSkip = () => { clearTimers(); body.classList.add('settled'); setLabel(''); setSub(''); showEnd(); };
     later(showEnd, early ? 2500 : 14000);
   }
   let dawnSkip = null;
-  $('stage').addEventListener('click', () => { if (body.dataset.state === 'dawn' && dawnSkip) dawnSkip(); });
+  $('stage').addEventListener('click', (e) => {
+    if (body.dataset.state !== 'dawn') return;
+    if (dawnSkip) return dawnSkip();
+    // Al final: tocar la luna repite (salvo mientras se pregunta si instalarla)
+    if ($('end').classList.contains('on') && e.target.closest('.orbs') && !body.classList.contains('inviting') && lastCfg) startSession(lastCfg);
+  });
 
-  function backToList() {
+  function backToList(dest) {
     clearTimers(); dawnSkip = null;
     $('end').classList.remove('on');
-    body.classList.remove('full', 'settled', 'twin', 'travel', 'inviting');
+    body.classList.remove('full', 'settled', 'twin', 'travel', 'inviting', 'ended');
     body.dataset.state = 'setup';
     applyPalette(prefs.palette);
-    go(lastCfg && lastCfg.from === 'check' ? 'home' : 'techs');
+    go(typeof dest === 'string' ? dest : lastCfg && lastCfg.from === 'check' ? 'home' : 'techs');
   }
+  $('endStar').addEventListener('click', () => backToList('sky'));
 
   const FEELINGS = [
     { id: 'nervios', tech: 'sigh', label: 'Recuperar la calma', why: 'La exhalación larga ayuda al cuerpo a bajar el ritmo. En un estudio de Stanford, fue la técnica que más mejoró el ánimo.' },
