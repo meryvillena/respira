@@ -561,11 +561,12 @@ body[data-state="focus"] .orbs { cursor: pointer; }
 /* Tu cielo: una estrella por respiración terminada, de fondo en todas las pantallas */
 .stars { width: 100%; height: 100%; --star: color-mix(in srgb, var(--c0) 55%, #2A2440); opacity: 1; transition: opacity 2s ease; }
 .stars line { stroke: var(--star); stroke-width: 1px; vector-effect: non-scaling-stroke; }
-.stars .cur line { opacity: .32; }
+.stars .cur line { opacity: .22; }
+.stars .cur .st { --o1: .8; }
 .stars .old line { opacity: .1; }
 .stars .old .st { opacity: .4; }
 .stars .st circle { fill: var(--star); }
-.stars .st .glow { fill: url(#sglow); opacity: .75; }
+.stars .st .glow { fill: url(#sglow); opacity: .6; }
 .stars stop { stop-color: var(--star); }
 .stars .st { animation: tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--d, 0s); }
 @keyframes tw { 0%, 100% { opacity: var(--o1, 1); } 50% { opacity: calc(var(--o1, 1) * .55); } }
@@ -683,9 +684,9 @@ body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50
 @media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
 :root { color-scheme: dark; }
 /* Las constelaciones solo se ven en el inicio, en Tu cielo y al terminar una técnica; en el resto, solo el polvo de estrellas */
-.stars .cur, .stars .old { transition: opacity 1.2s ease; }
-body:is([data-screen="techs"], [data-screen="tech"], [data-screen="check"], [data-screen="settings"]):not(.ended) .stars :is(.cur, .old),
-body[data-state="dawn"]:not(.ended) .stars :is(.cur, .old) { opacity: 0; }
+/* Al salir: fundido a 0 en su sitio (sin encogerse con la luna). Al volver: esperan a que la luna llegue y aparecen con fundido */
+.stars .cur, .stars .old { transition: opacity 1.4s ease; }
+body.sky-off .stars :is(.cur, .old) { opacity: 0; transition-duration: .5s; }
 /* Estrella fugaz: una línea de luz que cruza en diagonal y se apaga */
 .shoot { position: fixed; z-index: 1; width: 160px; height: 2px; border-radius: 2px; pointer-events: none; transform-origin: left center;
   background: linear-gradient(90deg, #F4F1FF, rgba(244,241,255,.15) 60%, transparent); filter: drop-shadow(0 0 6px rgba(244,241,255,.9));
@@ -1295,7 +1296,19 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   // Coloca cada constelación en su sitio alrededor de la luna, a su escala, sin salirse de la pantalla.
   // Se llama en cada fotograma: así el cielo acompaña a la luna en todas las pantallas.
   const skyAnchor = { key: '' };
+  const SKY_HIDDEN = ':is([data-screen="techs"], [data-screen="tech"], [data-screen="check"], [data-screen="settings"]):not(.ended), [data-state="dawn"]:not(.ended)';
+  const skyReveal = { at: 0, first: true };
+  // Secuencia: si toca ocultarlas, fundido de salida y se quedan congeladas; si toca mostrarlas,
+  // esperan a que termine la transición de la luna (1,6 s), se recolocan y se encienden con fundido de entrada
+  function skyVisibility(now) {
+    const hidden = body.matches(SKY_HIDDEN);
+    if (hidden) { body.classList.add('sky-off'); skyReveal.at = 0; skyReveal.first = false; return; }
+    if (skyReveal.first || !body.classList.contains('sky-off')) { skyReveal.first = false; return; }
+    if (!skyReveal.at) skyReveal.at = now + 1700;
+    if (now >= skyReveal.at) { skyReveal.at = 0; skyAnchor.key = ''; body.classList.remove('sky-off'); anchorSky(); lightSky(); }
+  }
   function anchorSky() {
+    if (body.classList.contains('sky-off')) return;   // ocultas: no siguen a la luna
     const o = $('orbA').getBoundingClientRect(), wrap = document.querySelector('.orbwrap'), w = wrap.getBoundingClientRect();
     if (!o.width) return;
     // Posición de reposo de la luna: sin contar el arrastre, el imán ni la subida animada del final,
@@ -1597,7 +1610,6 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   // Enciende las estrellas una a una (al entrar en el inicio, Tu cielo o la pantalla final)
   function lightSky() { const st = $('stars'); st.classList.remove('lighting'); void st.getBoundingClientRect(); st.classList.add('lighting'); }
   function go(screen) {
-    if ((screen === 'home' || screen === 'sky') && body.dataset.screen !== screen) lightSky();
     if (screen !== 'tech') hideNudge();
     if (screen === 'settings' && body.dataset.screen !== 'settings') prevScreen = body.dataset.screen;
     if (screen === 'techs') renderList();
@@ -1933,6 +1945,7 @@ void main(){
     }
     springOrb();
     skyParallax();
+    skyVisibility(now);
     anchorSky();
     travel += (travelT - travel) * .06; if (Math.abs(travel) < .001 && !travelT) travel = 0;
     // Al cruzar, la luna sube en arco (más alta en el centro) y deja una estela de luz que la sigue con retraso
