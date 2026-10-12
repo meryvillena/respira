@@ -962,11 +962,11 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   <div class="sheet-card">
     <h2 id="iosTitle">Instala Respira en tu iPhone</h2>
     <ol>
-      <li>Toca <svg class="ios-share" viewBox="0 0 24 24" aria-label="Compartir" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg> abajo en Safari.</li>
+      <li>Toca <svg class="ios-share" viewBox="0 0 24 24" aria-label="Compartir" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg> <span id="iosWhere">abajo en Safari</span>.</li>
       <li>Elige <b>Añadir a pantalla de inicio</b>.</li>
     </ol>
     <p class="sheet-note">Tendrás la luna con su icono, a pantalla completa y sin internet. Tu cielo viaja contigo a la app.</p>
-    <p class="sheet-note">¿La abriste desde WhatsApp o Instagram? Primero toca ⋯ o el icono de la brújula y elige «Abrir en Safari».</p>
+    <p class="sheet-note" id="iosWhatsapp">¿La abriste desde WhatsApp o Instagram? Primero toca ⋯ o el icono de la brújula y elige «Abrir en Safari».</p>
     <button class="primary" id="iosOk">Entendido</button>
   </div>
 </div>
@@ -2192,6 +2192,10 @@ void main(){
         const u = new URL(location.href); u.searchParams.set('cielo', btoa(unescape(encodeURIComponent(JSON.stringify(datos)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''));
         history.replaceState(null, '', u);
       }
+      // Instrucciones según el navegador del iPhone: Safari (abajo), Chrome, Firefox o Edge (arriba, junto a la dirección)
+      const ua = navigator.userAgent, other = /CriOS|FxiOS|EdgiOS/.test(ua);
+      $('iosWhere').textContent = /CriOS/.test(ua) ? 'arriba en Chrome, junto a la dirección' : /FxiOS/.test(ua) ? 'en el menú de Firefox' : /EdgiOS/.test(ua) ? 'en el menú de Edge' : 'abajo en Safari';
+      $('iosWhatsapp').hidden = other;   // en Chrome, Firefox o Edge ya está en un navegador: no hace falta el aviso de WhatsApp
       $('iosSheet').hidden = false; return;
     }
     $('openSheet').hidden = false;   // Android sin instalador (p. ej. dentro de WhatsApp): que la abra en Chrome
