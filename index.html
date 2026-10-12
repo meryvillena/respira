@@ -826,7 +826,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       <div class="list home-list">
         <button class="tcard" data-go="check"><span class="mo" style="animation-name:k-idle;animation-duration:11s"></span><span class="tbody"><span class="tname">¿Qué te pide el cuerpo?</span><span class="tpara">Dos preguntas y te propongo una respiración.</span></span></button>
         <button class="tcard" data-go="techs"><span class="mo" style="animation-name:k-idle;animation-duration:8s"></span><span class="tbody"><span class="tname">Técnicas</span><span class="tpara">Diez formas de respirar, explicadas paso a paso.</span></span></button>
-        <button class="tcard" data-go="sky"><svg class="skyico" viewBox="0 0 26 26" aria-hidden="true"><path d="M7 17 L11 8 L19 12" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="7" cy="17" r="1.8" fill="currentColor"/><circle cx="11" cy="8" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="2.2" fill="currentColor"/></svg><span class="tbody"><span class="tname">Tu cielo</span><span class="tpara" id="homeSky">Cada respiración enciende una estrella.</span></span></button>
+        <button class="tcard" data-go="sky"><svg class="skyico" viewBox="0 0 26 26" aria-hidden="true"><path d="M7 17 L11 8 L19 12" fill="none" stroke="currentColor" stroke-width=".8" opacity=".6"/><circle cx="7" cy="17" r="1.8" fill="currentColor"/><circle cx="11" cy="8" r="1.4" fill="currentColor"/><circle cx="19" cy="12" r="2.2" fill="currentColor"/></svg><span class="tbody"><span class="tname">Tu cielo</span><span class="tpara" id="homeSky">Un cielo que se dibuja poco a poco.</span></span></button>
       </div>
       <div class="quiet">
         <button class="textbtn" id="share">Compartir</button>
@@ -967,7 +967,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     <p id="endText"></p>
     <div class="meta" id="endMeta"></div>
     <div class="news" id="endNews" hidden></div>
-    <button class="textbtn starlink" id="endStar" hidden>Una estrella nueva en tu cielo →</button>
+    <button class="textbtn starlink" id="endStar" hidden>Una nueva estrella acaba de encontrar su sitio →</button>
     <div class="invite" id="endInvite" hidden>
       <p><b>¿Quieres conservar tu cielo?</b> Instala Respira y tenlo siempre a mano.</p>
       <div class="row"><button class="primary" id="inviteYes">Instalar</button><button class="ghost" id="inviteNo">Ahora no</button></div>
@@ -1337,12 +1337,13 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       + `<g class="L Lfar" style="--k:7"><g class="drift" style="--dd:55s;--dx:5px;--dy:-4px"><g class="old">${far}</g></g></g>`
       + `<g class="L" style="--k:14"><g class="drift" style="--dd:40s;--dx:-8px;--dy:-6px"><g class="cur">${near}</g></g></g>`;
     skyAnchor.key = ''; anchorSky();
-    $('skyWeek').hidden = true;
+    $('skyWeek').hidden = !n;
+    $('skyWeek').textContent = n === 1 ? '1 estrella encendida' : `${n} estrellas encendidas`;
     $('skyTotal').textContent = prefs.practice >= 60 ? `En total, ${fmtPractice(prefs.practice)} respirando.` : '';
     $('skyNote').textContent = n
-      ? 'Cada respiración que terminas enciende una estrella. Poco a poco, el cielo se va dibujando.'
-      : 'Tu cielo está vacío todavía. Termina una respiración y se encenderá la primera estrella.';
-    $('homeSky').textContent = 'Cada respiración enciende una estrella.';
+      ? 'Aquí quedan las estrellas que has ido encendiendo. Si miras bien, puede que reconozcas alguna constelación.'
+      : 'Tu cielo aún espera su primera estrella. Termina una respiración para encenderla.';
+    $('homeSky').textContent = 'Un cielo que se dibuja poco a poco.';
     $('skyTest').hidden = !prefs.test;
   }
   const colorOf = () => prefs.palette;
