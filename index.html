@@ -676,6 +676,9 @@ body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
 }
 .nudge::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 10px; height: 10px; margin-left: -5px; transform: rotate(45deg);
   background: inherit; border-right: inherit; border-bottom: inherit; }
+.nudge.onluna { width: var(--nw); padding: 4px 6px; background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+  white-space: normal; text-align: center; font-size: .8rem; font-weight: 600; line-height: 1.3; color: #2B2152; text-shadow: 0 0 10px rgba(255,255,255,.7); }
+.nudge.onluna::after { display: none; }
 .nudge.low::after { bottom: auto; top: -6px; border: 0; border-left: 1px solid color-mix(in srgb, var(--c3) 45%, transparent); border-top: 1px solid color-mix(in srgb, var(--c3) 45%, transparent); }
 body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
@@ -1468,7 +1471,8 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   const NUDGE_UNTIL = 3;
   let nudgeT = null, wander = 0, lastMove = null;
   const nudgeOn = () => body.classList.contains('nudging');
-  const nudgeWanted = () => (prefs.starts || 0) < NUDGE_UNTIL && body.dataset.screen === 'tech' && body.dataset.state === 'setup' && !$('f-play').hidden;
+  // En la demo (portfolio) sale siempre; en la versión de regalo, solo en las 3 primeras sesiones
+  const nudgeWanted = () => (DEMO || (prefs.starts || 0) < NUDGE_UNTIL) && body.dataset.screen === 'tech' && body.dataset.state === 'setup' && !$('f-play').hidden;
   function armNudge() { hideNudge(); clearTimeout(nudgeT); wander = 0; if (nudgeWanted()) nudgeT = setTimeout(showNudge, 5000); }
   function hideNudge() { clearTimeout(nudgeT); body.classList.remove('nudging'); }
   function showNudge() { if (!nudgeWanted() || nudgeOn()) return; body.classList.add('nudging'); placeNudge(); }
@@ -1476,9 +1480,12 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     if (!nudgeOn()) return;
     const r = $('orbA').getBoundingClientRect(), top = r.top + r.height * .17, n = $('nudge');
     const low = r.top + r.height * .5 < 60;  // la luna se ha quedado arriba, fuera de la vista: la etiqueta baja y apunta hacia arriba
-    n.classList.toggle('low', low);
+    n.classList.toggle('low', low); n.classList.toggle('onluna', !low);
     $('nudgeText').textContent = low ? 'Para empezar, sube y toca la luna' : 'Para empezar, toca la luna';
-    n.style.setProperty('--ny', (low ? 18 : Math.max(12, top - 56)) + 'px');
+    // Con la luna a la vista, la pista va dentro de la luna, en su centro, para no tapar el anillo ni los minutos
+    const d = r.width * .62;   // diámetro de la luna que se ve
+    n.style.setProperty('--nw', Math.round(d * .78) + 'px');
+    n.style.setProperty('--ny', (low ? 18 : r.top + r.height / 2 - n.offsetHeight / 2) + 'px');
   }
   const wanderBy = (d) => { if (!nudgeOn() && nudgeWanted()) { wander += d; if (wander > 1600) showNudge(); } };
   window.addEventListener('pointermove', (e) => { if (lastMove) wanderBy(Math.hypot(e.clientX - lastMove[0], e.clientY - lastMove[1])); lastMove = [e.clientX, e.clientY]; }, { passive: true });
