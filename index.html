@@ -576,7 +576,7 @@ body[data-state="focus"] .orbs { cursor: pointer; }
 @keyframes bornglow { 0% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: .75; } }
 /* Al llegar al inicio, a Tu cielo o a la pantalla final, las estrellas se encienden una a una, en su sitio */
 @keyframes lightup { from { opacity: 0; } to { opacity: var(--o1, 1); } }
-.stars.lighting .st:not(.born) { animation: lightup 1.6s ease both, tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--li, 0s), calc(var(--li, 0s) + 1.6s); }
+.stars.lighting .st:not(.born) { animation: lightup 3s ease-in-out both, tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--li, 0s), calc(var(--li, 0s) + 3s); }
 body[data-state="focus"] .stars { opacity: 0; }
 :root[data-theme="dark"] .stars, body[data-screen="sky"] .stars { --star: #F4F1FF; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stars { --star: #F4F1FF; } }
@@ -685,8 +685,8 @@ body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50
 :root { color-scheme: dark; }
 /* Las constelaciones solo se ven en el inicio, en Tu cielo y al terminar una técnica; en el resto, solo el polvo de estrellas */
 /* Al salir: fundido a 0 en su sitio (sin encogerse con la luna). Al volver: esperan a que la luna llegue y aparecen con fundido */
-.stars .cur, .stars .old { transition: opacity 1.4s ease; }
-body.sky-off .stars :is(.cur, .old) { opacity: 0; transition-duration: .5s; }
+.stars .cur, .stars .old { transition: opacity 3s ease-in-out; }
+body.sky-off .stars :is(.cur, .old) { opacity: 0; transition-duration: 2s; }
 /* Estrella fugaz: una línea de luz que cruza en diagonal y se apaga */
 .shoot { position: fixed; z-index: 1; width: 160px; height: 2px; border-radius: 2px; pointer-events: none; transform-origin: left center;
   background: linear-gradient(90deg, #F4F1FF, rgba(244,241,255,.15) 60%, transparent); filter: drop-shadow(0 0 6px rgba(244,241,255,.9));
