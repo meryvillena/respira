@@ -739,6 +739,32 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
 .pc-rhythm { margin: 0; font-size: .86rem; opacity: .6; }
 .pc-warn { margin: 14px 0 0; font-size: .86rem; opacity: .75; }
 .pc-hint { margin: 26px 0 0; font-family: var(--serif); font-style: italic; font-size: 1.15rem; opacity: .7; }
+
+/* ===== Todo lo que se toca es texto que se ilumina: sin pastillas ni cajas ===== */
+:root .primary, :root .ghost, :root .ghostbtn, :root .tp-chip, :root #s-sky .textbtn, :root .step-btn {
+  background: none !important; border: 0 !important; box-shadow: none !important; border-radius: 0;
+  width: auto; min-height: 44px; padding: 8px 12px; margin: 0; cursor: pointer;
+}
+:root .primary { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; letter-spacing: 0; color: var(--ink); }
+:root .ghost, :root .ghostbtn { font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--ink-soft); }
+:root .primary.danger { color: #F0B4B4; }
+:root .tp-chip { font-size: .9rem; color: var(--ink-soft); padding: 6px 8px; }
+:root .step-btn { font-size: 1.7rem; line-height: 1; color: var(--ink-soft); width: 44px; padding: 0; }
+:root #s-sky .textbtn { padding-left: 0; }
+.sheet-card .primary { display: block; margin: 16px auto 0; }
+.sheet-row { justify-content: center; gap: 28px; }
+.sheet-row > * { flex: none; }
+.end .row, .invite .row { gap: 26px; align-items: center; }
+/* El brillo: igual al pasar el ratón, al tocar con el dedo o al llegar con el teclado */
+.textbtn, .primary, .ghost, .ghostbtn, .tp-chip, .step-btn, .chip, .talk, details summary, .tcard .tname, .tcard .tpara { transition: color .35s ease, text-shadow .35s ease, opacity .35s ease; }
+:is(.textbtn, .primary, .ghost, .ghostbtn, .tp-chip, .step-btn, .chip, .talk, details summary):is(:hover, :focus-visible, :active),
+.tcard:is(:hover, :focus-visible, :active) .tname { color: var(--ink); text-shadow: 0 0 14px var(--glow), 0 0 4px var(--c3); outline: none; }
+.tcard:is(:hover, :focus-visible, :active) .tpara { color: var(--ink); }
+.tcard:is(:hover, :focus-visible, :active) .mo, .tcard:is(:hover, :focus-visible, :active) .skyico { filter: drop-shadow(0 0 8px var(--glow)); }
+.tcard:focus-visible { outline: none; }
+.primary.danger:is(:hover, :focus-visible, :active) { color: #FFD6D6; text-shadow: 0 0 14px rgba(240,120,120,.8); }
+:is(.back, .gear):is(:hover, :focus-visible, :active) { color: var(--ink); filter: drop-shadow(0 0 6px var(--glow)); outline: none; }
+.back, .gear { transition: color .35s ease, filter .35s ease, opacity .6s ease; }
 </style></head>
 <body data-state="setup" data-screen="home">
 <div class="sky day"></div>
@@ -1160,6 +1186,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   // - Versión de regalo (respira.mvmmaison.com): sin modo prueba ni panel.
   // - Versión demo (?demo, la del portfolio): con modo prueba y panel. Guarda sus datos aparte para no mezclarlos con los reales.
   // Fuera de mvmmaison.com (el artifact de claude.ai, el archivo local) es demo por defecto; ?demo=0 fuerza la de regalo para probarla.
+  document.addEventListener('touchstart', () => {}, { passive: true });   // en iPhone, para que se ilumine lo que se toca
   const qs = new URLSearchParams(location.search);
   const DEMO = qs.has('demo') ? qs.get('demo') !== '0' : !/(^|\.)mvmmaison\.com$/.test(location.hostname);
   const STORE = DEMO ? 'respira-demo-v3' : 'respira-v3';
