@@ -680,6 +680,10 @@ body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
 body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
 :root { color-scheme: dark; }
+/* Las constelaciones solo se ven en el inicio, en Tu cielo y al terminar una técnica; en el resto, solo el polvo de estrellas */
+.stars .cur, .stars .old { transition: opacity 1.2s ease; }
+body:is([data-screen="techs"], [data-screen="tech"], [data-screen="check"], [data-screen="settings"]):not(.ended) .stars :is(.cur, .old),
+body[data-state="dawn"]:not(.ended) .stars :is(.cur, .old) { opacity: 0; }
 /* Estrella fugaz: una línea de luz que cruza en diagonal y se apaga */
 .shoot { position: fixed; z-index: 1; width: 160px; height: 2px; border-radius: 2px; pointer-events: none; transform-origin: left center;
   background: linear-gradient(90deg, #F4F1FF, rgba(244,241,255,.15) 60%, transparent); filter: drop-shadow(0 0 6px rgba(244,241,255,.9));
@@ -1290,9 +1294,13 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   // Se llama en cada fotograma: así el cielo acompaña a la luna en todas las pantallas.
   const skyAnchor = { key: '' };
   function anchorSky() {
-    const o = $('orbA').getBoundingClientRect(), w = document.querySelector('.orbs').getBoundingClientRect();
+    const o = $('orbA').getBoundingClientRect(), wrap = document.querySelector('.orbwrap'), w = wrap.getBoundingClientRect();
     if (!o.width) return;
-    const cx = w.x + w.width / 2, cy = w.y + w.height / 2, R = o.width * .33, W = innerWidth;
+    // Posición de reposo de la luna: sin contar el arrastre, el imán ni la subida animada del final,
+    // para que las estrellas se queden quietas mientras la luna se mueve
+    const m = new DOMMatrixReadOnly(getComputedStyle(wrap).transform);
+    const lift = body.classList.contains('inviting') ? -.16 * innerHeight : body.classList.contains('ended') ? -.11 * innerHeight : 0;
+    const cx = w.x + w.width / 2 - m.m41, cy = w.y + w.height / 2 - m.m42 + lift, R = o.width * .33, W = innerWidth;
     const key = cx.toFixed(1) + ',' + cy.toFixed(1) + ',' + R.toFixed(1) + ',' + W;
     if (key === skyAnchor.key) return;
     skyAnchor.key = key;
@@ -2016,7 +2024,7 @@ void main(){
     if (tap) tapOrb();
   });
   orbsEl.addEventListener('pointercancel', () => { drag = null; holding = false; });
-  // Paralaje del cielo: el dedo o el ratón, la luna arrastrada y la inclinación del móvil (Android) mueven los planos
+  // Paralaje del cielo: el dedo o el ratón y la inclinación del móvil (Android) mueven los planos
   const par = { tx: 0, ty: 0, x: 0, y: 0, tiltX: 0, tiltY: 0 };
   window.addEventListener('pointermove', (e) => { par.tx = e.clientX / innerWidth * 2 - 1; par.ty = e.clientY / innerHeight * 2 - 1; }, { passive: true });
   window.addEventListener('deviceorientation', (e) => {
@@ -2025,7 +2033,7 @@ void main(){
   }, { passive: true });
   function skyParallax() {
     if (reduceMotion) return;
-    const gx = Math.max(-1.5, Math.min(1.5, par.tx * .6 + par.tiltX + pos.x / 70)), gy = Math.max(-1.5, Math.min(1.5, par.ty * .6 + par.tiltY + pos.y / 70));
+    const gx = Math.max(-1.5, Math.min(1.5, par.tx * .6 + par.tiltX)), gy = Math.max(-1.5, Math.min(1.5, par.ty * .6 + par.tiltY));   // arrastrar la luna no mueve el cielo
     const nx = par.x + (gx - par.x) * .04, ny = par.y + (gy - par.y) * .04;
     if (Math.abs(nx - par.x) + Math.abs(ny - par.y) < .0005) return;
     par.x = nx; par.y = ny;
