@@ -570,10 +570,12 @@ body[data-state="focus"] .orbs { cursor: pointer; }
 .stars .st { animation: tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--d, 0s); }
 @keyframes tw { 0%, 100% { opacity: var(--o1, 1); } 50% { opacity: calc(var(--o1, 1) * .55); } }
 .stars .old .st { --o1: .4; }
-.stars .born { animation: born 2.8s cubic-bezier(.2,.7,.3,1) both, tw var(--tw, 7s) ease-in-out 2.8s infinite; transform-box: fill-box; transform-origin: center; }
-@keyframes born { 0% { opacity: 0; transform: scale(.2); } 35% { opacity: 1; transform: scale(2.2); } 100% { opacity: 1; transform: scale(1); } }
-.stars .born .glow { animation: bornglow 2.8s ease-out both; }
-@keyframes bornglow { 0% { opacity: 0; } 35% { opacity: 1; } 100% { opacity: .75; } }
+.stars .born { animation: lightup 2.4s ease both, tw var(--tw, 7s) ease-in-out 2.4s infinite; }
+.stars .born .glow { animation: bornglow 3.2s ease-out both; }
+@keyframes bornglow { 0% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: .75; } }
+/* Al llegar al inicio, a Tu cielo o a la pantalla final, las estrellas se encienden una a una, en su sitio */
+@keyframes lightup { from { opacity: 0; } to { opacity: var(--o1, 1); } }
+.stars.lighting .st:not(.born) { animation: lightup 1.6s ease both, tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--li, 0s), calc(var(--li, 0s) + 1.6s); }
 body[data-state="focus"] .stars { opacity: 0; }
 :root[data-theme="dark"] .stars, body[data-screen="sky"] .stars { --star: #F4F1FF; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stars { --star: #F4F1FF; } }
@@ -669,16 +671,13 @@ body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
 @keyframes ripple { 0% { transform: scale(.95); opacity: .7; } 100% { transform: scale(1.75); opacity: 0; } }
 .nudge {
   position: fixed; z-index: 7; left: 50%; top: var(--ny, 40px); transform: translate(-50%, 6px);
-  padding: 10px 18px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3) 45%, transparent);
-  background: color-mix(in srgb, var(--c1) 26%, rgba(18,14,36,.78)); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  padding: 7px 14px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3) 40%, transparent);
+  background: color-mix(in srgb, var(--c1) 14%, rgba(18,14,36,.22));   /* casi transparente: se ve lo que hay debajo */
   color: var(--ink); font-size: .9rem; white-space: nowrap; box-shadow: 0 0 26px -6px var(--glow);
   opacity: 0; pointer-events: none; transition: opacity .6s ease, transform .6s ease;
 }
 .nudge::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 10px; height: 10px; margin-left: -5px; transform: rotate(45deg);
   background: inherit; border-right: inherit; border-bottom: inherit; }
-.nudge.onluna { width: var(--nw); padding: 4px 6px; background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
-  white-space: normal; text-align: center; font-size: .8rem; font-weight: 600; line-height: 1.3; color: #2B2152; text-shadow: 0 0 10px rgba(255,255,255,.7); }
-.nudge.onluna::after { display: none; }
 .nudge.low::after { bottom: auto; top: -6px; border: 0; border-left: 1px solid color-mix(in srgb, var(--c3) 45%, transparent); border-top: 1px solid color-mix(in srgb, var(--c3) 45%, transparent); }
 body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
@@ -1322,7 +1321,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     c.s.forEach((st, j) => {
       if (j >= lit) return;
       const r = starPx(st[2]) * (opts.far ? .7 : 1), rnd = seeded(slot * 97 + j * 13 + 7);
-      g += `<g class="st${opts.born === j ? ' born' : ''}" style="--d:${(-rnd() * 7).toFixed(1)}s;--tw:${(5 + rnd() * 4).toFixed(1)}s"><circle class="glow" cx="${st[0]}" cy="${st[1]}" data-px="${(r * 5).toFixed(1)}" r="0"/><circle cx="${st[0]}" cy="${st[1]}" data-px="${r.toFixed(1)}" r="0"/></g>`;
+      g += `<g class="st${opts.born === j ? ' born' : ''}" style="--d:${(-rnd() * 7).toFixed(1)}s;--tw:${(5 + rnd() * 4).toFixed(1)}s;--li:${(Math.min(2.4, (opts.order || 0) * .06 + j * .06) + rnd() * .3).toFixed(2)}s"><circle class="glow" cx="${st[0]}" cy="${st[1]}" data-px="${(r * 5).toFixed(1)}" r="0"/><circle cx="${st[0]}" cy="${st[1]}" data-px="${r.toFixed(1)}" r="0"/></g>`;
     });
     return g + '</g>';
   }
@@ -1339,7 +1338,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     NOCHES[night].forEach((c, i) => {
       const here = Math.max(0, Math.min(c.s.length, k));
       const bornHere = newest >= 0 && newest < c.s.length ? newest : -1;
-      if (here) near += drawConstellation(c, i, here, { born: bornHere });
+      if (here) near += drawConstellation(c, i, here, { born: bornHere, order: i * 3 });
       k -= c.s.length; newest -= c.s.length;
     });
     if (night > 0) NOCHES[night - 1].forEach((c, i) => { far += drawConstellation(c, i, c.s.length, { far: true }); });   // la noche anterior, lejana
@@ -1480,12 +1479,9 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     if (!nudgeOn()) return;
     const r = $('orbA').getBoundingClientRect(), top = r.top + r.height * .17, n = $('nudge');
     const low = r.top + r.height * .5 < 60;  // la luna se ha quedado arriba, fuera de la vista: la etiqueta baja y apunta hacia arriba
-    n.classList.toggle('low', low); n.classList.toggle('onluna', !low);
+    n.classList.toggle('low', low);
     $('nudgeText').textContent = low ? 'Para empezar, sube y toca la luna' : 'Para empezar, toca la luna';
-    // Con la luna a la vista, la pista va dentro de la luna, en su centro, para no tapar el anillo ni los minutos
-    const d = r.width * .62;   // diámetro de la luna que se ve
-    n.style.setProperty('--nw', Math.round(d * .78) + 'px');
-    n.style.setProperty('--ny', (low ? 18 : r.top + r.height / 2 - n.offsetHeight / 2) + 'px');
+    n.style.setProperty('--ny', (low ? 18 : Math.max(12, top - 50)) + 'px');
   }
   const wanderBy = (d) => { if (!nudgeOn() && nudgeWanted()) { wander += d; if (wander > 1600) showNudge(); } };
   window.addEventListener('pointermove', (e) => { if (lastMove) wanderBy(Math.hypot(e.clientX - lastMove[0], e.clientY - lastMove[1])); lastMove = [e.clientX, e.clientY]; }, { passive: true });
@@ -1598,7 +1594,10 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
 
   // Navegación
   let prevScreen = 'home';
+  // Enciende las estrellas una a una (al entrar en el inicio, Tu cielo o la pantalla final)
+  function lightSky() { const st = $('stars'); st.classList.remove('lighting'); void st.getBoundingClientRect(); st.classList.add('lighting'); }
   function go(screen) {
+    if ((screen === 'home' || screen === 'sky') && body.dataset.screen !== screen) lightSky();
     if (screen !== 'tech') hideNudge();
     if (screen === 'settings' && body.dataset.screen !== 'settings') prevScreen = body.dataset.screen;
     if (screen === 'techs') renderList();
@@ -2120,7 +2119,7 @@ void main(){
       $('endNews').textContent = opened.length ? `Se ha abierto ${T[opened[0]].name}. Ya tienes la experiencia para probarla.` : '';
       $('endStar').hidden = early;
       const invite = !early && !prefs.installAsked && !DEMO && (isIOS || isAndroid) && canInstall();   // solo en móvil
-      $('endInvite').hidden = !invite; body.classList.toggle('inviting', invite); body.classList.add('ended');
+      $('endInvite').hidden = !invite; body.classList.toggle('inviting', invite); body.classList.add('ended'); lightSky();
       if (!early) { renderSky(addStar(done.practiced / 60)); if (prefs.stars.length % 10 === 0) later(shootingStar, 1800); }
       $('end').classList.add('on');
     };
@@ -2225,7 +2224,7 @@ void main(){
     renderSky(true); renderPanel();
     if (prefs.stars.length % 10 === 0) shootingStar();
   });
-  renderSky();
+  renderSky(); lightSky();
 
   // Panel de pruebas
   function fakeStars(n) {
