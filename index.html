@@ -2351,7 +2351,8 @@ void main(){
   $('eraseYes').addEventListener('click', () => { try { localStorage.removeItem(STORE); } catch (e) {} location.reload(); });
 
   // Compartir: siempre la dirección limpia, sin ?demo, también desde el portfolio
-  function shareUrl() { const u = new URL(location.href); u.searchParams.delete('demo'); u.searchParams.delete('cielo'); u.hash = ''; return u.toString(); }
+  // Se comparte siempre la dirección pública de regalo, se abra desde donde se abra (la vista previa de Claude, el portfolio o la demo)
+  function shareUrl() { return 'https://respira.mvmmaison.com/'; }
 
   // Compartir
   function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 2400); }
