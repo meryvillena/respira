@@ -115,7 +115,9 @@ main {
   transition: height 1.6s cubic-bezier(.45,0,.25,1);
 }
 body:not([data-screen="home"]) .stage { height: clamp(150px, 22vh, 210px); }
-body.full .stage { height: 100vh; height: 100dvh; transition-duration: 2.4s; }
+/* En la sesión, el escenario ocupa la pantalla MENOS los huecos del iPhone (hora arriba, barra de inicio abajo), que ya reserva la página;
+   y deja abajo sitio para la frase y el tiempo, así la luna queda algo por encima del centro */
+body.full .stage { height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); padding-bottom: 11vh; transition-duration: 2.4s; }
 .orb {
   --size: min(50vw, 27vh, 240px);
   position: relative; width: var(--size); height: var(--size);
@@ -146,7 +148,7 @@ body.gl-on .gl { display: block; }
 body.gl-on .core { display: none; }
 body.gl-on .halo { filter: blur(44px); }
 
-.cue { position: absolute; left: 0; right: 0; bottom: max(7vh, 52px); padding: 0 24px; text-align: center; pointer-events: none; }
+.cue { position: absolute; left: 0; right: 0; bottom: max(6vh, 56px); padding: 0 24px; text-align: center; pointer-events: none; }
 .phase {
   margin: 0 auto;
   font-family: var(--serif); font-style: italic; font-weight: 300;
@@ -721,7 +723,8 @@ body[data-state="dawn"] .end.on ~ * .orbs, body[data-state="dawn"] .orbs { curso
 .invite p { margin: 0 0 12px; font-family: var(--sans); font-size: .95rem; font-weight: 400; line-height: 1.5; opacity: .9; }
 .invite p b { font-weight: 600; }
 body.inviting .end > .row { display: none; }
-body.ended .orbwrap { transform: translateY(-11vh); }
+body.ended .orbwrap { transform: translateY(-14vh); }
+body.ended .hud { opacity: 0 !important; pointer-events: none; }   /* en la pantalla final no hay tiempo ni «Terminar» */
 body.inviting .orbwrap { transform: translateY(-16vh); }
 body.full[data-state="dawn"] .dial { opacity: 0; }   /* el anillo del tiempo se va al terminar */
 .sheet-note + .sheet-note { margin-top: 10px; }
@@ -1339,7 +1342,7 @@ button.vh:focus-visible { position: static; width: auto; height: auto; overflow:
     // Posición de reposo de la luna: sin contar el arrastre, el imán ni la subida animada del final,
     // para que las estrellas se queden quietas mientras la luna se mueve
     const m = new DOMMatrixReadOnly(getComputedStyle(wrap).transform);
-    const lift = body.classList.contains('inviting') ? -.16 * innerHeight : body.classList.contains('ended') ? -.11 * innerHeight : 0;
+    const lift = body.classList.contains('inviting') ? -.16 * innerHeight : body.classList.contains('ended') ? -.14 * innerHeight : 0;
     const cx = w.x + w.width / 2 - m.m41, cy = w.y + w.height / 2 - m.m42 + lift, R = o.width * .33, W = innerWidth;
     const key = cx.toFixed(1) + ',' + cy.toFixed(1) + ',' + R.toFixed(1) + ',' + W;
     if (key === skyAnchor.key) return;
