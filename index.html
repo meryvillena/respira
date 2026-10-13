@@ -574,15 +574,20 @@ body[data-state="focus"] .orbs { cursor: pointer; }
 .stars .st circle { fill: var(--star); }
 .stars .st .glow { fill: url(#sglow); opacity: .8; }
 .stars stop { stop-color: var(--star); }
-.stars .st { animation: tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--d, 0s); }
-@keyframes tw { 0%, 100% { opacity: var(--o1, 1); } 50% { opacity: calc(var(--o1, 1) * .55); } }
+.stars .st { animation: tw calc(var(--tw, 7s) * var(--twk, 1)) ease-in-out infinite; animation-delay: var(--d, 0s); }
+/* Tintineo irregular: baja, se recupera, vuelve a bajar a medias. En el inicio es más rápido y más marcado (--dip, --twk) */
+@keyframes tw { 0%, 100% { opacity: var(--o1, 1); } 18% { opacity: calc(var(--o1, 1) * var(--dip, .55)); } 32% { opacity: var(--o1, 1); }
+  60% { opacity: calc(var(--o1, 1) * (1 + var(--dip, .55)) / 2); } 74% { opacity: var(--o1, 1); } }
+@keyframes glint { 0%, 100% { opacity: .8; } 40% { opacity: .25; } 48% { opacity: 1; } 70% { opacity: .5; } }
+body[data-screen="home"] .stars { --dip: .2; --twk: .5; }
+body[data-screen="home"] .stars .cur .st:not(.born) .glow { animation: glint calc(var(--tw, 7s) * .7) ease-in-out infinite; animation-delay: var(--d, 0s); }
 .stars .old .st { --o1: .4; }
-.stars .born { animation: lightup 2.4s ease both, tw var(--tw, 7s) ease-in-out 2.4s infinite; }
+.stars .born { animation: lightup 2.4s ease both, tw calc(var(--tw, 7s) * var(--twk, 1)) ease-in-out 2.4s infinite; }
 .stars .born .glow { animation: bornglow 3.2s ease-out both; }
 @keyframes bornglow { 0% { opacity: 0; } 40% { opacity: 1; } 100% { opacity: .75; } }
 /* Al llegar al inicio, a Tu cielo o a la pantalla final, las estrellas se encienden una a una, en su sitio */
 @keyframes lightup { from { opacity: 0; } to { opacity: var(--o1, 1); } }
-.stars.lighting .st:not(.born) { animation: lightup 3s ease-in-out both, tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--li, 0s), calc(var(--li, 0s) + 3s); }
+.stars.lighting .st:not(.born) { animation: lightup 3s ease-in-out both, tw calc(var(--tw, 7s) * var(--twk, 1)) ease-in-out infinite; animation-delay: var(--li, 0s), calc(var(--li, 0s) + 3s); }
 body[data-state="focus"] .stars { opacity: 0; }
 :root[data-theme="dark"] .stars, body[data-screen="sky"] .stars { --star: #F4F1FF; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .stars { --star: #F4F1FF; } }
