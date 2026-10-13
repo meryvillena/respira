@@ -302,7 +302,7 @@ input:checked + .sw small { color: var(--ink); font-weight: 600; }
   opacity: 0; pointer-events: none; transition: opacity 2s ease;
   font-size: .85rem; font-variant-numeric: tabular-nums;
 }
-body[data-state="focus"] .hud { opacity: .38; pointer-events: auto; }
+body[data-state="focus"] .hud { opacity: .55; pointer-events: auto; }
 .hud:hover, .hud:focus-within { opacity: .8 !important; }
 .hud button { background: none; border: 0; padding: 12px 4px; font-size: .85rem; }
 
@@ -502,6 +502,7 @@ body[data-state="sleep"] .end .primary { display: none; }
 .tcard.locked .tpara strong { font-weight: 600; color: var(--ink); }
 .lockline { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 16px; padding: 7px 14px 7px 11px; border-radius: 999px; background: color-mix(in srgb, var(--c1) 22%, transparent); font-size: .86rem; font-weight: 600; }
 .lockline svg { flex: none; width: 16px; height: 16px; }
+.lockline { padding: 0; background: none; border-radius: 0; }   /* texto con candado, sin pastilla */
 .gear { position: fixed; z-index: 4; top: calc(env(safe-area-inset-top, 0px) + 12px); right: max(12px, calc((100vw - 580px) / 2)); width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 0; border-radius: 50%; color: var(--ink-soft); transition: opacity .6s ease; }
 .gear svg { width: 22px; height: 22px; }
 .gear:hover { color: var(--ink); }
@@ -637,6 +638,12 @@ body[data-screen="check"] .stage { height: 100vh; height: 100dvh; justify-conten
 body[data-screen="check"] .screens { position: absolute; top: 0; left: 0; right: 0; height: 100vh; height: 100dvh; max-width: none; pointer-events: none; }
 body[data-screen="check"] main { height: 100vh; height: 100dvh; overflow: hidden; padding-bottom: 0; }
 body[data-screen="check"] .gear { opacity: 0; pointer-events: none; }
+@media (max-height: 640px) {
+  body[data-screen="check"] { --o: min(36vw, 22vh, 150px); --cktop: 96px; }
+  body[data-screen="check"] main { height: auto; overflow: visible; }
+  body[data-screen="check"] .screens { height: auto; }
+  #s-check { height: auto; min-height: calc(var(--cktop) + var(--o) + 400px); }
+}
 #s-check { position: relative; height: 100%; max-width: 540px; margin: 0 auto; padding: 0 20px; }
 #s-check .bar { padding-top: 14px; margin-bottom: 8px; pointer-events: auto; }
 #s-check .bar h2 { font-size: 1.6rem; }
@@ -691,7 +698,8 @@ body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
 .nudge::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 10px; height: 10px; margin-left: -5px; transform: rotate(45deg);
   background: inherit; border-right: inherit; border-bottom: inherit; }
 .nudge.low::after { bottom: auto; top: -6px; border: 0; border-left: 1px solid color-mix(in srgb, var(--c3) 45%, transparent); border-top: 1px solid color-mix(in srgb, var(--c3) 45%, transparent); }
-body.nudging .nudge { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+body.nudging #nudge, body.dialnudging #dialNudge { opacity: 1; transform: translate(-50%, 0); }
+body.nudging #nudge { pointer-events: auto; }
 @media (prefers-reduced-motion: reduce) { body.nudging .ripple { animation: none; opacity: .5; } }
 :root { color-scheme: dark; }
 /* Las constelaciones solo se ven en el inicio, en Tu cielo y al terminar una técnica; en el resto, solo el polvo de estrellas */
@@ -784,6 +792,9 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
 .sheet-row { justify-content: center; gap: 28px; }
 .sheet-row > * { flex: none; }
 .end .row, .invite .row { gap: 26px; align-items: center; }
+:root .startlink { display: block; margin: 22px auto 6px; }
+/* Botones solo para teclado: invisibles hasta que reciben el foco */
+button.vh:focus-visible { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
 /* El brillo: igual al pasar el ratón, al tocar con el dedo o al llegar con el teclado */
 .textbtn, .primary, .ghost, .ghostbtn, .tp-chip, .step-btn, .chip, .talk, details summary, .tcard .tname { transition: color .35s ease, text-shadow .35s ease, opacity .35s ease; }
 :is(.textbtn, .primary, .ghost, .ghostbtn, .tp-chip, .step-btn, .chip, .talk, details summary):is(:hover, :focus-visible, :active),
@@ -906,7 +917,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
         </div>
         <input class="vh" type="range" id="durA11y" min="0" step="1" aria-label="Duración">
         <p class="fixed" id="f-fixed" hidden></p>
-        <button class="vh" id="f-start">Empezar</button>
+        <button class="primary startlink" id="f-start">Empezar</button>
         <p class="note">Si notas mareo, vuelve a respirar a tu ritmo normal.</p>
       </div>
       <div class="lockbox" id="f-lock" hidden>
@@ -966,7 +977,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       <p class="label">Tus datos</p>
       <div class="privacy">
         <p>Respira guarda tus estrellas, tus minutos y tus ajustes en este dispositivo. No necesitas una cuenta y tu progreso no se guarda online.</p>
-        <p>La aplicación cuenta cuántas veces se descarga esta app. Ese recuento no incluye tus estrellas, tus minutos ni tus ajustes.</p>
+        <p>Respira solo cuenta, de forma anónima y sin cookies, cuántas veces se instala. Ese recuento no incluye tus estrellas, tus minutos ni tus ajustes.</p>
         <p>Yo no puedo ver ni recuperar tu progreso. Tampoco pasa de un dispositivo a otro. Si borras los datos de Respira o eliminas la app, puedes perder tu cielo.</p>
         <button class="textbtn erase" id="eraseBtn">Borrar mi cielo y mis ajustes</button>
       </div>
@@ -1028,6 +1039,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   </div>
 </div>
 <button class="nudge" id="nudge" tabindex="-1"><span id="nudgeText">Para empezar, toca la luna</span></button>
+<div class="nudge" id="dialNudge" aria-hidden="true">Desliza el anillo para cambiar el tiempo</div>
 <script>
 (function () {
   // Firma. Cambia aquí tu nombre o añade un enlace de contacto.
@@ -1069,7 +1081,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       how: 'Inhala por la nariz y exhala por la nariz un poco más largo. Suave, sin forzar y sin pausas.',
       rhythm: 'Inhala 4 s, exhala 6 s. Seis respiraciones por minuto.',
       more: ['A unas seis respiraciones por minuto, el corazón y la respiración se acompasan: el pulso sube un poco al inhalar y baja al exhalar, en olas regulares.', 'Es una de las técnicas más estudiadas para el estrés. No hace falta respirar hondo, solo lento.'],
-      close: 'Durante unos minutos, corazón y aire han ido al mismo ritmo.',
+      close: 'Durante este rato, corazón y respiración han ido al mismo ritmo.',
       dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 5 },
       cycle: () => [
         { dur: 4, from: MIN, to: MAX, label: 'Inhala por la nariz', teach: 'Sin forzar.' },
@@ -1094,7 +1106,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       how: 'Inhala por la nariz, aguanta el aire y suéltalo por la boca con un soplido suave. Empieza con cuatro rondas.',
       rhythm: (a) => `Inhala 4 s, aguanta ${fs(a.sleep)} s, suelta 8 s.`,
       more: ['La exhalación dura el doble que la inhalación, y eso es lo que le dice al cuerpo que puede frenar.', 'Si aguantar 7 segundos se te hace largo, bájalo. Lo importante es que soltar dure más que coger aire.'],
-      close: 'El corazón ha bajado el ritmo. Ahora deja que llegue el sueño.',
+      close: 'Tu cuerpo ya va más despacio. Ahora deja que llegue el sueño.',
       dur: { type: 'rounds', opts: [4, 8], def: 4, unit: 'rondas' },
       adj: { key: 'sleep', label: 'Tiempo con el aire dentro', min: 4, max: 10, step: 0.5, def: 7, unit: 's' },
       cycle: (a) => [
@@ -1107,7 +1119,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       how: 'Inhala fuerte por la nariz y suelta por la boca, a buen ritmo. Solo uno o dos minutos.',
       rhythm: 'Inhala 2 s, suelta 2 s.',
       more: ['Respirar más rápido sube un poco la alerta. Por eso es corta: más tiempo no activa más, marea.'],
-      close: 'Este ritmo te ha despejado. Justo lo que venías buscando.',
+      close: 'Este ritmo te ha despejado.',
       dur: { type: 'min', opts: [1, 2], def: 1 },
       cycle: () => [
         { dur: 2, from: MIN, to: MAX, label: 'Inhala fuerte por la nariz', teach: 'Rápido y con energía.' },
@@ -1134,7 +1146,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       how: 'Inhala por la nariz y, al soltar el aire, zumba con la boca cerrada, como una abeja.',
       rhythm: 'Inhala 4 s, zumba 7 s.',
       more: ['El zumbido alarga la exhalación sin esfuerzo y ocupa la atención, así que cuesta más seguir pensando.', 'Si quieres más intensidad, tápate los oídos con los pulgares: el zumbido se oye por dentro.'],
-      close: 'Durante unos minutos, el zumbido no ha dejado sitio al ruido.',
+      close: 'Durante este rato, el zumbido no ha dejado sitio al ruido.',
       dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 3 },
       cycle: () => [
         { dur: 4, from: MIN, to: MAX, label: 'Inhala por la nariz', teach: 'Boca cerrada.' },
@@ -1186,7 +1198,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       name: 'El Despertar de la Kundalini', para: 'Para sentir el cuerpo como una ola y soltar el control.',
       how: 'Respira por la nariz sin pausas, como un círculo: al terminar de coger aire empiezas a soltarlo, y al terminar de soltarlo vuelves a cogerlo. No dirijas nada, deja que pase.',
       rhythm: 'Inhala 4 s, suelta 4 s, sin parar. Después, dos minutos sin moverte.',
-      more: ['La respiración conectada, sin pausas entre coger y soltar aire, se usa en varias prácticas de trabajo con la respiración. Al no haber pausas, la mente pierde los puntos donde suele engancharse a pensar y la atención se va al cuerpo.', 'Calor, oleadas u hormigueo son normales. A este ritmo es una práctica tranquila. Si aceleras o respiras muy hondo, las sensaciones crecen porque baja el CO₂ de la sangre. Si se hacen fuertes, ve más lenta.'],
+      more: ['La respiración conectada, sin pausas entre coger y soltar aire, se usa en varias prácticas de trabajo con la respiración. Al no haber pausas, la mente pierde los puntos donde suele engancharse a pensar y la atención se va al cuerpo.', 'Calor, oleadas u hormigueo son normales. A este ritmo es una práctica tranquila. Si aceleras o respiras muy hondo, las sensaciones crecen porque baja el CO₂ de la sangre. Si se hacen fuertes, baja el ritmo.'],
       close: 'Durante unos minutos, el cuerpo ha llevado el ritmo por ti.',
       lock: 6 * HOUR, gated: true,
       dur: { type: 'min', opts: [5, 10, 15, 20, 30], def: 5, after: 'Más 2 minutos al final para quedarte sin moverte.' },
@@ -1504,7 +1516,17 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   const nudgeWanted = () => (DEMO || (prefs.starts || 0) < NUDGE_UNTIL) && body.dataset.screen === 'tech' && body.dataset.state === 'setup' && !$('f-play').hidden;
   function armNudge() { hideNudge(); clearTimeout(nudgeT); wander = 0; if (nudgeWanted()) nudgeT = setTimeout(showNudge, 5000); }
   function hideNudge() { clearTimeout(nudgeT); body.classList.remove('nudging'); }
-  function showNudge() { if (!nudgeWanted() || nudgeOn()) return; body.classList.add('nudging'); placeNudge(); }
+  function showNudge() { if (!nudgeWanted() || nudgeOn()) return; hideDialNudge(); body.classList.add('nudging'); placeNudge(); }
+  // Pista del anillo: de la segunda a la cuarta sesión (en la primera ya está la de tocar la luna), encima del tiempo
+  let dialNudgeT;
+  function showDialNudge() {
+    const n = prefs.starts || 0;
+    if (n < 1 || n > 3 || nudgeOn() || !dialOpts.length || body.dataset.screen !== 'tech' || body.dataset.state !== 'setup' || $('f-play').hidden) return;
+    const r = $('dialValue').getBoundingClientRect();   // encima de «3 minutos», apuntando hacia él
+    if (r.top < 120 || r.top > innerHeight - 40) return;
+    $('dialNudge').style.setProperty('--ny', (r.top - 46) + 'px'); body.classList.add('dialnudging');
+  }
+  function hideDialNudge() { clearTimeout(dialNudgeT); body.classList.remove('dialnudging'); }
   function placeNudge() {
     if (!nudgeOn()) return;
     const r = $('orbA').getBoundingClientRect(), top = r.top + r.height * .17, n = $('nudge');
@@ -1516,7 +1538,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   const wanderBy = (d) => { if (!nudgeOn() && nudgeWanted()) { wander += d; if (wander > 1600) showNudge(); } };
   window.addEventListener('pointermove', (e) => { if (lastMove) wanderBy(Math.hypot(e.clientX - lastMove[0], e.clientY - lastMove[1])); lastMove = [e.clientX, e.clientY]; }, { passive: true });
   let lastY = 0;
-  window.addEventListener('scroll', () => { wanderBy(Math.abs(scrollY - lastY) * 1.5); lastY = scrollY; placeNudge(); }, { passive: true });
+  window.addEventListener('scroll', () => { body.classList.remove('dialnudging'); wanderBy(Math.abs(scrollY - lastY) * 1.5); lastY = scrollY; placeNudge(); }, { passive: true });
   document.addEventListener('click', (e) => { if (!e.target.closest('button, input, label, summary, a, .orbs, .dial')) wanderBy(700); });
   $('nudge').addEventListener('click', () => { if ($('nudge').classList.contains('low')) window.scrollTo({ top: 0, behavior: 'smooth' }); else startFromTech(); });
 
@@ -1559,7 +1581,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   function renderDial() {
     const d = T[current].dur, fixed = d.type === 'fixed';
     dialOpts = fixed ? [] : d.opts;
-    dialIdx = fixed || techFrom !== 'check' ? 0 : Math.max(0, d.opts.indexOf(durOf(current)));  // se empieza por el mínimo y se arrastra para sumar
+    dialIdx = fixed ? 0 : Math.max(0, d.opts.indexOf(techFrom === 'check' ? durOf(current) : d.def));  // se empieza en la duración recomendada de cada técnica
     $('dialDots').innerHTML = dialOpts.map((v, i) => { const [x, y] = dialPt(i / (dialOpts.length - 1)); return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r=".8"/>`; }).join('');
     $('dial').classList.toggle('fixed', fixed);
     const r = $('durA11y'); r.max = Math.max(0, dialOpts.length - 1); r.hidden = fixed;
@@ -1591,7 +1613,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   }
   $('dialHit').addEventListener('pointerdown', (e) => {
     if (!dialOpts.length || session || body.dataset.screen !== 'tech') return;
-    e.preventDefault(); e.stopPropagation(); dialDrag = true;
+    e.preventDefault(); e.stopPropagation(); dialDrag = true; hideDialNudge();
     try { $('dialHit').setPointerCapture(e.pointerId); } catch (err) {}
     dialFromPointer(e);
   });
@@ -1628,6 +1650,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
   function lightSky() { const st = $('stars'); st.classList.remove('lighting'); void st.getBoundingClientRect(); st.classList.add('lighting'); }
   function go(screen) {
     if (screen !== 'tech') hideNudge();
+    hideDialNudge(); if (screen === 'tech') dialNudgeT = setTimeout(showDialNudge, 1400);
     if (screen === 'settings' && body.dataset.screen !== 'settings') prevScreen = body.dataset.screen;
     if (screen === 'techs') renderList();
     if (screen === 'check') resetCheck();
@@ -2099,7 +2122,7 @@ void main(){
 
   function startSession(cfg) {
     body.classList.remove('ended', 'inviting');
-    hideNudge(); prefs.starts = (prefs.starts || 0) + 1;
+    hideNudge(); hideDialNudge(); prefs.starts = (prefs.starts || 0) + 1;
     lastCfg = cfg;
     clearTimers();
     $('end').classList.remove('on');
