@@ -135,6 +135,12 @@ body.full .orb { --size: min(74vw, 56vh, 470px); transition-duration: 2.4s; }
   -webkit-mask-image: radial-gradient(circle, #000 52%, rgba(0,0,0,.75) 62%, transparent 71%);
           mask-image: radial-gradient(circle, #000 52%, rgba(0,0,0,.75) 62%, transparent 71%);
 }
+/* Volumen: la luz viene de arriba a la izquierda; el lado contrario se oscurece y el borde se ilumina un poco (luz de contorno) */
+.shade { position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(115% 115% at 34% 28%, transparent 38%, rgba(14,10,36,.3) 64%, rgba(14,10,36,.6) 88%),
+              radial-gradient(circle at 50% 50%, transparent 58%, rgba(236,228,255,.10) 70%, transparent 76%);
+  -webkit-mask-image: radial-gradient(circle, #000 54%, rgba(0,0,0,.6) 64%, transparent 72%);
+          mask-image: radial-gradient(circle, #000 54%, rgba(0,0,0,.6) 64%, transparent 72%); }
 .gl { position: absolute; left: -25%; top: -25%; width: 150%; height: 150%; display: none; }
 body.gl-on .gl { display: block; }
 body.gl-on .core { display: none; }
@@ -561,12 +567,12 @@ body[data-state="focus"] .orbs { cursor: pointer; }
 /* Tu cielo: una estrella por respiración terminada, de fondo en todas las pantallas */
 .stars { width: 100%; height: 100%; --star: color-mix(in srgb, var(--c0) 55%, #2A2440); opacity: 1; transition: opacity 2s ease; }
 .stars line { stroke: var(--star); stroke-width: 1px; vector-effect: non-scaling-stroke; }
-.stars .cur line { opacity: .18; }
-.stars .cur .st { --o1: .8; }
+.stars .cur line { opacity: .07; }
+.stars .cur .st { --o1: 1; }
 .stars .old line { opacity: .1; }
 .stars .old .st { opacity: .4; }
 .stars .st circle { fill: var(--star); }
-.stars .st .glow { fill: url(#sglow); opacity: .45; }
+.stars .st .glow { fill: url(#sglow); opacity: .8; }
 .stars stop { stop-color: var(--star); }
 .stars .st { animation: tw var(--tw, 7s) ease-in-out infinite; animation-delay: var(--d, 0s); }
 @keyframes tw { 0%, 100% { opacity: var(--o1, 1); } 50% { opacity: calc(var(--o1, 1) * .55); } }
@@ -799,6 +805,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
         <div class="scaler" id="scaler">
           <div class="core"></div>
           <canvas class="gl" id="gl" aria-hidden="true"></canvas>
+          <div class="shade" aria-hidden="true"></div>
         </div>
       </div>
       <div class="orb orb2" id="orbB" aria-hidden="true">
@@ -806,6 +813,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
         <div class="scaler" id="scaler2">
           <div class="core"></div>
           <canvas class="gl" id="gl2"></canvas>
+          <div class="shade" aria-hidden="true"></div>
         </div>
       </div>
     </div>
@@ -1324,10 +1332,10 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
       const S = size * R; let X = cx + Math.cos(a) * dist * far * R; const Y = cy + Math.sin(a) * dist * far * R;
       if (W > 2 * S + 16) X = Math.max(S + 8, Math.min(W - S - 8, X));   // sin cortarse en los bordes
       g.setAttribute('transform', `translate(${X.toFixed(1)} ${Y.toFixed(1)}) scale(${S.toFixed(2)})`);
-      const glare = (x, y) => { const d = Math.hypot(X + x * S - cx, Y + y * S - cy) / (o.width * .31); return Math.max(.25, Math.min(1, (d - 1.05) / 1.3)); };   // d = distancia en radios visibles de la luna
-      const base = g.closest('.old') ? .4 : .8;
+      const glare = (x, y) => { const d = Math.hypot(X + x * S - cx, Y + y * S - cy) / (o.width * .31); return Math.max(.55, Math.min(1, (d - 1.05) / 1.3)); };   // d = distancia en radios visibles de la luna
+      const base = g.closest('.old') ? .45 : 1;
       g.querySelectorAll('.st').forEach(st => { const c = st.querySelector('circle'); st.style.setProperty('--o1', (base * glare(+c.getAttribute('cx'), +c.getAttribute('cy'))).toFixed(2)); });
-      g.querySelectorAll('line').forEach(l => l.style.opacity = (.18 * Math.min(glare(+l.getAttribute('x1'), +l.getAttribute('y1')), glare(+l.getAttribute('x2'), +l.getAttribute('y2')))).toFixed(3));
+      g.querySelectorAll('line').forEach(l => l.style.opacity = (.07 * Math.min(glare(+l.getAttribute('x1'), +l.getAttribute('y1')), glare(+l.getAttribute('x2'), +l.getAttribute('y2')))).toFixed(3));
       if (g.dataset.s !== S.toFixed(1)) { g.dataset.s = S.toFixed(1); g.querySelectorAll('circle').forEach(c => c.setAttribute('r', (c.dataset.px / S).toFixed(4))); }
     });
   }
@@ -1337,7 +1345,7 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
     if (!opts.far) c.l.forEach(([p, q]) => { if (p < lit && q < lit) g += `<line x1="${c.s[p][0]}" y1="${c.s[p][1]}" x2="${c.s[q][0]}" y2="${c.s[q][1]}"/>`; });
     c.s.forEach((st, j) => {
       if (j >= lit) return;
-      const r = starPx(st[2]) * (opts.far ? .6 : .8), rnd = seeded(slot * 97 + j * 13 + 7);
+      const r = starPx(st[2]) * (opts.far ? .65 : .9), rnd = seeded(slot * 97 + j * 13 + 7);
       g += `<g class="st${opts.born === j ? ' born' : ''}" style="--d:${(-rnd() * 7).toFixed(1)}s;--tw:${(5 + rnd() * 4).toFixed(1)}s;--li:${(Math.min(2.4, (opts.order || 0) * .06 + j * .06) + rnd() * .3).toFixed(2)}s"><circle class="glow" cx="${st[0]}" cy="${st[1]}" data-px="${(r * 5).toFixed(1)}" r="0"/><circle cx="${st[0]}" cy="${st[1]}" data-px="${r.toFixed(1)}" r="0"/></g>`;
     });
     return g + '</g>';
@@ -1867,6 +1875,7 @@ void main(){
   let rot = 0, hold = 0, travel = 0, travelT = 0, arcK = 0;
   const trailHist = [];
 
+  let floatK = 0;   // cuánto flota la luna (0 en la sesión, 1 fuera)
   function frame(now) {
     const dt = lastNow ? Math.min(0.1, (now - lastNow) / 1000) : 0; lastNow = now;
     let side = 0, lum = 0, buzz = 0, pulse = 0;
@@ -1956,7 +1965,11 @@ void main(){
     const arcOn = body.classList.contains('travel') && session && !session.paused;
     arcK += ((arcOn ? 1 : 0) - arcK) * .05; if (arcK < .001 && !arcOn) arcK = 0;
     const lift = -(1 - travel * travel) * 9 * arcK;
-    orbsEl.style.transform = pos.x || pos.y || travel || lift ? `translate(calc(${(travel * 22).toFixed(2)}vw + ${pos.x.toFixed(1)}px), calc(${lift.toFixed(2)}vh + ${pos.y.toFixed(1)}px))` : '';
+    // Flota: se mece despacio fuera de la sesión (en la sesión se queda quieta para guiar), y al estar más cerca que el cielo, se mueve más con el paralaje
+    floatK += ((session || reduceMotion ? 0 : 1) - floatK) * .02;
+    const ft = now / 1000, flx = floatK * (Math.sin(ft * .57) * 3 - par.x * 22), fly = floatK * (Math.sin(ft * .9) * 6 - par.y * 22);
+    const ox = pos.x + flx, oy = pos.y + fly;
+    orbsEl.style.transform = ox || oy || travel || lift ? `translate(calc(${(travel * 22).toFixed(2)}vw + ${ox.toFixed(1)}px), calc(${lift.toFixed(2)}vh + ${oy.toFixed(1)}px))` : '';
     // Estela: cinco luces en los puntos por donde pasó la luna en los últimos ~4,5 s, cada vez más pequeñas y tenues
     trailHist.push([travel * 22, lift]); if (trailHist.length > 290) trailHist.shift();
     document.querySelectorAll('#trail i').forEach((g, k) => {
