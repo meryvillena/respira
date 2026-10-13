@@ -2321,11 +2321,12 @@ void main(){
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isAndroid = /android/i.test(navigator.userAgent);
   const ownSite = /(^|\.)mvmmaison\.com$/.test(location.hostname);
-  const canInstall = () => ownSite && !standalone && !prefs.installed && (installPrompt || isIOS || isAndroid);
+  // En el iPhone el navegador no puede saber si ya está en la pantalla de inicio: fuera de la app siempre se ofrece
+  const canInstall = () => ownSite && !standalone && (isIOS || !prefs.installed) && (installPrompt || isIOS || isAndroid);
   if (standalone && !prefs.installed) { prefs.installed = true; save(); }   // recordar que ya está instalada
   let installPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; $('install').hidden = !ownSite || standalone || !!prefs.installed; });
-  if (ownSite && (isIOS || isAndroid) && !standalone && !prefs.installed) $('install').hidden = false;
+  if (ownSite && (isIOS || isAndroid) && !standalone && (isIOS || !prefs.installed)) $('install').hidden = false;
   window.addEventListener('appinstalled', () => { $('install').hidden = true; prefs.installed = true; save(); });
   async function doInstall() {
     if (installPrompt) { installPrompt.prompt(); try { const c = await installPrompt.userChoice; if (c && c.outcome === 'accepted') { prefs.installed = true; save(); } } catch (e) {} installPrompt = null; $('install').hidden = true; return; }
