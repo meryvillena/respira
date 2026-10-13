@@ -579,8 +579,8 @@ body[data-state="focus"] .orbs { cursor: pointer; }
 @keyframes tw { 0%, 100% { opacity: var(--o1, 1); } 18% { opacity: calc(var(--o1, 1) * var(--dip, .55)); } 32% { opacity: var(--o1, 1); }
   60% { opacity: calc(var(--o1, 1) * (1 + var(--dip, .55)) / 2); } 74% { opacity: var(--o1, 1); } }
 @keyframes glint { 0%, 100% { opacity: .8; } 40% { opacity: .25; } 48% { opacity: 1; } 70% { opacity: .5; } }
-body[data-screen="home"] .stars { --dip: .2; --twk: .5; }
-body[data-screen="home"] .stars .cur .st:not(.born) .glow { animation: glint calc(var(--tw, 7s) * .7) ease-in-out infinite; animation-delay: var(--d, 0s); }
+body[data-screen="home"] .stars { --dip: .2; --twk: 1.1; }
+body[data-screen="home"] .stars .cur .st:not(.born) .glow { animation: glint calc(var(--tw, 7s) * 1.5) ease-in-out infinite; animation-delay: var(--d, 0s); }
 .stars .old .st { --o1: .4; }
 .stars .born { animation: lightup 2.4s ease both, tw calc(var(--tw, 7s) * var(--twk, 1)) ease-in-out 2.4s infinite; }
 .stars .born .glow { animation: bornglow 3.2s ease-out both; }
