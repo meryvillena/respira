@@ -73,7 +73,14 @@
 
 *, *::before, *::after { box-sizing: inherit; }
 [hidden] { display: none !important; }
-html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+html[data-text="s"] { font-size: 100%; }
+html[data-text="l"] { font-size: 131%; }
+.textsize { display: flex; gap: 8px; margin: 0 0 6px; }
+.textsize label { flex: 1; text-align: center; padding: 12px 0; border-radius: 14px; background: var(--chip); border: 1px solid var(--line); font-family: var(--serif); cursor: pointer; }
+.textsize label[for="t-s"] { font-size: 1rem; } .textsize label[for="t-m"] { font-size: 1.25rem; } .textsize label[for="t-l"] { font-size: 1.5rem; }
+.textsize input:checked + label { background: var(--on); color: var(--on-ink); border-color: transparent; }
+.textsize input:focus-visible + label { outline: 2px solid var(--ink); outline-offset: 2px; }
+html { height: 100%; font-size: 112.5%; scroll-padding-top: env(safe-area-inset-top, 0px); }
 body {
   margin: 0; min-height: 100%;
   font-family: var(--sans); color: var(--ink); background: var(--day-a);
@@ -956,6 +963,12 @@ button.vh:focus-visible { position: static; width: auto; height: auto; overflow:
       <div class="bar"><button class="back" id="setBack" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h2>Ajustes</h2></div>
       <div class="swatches" id="swatches" role="radiogroup" aria-label="Color"></div>
       <p class="hint" id="hint"></p>
+      <p class="label">Tamaño del texto</p>
+      <div class="textsize" role="radiogroup" aria-label="Tamaño del texto">
+        <input class="vh" type="radio" name="textsize" id="t-s" value="s"><label for="t-s">S</label>
+        <input class="vh" type="radio" name="textsize" id="t-m" value="m"><label for="t-m">M</label>
+        <input class="vh" type="radio" name="textsize" id="t-l" value="l"><label for="t-l">L</label>
+      </div>
       <p class="label">Sonido</p>
       <div class="box">
         <label class="switch"><span class="switch-text">Sonido suave<small>Un tono que sube y baja con la luna al respirar.</small></span><input class="vh" type="checkbox" id="sound"><span class="track"></span></label>
@@ -1631,6 +1644,8 @@ button.vh:focus-visible { position: static; width: auto; height: auto; overflow:
   // Respira es solo oscura
   root.dataset.theme = 'dark';
   $('sound').checked = prefs.sound;
+  function applyText() { const k = prefs.text || 'm'; root.dataset.text = k; const r = $('t-' + k); if (r) r.checked = true; }
+  applyText();
   $('testmode').checked = prefs.test;
   $('testswitch').hidden = !DEMO;
   $('openall').checked = prefs.openAll !== false;
@@ -1641,6 +1656,7 @@ button.vh:focus-visible { position: static; width: auto; height: auto; overflow:
     if (t.name === 'palette') { prefs.palette = t.value; applyPalette(t.value); }
     if (t.name === 'dur') prefs.dur[current] = +t.value;
     if (t.name === 'view') prefs.view = t.value;
+    if (t.name === 'textsize') { prefs.text = t.value; applyText(); }
     if (t.id === 'sound') prefs.sound = t.checked;
     if (t.id === 'testmode') { prefs.test = t.checked; renderList(); renderSky(); renderPanel(); }
     if (t.id === 'openall') { prefs.openAll = t.checked; renderList(); renderPanel(); }
