@@ -699,9 +699,9 @@ body.nudging .ripple { animation: ripple 2.4s ease-out infinite; }
 @keyframes ripple { 0% { transform: scale(.95); opacity: .7; } 100% { transform: scale(1.75); opacity: 0; } }
 .nudge {
   position: fixed; z-index: 7; left: 50%; top: var(--ny, 40px); transform: translate(-50%, 6px);
-  padding: 7px 14px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3) 40%, transparent);
+  padding: 7px 16px; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--c3) 40%, transparent);
   background: color-mix(in srgb, var(--c1) 14%, rgba(18,14,36,.22));   /* casi transparente: se ve lo que hay debajo */
-  color: var(--ink); font-size: .9rem; white-space: nowrap; box-shadow: 0 0 26px -6px var(--glow);
+  color: var(--ink); font-size: .9rem; text-align: center; width: max-content; max-width: calc(100vw - 112px); box-shadow: 0 0 26px -6px var(--glow);   /* se parte en dos líneas antes que tapar el engranaje */
   opacity: 0; pointer-events: none; transition: opacity .6s ease, transform .6s ease;
 }
 .nudge::after { content: ''; position: absolute; left: 50%; bottom: -6px; width: 10px; height: 10px; margin-left: -5px; transform: rotate(45deg);

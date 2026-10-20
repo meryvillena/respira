@@ -1,5 +1,5 @@
-// Copia sin internet de Respira. Versión 80c34bf71f: cambia sola en cada publicación.
-const CACHE = 'respira-80c34bf71f';
+// Copia sin internet de Respira. Versión 8ed55899fb: cambia sola en cada publicación.
+const CACHE = 'respira-8ed55899fb';
 const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "manifest-ios.webmanifest", "fonts/fonts.css", "fonts/CormorantGaramond-italic.woff2", "fonts/CormorantGaramond-normal.woff2", "fonts/Manrope-normal.woff2", "icons/apple-touch-icon.png", "icons/favicon-64.png", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png"];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ARCHIVOS)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => {
