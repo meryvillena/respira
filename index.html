@@ -1841,6 +1841,8 @@ void main(){
   // Audio: tono que respira y campana
   let actx = null, pad = null;
   function getCtx() {
+    // iOS: sonar aunque el interruptor lateral esté en silencio
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
     try { if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume(); } catch (e) { actx = null; }
     return actx;
   }
@@ -1859,7 +1861,7 @@ void main(){
     const master = ctx.createGain(); master.gain.value = 0;
     const filter = ctx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 400; filter.Q.value = 0.4;
     filter.connect(master); master.connect(ctx.destination);
-    const oscs = [196, 293.66, 392.0, 196.6].map((f, i) => {
+    const oscs = [196, 293.66, 392.0, 196.6, 392.6, 587.3].map((f, i) => {
       const o = ctx.createOscillator(); o.type = i === 3 ? 'triangle' : 'sine'; o.frequency.value = f;
       const g = ctx.createGain(); g.gain.value = i === 2 ? 0.25 : 0.5; o.connect(g); g.connect(filter); o.start(); return o;
     });
@@ -1868,8 +1870,8 @@ void main(){
   function updatePad(norm) {
     if (!pad || !actx) return;
     const t = actx.currentTime;
-    pad.master.gain.setTargetAtTime(0.035 + 0.06 * norm, t, 0.12);
-    pad.filter.frequency.setTargetAtTime(260 + 900 * norm, t, 0.12);
+    pad.master.gain.setTargetAtTime(0.09 + 0.12 * norm, t, 0.12);
+    pad.filter.frequency.setTargetAtTime(500 + 1100 * norm, t, 0.12);
   }
   function stopPad() {
     if (!pad || !actx) return;
