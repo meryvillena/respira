@@ -815,10 +815,8 @@ button.vh:focus-visible { position: static; width: auto; height: auto; overflow:
 :is(.back, .gear):is(:hover, :focus-visible, :active) { color: var(--ink); filter: drop-shadow(0 0 6px var(--glow)); outline: none; }
 .back, .gear { transition: color .35s ease, filter .35s ease, opacity .6s ease; }
 
-/* Volver al portfolio: solo en la versión demo (la del portfolio). Texto que se ilumina, como el resto de botones. */
-.volver { position: fixed; z-index: 4; top: calc(env(safe-area-inset-top, 0px) + 12px); left: max(12px, calc((100vw - 580px) / 2)); min-height: 44px; display: flex; align-items: center; padding: 0 8px; background: none; border: 0; font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--ink-soft); text-decoration: none; transition: opacity .6s ease, color .2s ease; }
-.volver:hover, .volver:focus-visible { color: var(--ink); }
-body[data-state="focus"] .volver, body[data-state="dawn"] .volver, body[data-screen="settings"] .volver { opacity: 0; pointer-events: none; }
+/* Botón «Volver al portfolio» (lo pinta volver-portfolio.js, el mismo de todos los prototipos): se oculta en la sesión y el amanecer, como el engranaje */
+body[data-state="focus"] #volver-portfolio, body[data-state="dawn"] #volver-portfolio { opacity: 0; pointer-events: none; }
 </style></head>
 <body data-state="setup" data-screen="home">
 <div class="sky day"></div>
@@ -2415,15 +2413,12 @@ void main(){
   });
 })();
 
-// Volver al portfolio (solo en la demo que se abre desde meryvillena.com)
+// Volver al portfolio: el mismo botón que el resto de prototipos, solo en la demo que se abre desde meryvillena.com
 (function () {
   var q = new URLSearchParams(location.search), esMvm = /(^|\.)mvmmaison\.com$/.test(location.hostname), demo = q.has('demo') ? q.get('demo') !== '0' : !esMvm;
-  var ref = document.referrer || "", desdePortfolio = /^https?:\/\/(www\.)?meryvillena\.com(\/|$)/.test(ref);
+  var desdePortfolio = /^https?:\/\/(www\.)?meryvillena\.com(\/|$)/.test(document.referrer || "");
   if (!(demo && (desdePortfolio || esMvm || q.has('volver')))) return;
-  var en = /^https?:\/\/[^/]+\/en(\/|$)/.test(ref), home = "https://meryvillena.com/" + (en ? "en/" : "") + "#volver";
-  var a = document.createElement("a"); a.className = "volver"; a.href = home; a.textContent = en ? "\u2190 Back to portfolio" : "\u2190 Volver al portfolio";
-  a.addEventListener("click", function (e) { if (desdePortfolio && history.length > 1) { e.preventDefault(); history.back(); } });
-  document.body.appendChild(a);
+  var sc = document.createElement("script"); sc.src = "https://meryvillena.com/volver-portfolio.js"; sc.defer = true; document.body.appendChild(sc);
 })();
 </script>
 <script>
