@@ -1183,6 +1183,17 @@ body[data-state="focus"] #volver-portfolio, body[data-state="dawn"] #volver-port
         { dur: 5, from: MIN, to: MAX, label: 'Inhala por la nariz', teach: 'Garganta un poco cerrada. Suena como el mar.' },
         { dur: 5, from: MAX, to: MIN, label: 'Exhala por la nariz', teach: 'Igual, como si empañaras un espejo.' } ]
     },
+    sitali: {
+      name: 'Sitali', alt: 'la respiración refrescante', para: 'Para refrescarte y soltar la tensión.',
+      how: 'Adopta una postura cómoda, con la espalda erguida y los hombros relajados. Saca un poco la lengua y enróllala a lo largo, como un tubo. Inhala despacio por la boca, dejando que el aire pase por la lengua enrollada, como con una pajita. Después, recoge la lengua, cierra la boca y exhala despacio por la nariz.',
+      rhythm: 'Inhala 4 s por la boca, con la lengua enrollada. Exhala 6 s por la nariz. Sin retener el aire.',
+      more: ['Una práctica de pranayama —la regulación consciente de la respiración en yoga— que combina la inhalación por la boca, con la lengua enrollada, y la exhalación por la nariz.', 'En esta versión no se retiene el aire. Mantén un ritmo cómodo, sin forzar la profundidad de la respiración.', 'Si no puedes enrollar la lengua, algo que a mucha gente le pasa, prueba la variante Sitkari: junta suavemente los dientes, separa los labios e inhala por el espacio entre los dientes. La exhalación es igual, por la nariz.'],
+      close: 'Deja que la respiración recupere su ritmo natural. Observa cómo te sientes.',
+      dur: { type: 'min', opts: [1, 3, 5, 10, 15, 20, 30], def: 3 },
+      cycle: () => [
+        { dur: 4, from: MIN, to: MAX, label: 'Inhala por la boca', teach: 'El aire pasa por la lengua enrollada, como por una pajita.' },
+        { dur: 6, from: MAX, to: MIN, label: 'Exhala por la nariz', teach: 'Recoge la lengua y cierra la boca. Despacio.' } ]
+    },
     shaman: {
       name: 'El Viaje del Chamán', para: 'Para el hormigueo, la claridad intensa y la sensación de viaje.',
       how: 'Con la espalda recta, en una silla, en el suelo o tumbándote. 30 soplidos cortos por la nariz, empujando desde la tripa: el aire entra solo. Luego vacía y quédate sin aire el tiempo que elijas. Inhala hondo por la nariz y suelta por la boca. Tres rondas.',
@@ -1233,7 +1244,7 @@ body[data-state="focus"] #volver-portfolio, body[data-state="dawn"] #volver-port
       }
     }
   };
-  const ORDER = ['sigh', 'res', 'box', 'sleep', 'wake', 'ana', 'bee', 'ocean'];
+  const ORDER = ['sigh', 'res', 'box', 'sleep', 'wake', 'ana', 'bee', 'ocean', 'sitali'];
   const LOCKED = ['shaman', 'kunda'];
 
   const $ = (id) => document.getElementById(id);
@@ -2232,7 +2243,8 @@ void main(){
     { id: 'dispersa', tech: 'box', label: 'Centrarte', why: 'Un ritmo cuadrado y predecible le da a tu atención algo concreto que seguir.' },
     { id: 'animo', tech: 'res', label: 'Ir un poco más despacio', why: 'A seis respiraciones por minuto, corazón y respiración se acompasan. Si te apetece, pon una mano en el pecho.' },
     { id: 'energia', tech: 'wake', label: 'Activarte', why: 'Un ritmo más vivo para despejarte. Es corta a propósito: alargarla puede marearte.' },
-    { id: 'ruido', tech: 'bee', label: 'Apagar el ruido', why: 'El zumbido ocupa la atención y deja menos sitio para seguir pensando.' }
+    { id: 'ruido', tech: 'bee', label: 'Apagar el ruido', why: 'El zumbido ocupa la atención y deja menos sitio para seguir pensando.' },
+    { id: 'ira', tech: 'sitali', label: 'Regular la ira', why: 'Dedica estos minutos a observar tu respiración y cómo se expresa la ira en el cuerpo. Sigue la práctica con suavidad, sin forzar ni exigirte sentir calma.' }
   ];
   const TIMES = [{ m: 1, label: 'Un minuto' }, { m: 3, label: 'Tres minutos' }, { m: 5, label: 'Cinco minutos' }, { m: 10, label: 'Diez o más' }];
   function durFor(id, m) {
@@ -2242,15 +2254,15 @@ void main(){
   }
   const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
   // Cada frase lleva su estrella en el margen, todas en línea recta y unidas por un hilo
-  const STAR_X = [40, 40, 40, 40, 40, 40], STAR_R = [3, 3, 3, 3, 3, 3], ROW = 46;
+  const STAR_X = [40, 40, 40, 40, 40, 40, 40], STAR_R = [3, 3, 3, 3, 3, 3, 3], ROW = 46;
   function cList(items) {
-    const pts = items.map((_, i) => [STAR_X[i % 6], i * ROW + ROW / 2]);
+    const pts = items.map((_, i) => [STAR_X[i % 7], i * ROW + ROW / 2]);
     const lines = pts.slice(1).map((p, i) => { const q = pts[i], len = Math.hypot(p[0] - q[0], p[1] - q[1]).toFixed(1);
       return `<line style="--i:${i};--len:${len}" x1="${q[0]}" y1="${q[1]}" x2="${p[0]}" y2="${p[1]}"/>`; }).join('');
-    const stars = pts.map((p, i) => `<circle style="--i:${i}" data-i="${i}" cx="${p[0]}" cy="${p[1]}" r="${STAR_R[i % 6]}"/>`).join('');
+    const stars = pts.map((p, i) => `<circle style="--i:${i}" data-i="${i}" cx="${p[0]}" cy="${p[1]}" r="${STAR_R[i % 7]}"/>`).join('');
     return `<div class="clist"><svg class="cline" aria-hidden="true">${lines}${stars}</svg>${items.map((it, i) => it.replace('<button ', `<button data-i="${i}" `)).join('')}</div>`;
   }
-  $('feelings').innerHTML = cList(['nervios', 'sueno', 'dispersa', 'animo', 'energia', 'ruido'].map(id => { const f = FEELINGS.find(x => x.id === id); return `<button class="cword" data-feel="${f.id}" aria-pressed="false">${low(f.label)}</button>`; }));
+  $('feelings').innerHTML = cList(['nervios', 'sueno', 'dispersa', 'animo', 'energia', 'ruido', 'ira'].map(id => { const f = FEELINGS.find(x => x.id === id); return `<button class="cword" data-feel="${f.id}" aria-pressed="false">${low(f.label)}</button>`; }));
   $('times').innerHTML = cList(TIMES.map(t => `<button class="cword" data-time="${t.m}" aria-pressed="false">${low(t.label)}</button>`));
   // Vuelve a dibujar la constelación (al entrar en la pantalla o al cambiar de pregunta)
   const drawIn = (el) => { el.classList.remove('draw'); void el.offsetWidth; el.classList.add('draw'); };
