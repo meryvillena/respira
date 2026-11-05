@@ -774,6 +774,17 @@ body.full.paused { --o: min(46vw, 24vh, 220px); }
 body.full.paused .orb { --size: var(--o); transition-duration: 1.2s; }
 body.full.paused .orbwrap { transform: translateY(-24vh); }
 body.full.paused .cue { opacity: 0; }
+/* Móvil en horizontal (por ejemplo, en la cama): la luna más pequeña y arriba, y las frases debajo, sin taparla */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.full { --o: min(74vw, 38vh, 300px); }
+  body.full .stage { padding-bottom: 36vh; }
+  body.full.travel .orb { --size: min(52vw, 32vh, 240px); }
+  body.full .cue { bottom: max(4vh, 40px); }
+  body.full .phase.med { max-width: 40ch; }
+  body.full.paused { --o: min(30vw, 24vh, 150px); }
+  /* En pausa: la luna a la izquierda y la explicación a la derecha, para que quepa */
+  body.full.paused .orbwrap { transform: translate(-27vw, 14vh); }
+}
 .cue { transition: opacity .6s ease; }
 .pausecard {
   position: fixed; z-index: 5; left: 0; right: 0; top: 44vh; margin: 0 auto; max-width: 440px; padding: 0 28px;
@@ -784,6 +795,12 @@ body.full.paused .pausecard { opacity: 1; transform: none; transition-delay: .5s
 .pausecard h2 { margin: 0 0 14px; font-weight: 400; font-size: 2rem; }
 .pc-how { margin: 0 0 10px; font-size: .98rem; line-height: 1.6; opacity: .9; }
 .pc-rhythm { margin: 0; font-size: .86rem; opacity: .6; }
+@media (orientation: landscape) and (max-height: 520px) {
+  .pausecard { top: 50%; left: 36vw; right: 4vw; max-width: none; margin: 0; padding: 0; text-align: left; transform: translateY(calc(-50% + 12px)); }
+  body.full.paused .pausecard { transform: translateY(-50%); }
+  .pausecard h2 { font-size: 1.6rem; margin-bottom: 8px; }
+  .pc-how { font-size: .9rem; line-height: 1.5; }
+}
 .pc-warn { margin: 14px 0 0; font-size: .86rem; opacity: .75; }
 .pc-hint { margin: 26px 0 0; font-family: var(--serif); font-style: italic; font-size: 1.15rem; opacity: .7; }
 
